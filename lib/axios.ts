@@ -1,12 +1,8 @@
 import axios from "axios";
 
-const instance = axios.create({
-  baseURL: "http://localhost:8000/api",
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
 });
 
-export default instance;
+export default api;

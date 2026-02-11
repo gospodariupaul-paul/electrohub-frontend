@@ -1,66 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { productService } from "../services/productService";
 
-export default function DashboardPage() {
-  const router = useRouter();
+export default function Dashboard() {
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="))
-      ?.split("=")[1];
+    const token = localStorage.getItem("access_token");
 
     if (!token) {
-      router.push("/login");
+      window.location.href = "/login";
+      return;
     }
-  }, [router]);
+
+    productService.getAll().then((data) => {
+      setProducts(data);
+    });
+  }, []);
 
   return (
-    <div style={{ padding: 30 }}>
-      <h1 style={{ marginBottom: 20 }}>Dashboard</h1>
+    <div>
+      <h1>Dashboard</h1>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <a
-          href="/dashboard/users"
-          style={{
-            padding: "10px 14px",
-            background: "#0275d8",
-            color: "white",
-            textDecoration: "none",
-            borderRadius: 6,
-          }}
-        >
-          Gestionare utilizatori
-        </a>
-
-        <a
-          href="/dashboard/products"
-          style={{
-            padding: "10px 14px",
-            background: "#5cb85c",
-            color: "white",
-            textDecoration: "none",
-            borderRadius: 6,
-          }}
-        >
-          Gestionare produse
-        </a>
-
-        <a
-          href="/dashboard/categories"
-          style={{
-            padding: "10px 14px",
-            background: "#f0ad4e",
-            color: "white",
-            textDecoration: "none",
-            borderRadius: 6,
-          }}
-        >
-          Gestionare categorii
-        </a>
-      </div>
+      {products.map((p) => (
+        <div key={p.id}>
+          <h3>{p.name}</h3>
+          <p>{p.price} lei</p>
+        </div>
+      ))}
     </div>
   );
 }

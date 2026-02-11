@@ -18,6 +18,8 @@ export default function LoginPage() {
     try {
       const res = await axios.post(API.login, { email, password });
 
+      console.log("LOGIN RESPONSE:", res.data); // DEBUG IMPORTANT
+
       if (res.status === 200) {
         // Salvăm token-ul în cookie
         document.cookie = `token=${res.data.token}; path=/;`;
@@ -37,7 +39,10 @@ export default function LoginPage() {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", gap: 12 }}
+      >
         <input
           type="email"
           placeholder="Email"
@@ -54,7 +59,10 @@ export default function LoginPage() {
           required
         />
 
-        <button type="submit" style={{ padding: 10, background: "black", color: "white" }}>
+        <button
+          type="submit"
+          style={{ padding: 10, background: "black", color: "white" }}
+        >
           Login
         </button>
       </form>

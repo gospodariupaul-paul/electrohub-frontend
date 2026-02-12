@@ -1,22 +1,21 @@
-import { api } from "./api";
+import axios from "@/lib/axios";
 
-export interface User {
-  id: number;
-  email: string;
-  name?: string;
-  role?: string;
-  createdAt?: string;
-  updatedAt?: string;
+export async function login(data: { email: string; password: string }) {
+  const res = await axios.post("/auth/login", data);
+  return res.data;
 }
 
-export const usersService = {
-  async getAllUsers(): Promise<User[]> {
-    const res = await api.get<User[]>("/users/all");
-    return res.data;
-  },
+export async function register(data: { name: string; email: string; password: string }) {
+  const res = await axios.post("/auth/register", data);
+  return res.data;
+}
 
-  async getCurrentUser(): Promise<User> {
-    const res = await api.get<User>("/users/me");
-    return res.data;
-  },
-};
+export async function logout() {
+  const res = await axios.post("/auth/logout");
+  return res.data;
+}
+
+export async function refresh() {
+  const res = await axios.post("/auth/refresh");
+  return res.data;
+}

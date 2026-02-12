@@ -10,18 +10,12 @@ export default function LoginPage() {
 
   async function handleLogin() {
     try {
-      // DEBUG — vezi exact ce trimite frontend-ul
-      console.log("Trimitem:", email, password);
-
-      const data = await authService.login(email, password);
-
-      // salvăm token-urile
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
+      // Login + setarea cookie-urilor se face în authService.ts
+      await authService.login(email, password);
 
       setError("");
 
-      // redirect către dashboard
+      // Redirect către dashboard
       window.location.href = "/dashboard";
     } catch (err) {
       console.error("EROARE LOGIN:", err);
@@ -50,6 +44,7 @@ export default function LoginPage() {
       />
 
       <button
+        type="button"
         onClick={handleLogin}
         style={{
           width: "100%",

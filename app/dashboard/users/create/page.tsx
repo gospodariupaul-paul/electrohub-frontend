@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { api } from "@/app/services/api";
 
 export default function CreateUserPage() {
   const router = useRouter();
@@ -11,30 +12,17 @@ export default function CreateUserPage() {
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const handleCreate = async (e: any) => {
+  async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
 
     try {
-      const token = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("token="))
-        ?.split("=")[1];
-
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
+      await api.post("/users", { name, email, password });
       router.push("/dashboard/users");
     } finally {
       setSaving(false);
     }
-  };
+  }
 
   return (
     <div style={{ padding: 20 }}>

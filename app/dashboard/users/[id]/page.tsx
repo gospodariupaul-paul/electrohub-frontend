@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { api } from "@/app/services/api";
+import Link from "next/link";
 
 export default function UserDetailsPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -11,19 +13,8 @@ export default function UserDetailsPage({ params }: { params: { id: string } }) 
   useEffect(() => {
     async function loadUser() {
       try {
-        const token = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("token="))
-          ?.split("=")[1];
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        setUser(data);
+        const res = await api.get(`/users/${id}`);
+        setUser(res.data);
       } catch {
         setUser(null);
       } finally {
@@ -34,32 +25,16 @@ export default function UserDetailsPage({ params }: { params: { id: string } }) 
     loadUser();
   }, [id]);
 
-  if (loading) {
-    return <p>Se încarcă...</p>;
-  }
-
-  if (!user) {
-    return <p>Utilizatorul nu a fost găsit.</p>;
-  }
-
-  const handleDelete = async () => {
+  async function handleDelete() {
     const confirmDelete = confirm("Sigur vrei să ștergi acest utilizator?");
     if (!confirmDelete) return;
 
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="))
-      ?.split("=")[1];
-
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    await api.delete(`/users/${id}`);
     window.location.href = "/dashboard/users";
-  };
+  }
+
+  if (loading) return <p>Se încarcă...</p>;
+  if (!user) return <p>Utilizatorul nu a fost găsit.</p>;
 
   return (
     <div style={{ padding: 20 }}>
@@ -78,34 +53,10 @@ export default function UserDetailsPage({ params }: { params: { id: string } }) 
         <p><strong>Nume:</strong> {user.name}</p>
         <p><strong>Email:</strong> {user.email}</p>
 
-        <a
+        <Link
           href={`/dashboard/users/${user.id}/edit`}
           style={{
             display: "inline-block",
             marginTop: 20,
             marginRight: 10,
-            padding: "8px 12px",
-            background: "#0275d8",
-            color: "white",
-            textDecoration: "none",
-          }}
-        >
-          Editează
-        </a>
-
-        <button
-          onClick={handleDelete}
-          style={{
-            padding: "8px 12px",
-            background: "#d9534f",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Șterge utilizator
-        </button>
-      </div>
-    </div>
-  );
-}
+            padding: "8px 12

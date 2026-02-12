@@ -1,87 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { api } from "@/app/services/api";
 
-export default function CreateUserPage() {
-  const router = useRouter();
+export default function UsersPage() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const handleCreate = async (e: any) => {
-    e.preventDefault();
-    setSaving(true);
-
-    try {
-      const token = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("token="))
-        ?.split("=")[1];
-
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      router.push("/dashboard/users");
-    } finally {
-      setSaving(false);
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await api.get("/users");
+        setUsers(res.data);
+      } finally {
+        setLoading(false);
+      }
     }
-  };
+
+    load();
+  }, []);
+
+  async function handleDelete(id: number) {
+    const confirmDelete = confirm("Sigur vrei să ștergi acest utilizator?");
+    if (!confirmDelete) return;
+
+    await api.delete(`/users/${id}`);
+    setUsers((prev) => prev.filter((u) => u.id !== id));
+  }
+
+  if (loading) return <p>Se încarcă...</p>;
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>Creare utilizator</h1>
+      <h1>Utilizatori</h1>
 
-      <form onSubmit={handleCreate} style={{ marginTop: 20, maxWidth: 400 }}>
-        <label>Nume</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-          required
-        />
+      <Link
+        href="/dashboard/users/create"
+        style={{
+          display: "inline-block",
+          marginBottom: 20,
+          padding: "8px 12px",
+          background: "#5cb85c",
+          color: "white",
+          textDecoration: "none",
+        }}
+      >
+        Adaugă utilizator
+      </Link>
 
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-          required
-        />
+      <ul>
+        {users.map((user) => (
+          <li key={user.id} style={{ marginBottom: 10 }}>
+            <strong>{user.name}</strong> — {user.email}
 
-        <label>Parolă</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={saving}
-          style={{
-            padding: "8px 12px",
-            background: "#5cb85c",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          {saving ? "Se creează..." : "Creează utilizator"}
-        </button>
-      </form>
-    </div>
-  );
-}

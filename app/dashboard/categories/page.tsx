@@ -2,23 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "@/lib/axios";
-import { deleteCategory } from "@/app/services/categories";
+import { api } from "@/app/services/api";
+import { categoryService } from "@/app/services/categories";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
     async function load() {
-      const res = await axios.get("/categories");
+      const res = await api.get("/categories");
       setCategories(res.data);
     }
     load();
   }, []);
 
   async function handleDelete(id: number) {
-    await deleteCategory(id);
-    setCategories(categories.filter((c: any) => c.id !== id));
+    await categoryService.deleteCategory(id);
+    setCategories((prev) => prev.filter((c) => c.id !== id));
   }
 
   return (
@@ -27,7 +27,7 @@ export default function CategoriesPage() {
       <Link href="/dashboard/categories/create">Add category</Link>
 
       <ul>
-        {categories.map((c: any) => (
+        {categories.map((c) => (
           <li key={c.id}>
             {c.name}
             <button onClick={() => handleDelete(c.id)}>Delete</button>

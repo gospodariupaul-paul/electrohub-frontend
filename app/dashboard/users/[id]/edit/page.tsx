@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import { api } from "@/app/services/api";
 
-export default function EditUserPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function EditUserPage() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,20 +17,9 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function loadUser() {
       try {
-        const token = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("token="))
-          ?.split("=")[1];
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        setName(data.name);
-        setEmail(data.email);
+        const res = await api.get(`/users/${id}`);
+        setName(res.data.name);
+        setEmail(res.data.email);
       } finally {
         setLoading(false);
       }
@@ -37,34 +28,19 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     loadUser();
   }, [id]);
 
-  const handleSave = async (e: any) => {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
 
     try {
-      const token = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("token="))
-        ?.split("=")[1];
-
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name, email }),
-      });
-
+      await api.put(`/users/${id}`, { name, email });
       router.push(`/dashboard/users/${id}`);
     } finally {
       setSaving(false);
     }
-  };
-
-  if (loading) {
-    return <p>Se încarcă...</p>;
   }
+
+  if (loading) return <p>Se încarcă...</p>;
 
   return (
     <div style={{ padding: 20 }}>

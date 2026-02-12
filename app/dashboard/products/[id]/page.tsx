@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getProductById, updateProduct } from "@/app/services/products";
+import { productService } from "@/app/services/productService";
 
-export default function EditProductPage() {
+export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
 
@@ -16,19 +16,27 @@ export default function EditProductPage() {
     if (!id) return;
 
     async function load() {
-      const data = await getProductById(id);
-      setName(data.name);
+      try {
+        const data = await productService.getById(id);
+        setName(data.name);
+      } catch (err) {
+        console.error("Eroare la încărcarea produsului:", err);
+      }
     }
 
     load();
   }, [id]);
 
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!id) return;
 
-    await updateProduct(id, { name });
-    router.push("/dashboard/products");
+    try {
+      await productService.update(id, { name });
+      router.push("/dashboard/products");
+    } catch (err) {
+      console.error("Eroare la actualizare:", err);
+    }
   }
 
   return (

@@ -2,32 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCategoryById, updateCategory } from "@/app/services/categories";
+import { categoryService } from "@/app/services/categories";
 
 export default function EditCategoryPage() {
   const params = useParams();
   const router = useRouter();
 
-  const id = params?.id as string; // conversie sigură
+  const id = params?.id as string;
 
   const [name, setName] = useState("");
 
   useEffect(() => {
-    if (!id) return; // protecție TS
+    if (!id) return;
 
     async function load() {
-      const data = await getCategoryById(id);
+      const data = await categoryService.getCategoryById(id);
       setName(data.name);
     }
 
     load();
   }, [id]);
 
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!id) return;
 
-    await updateCategory(id, { name });
+    await categoryService.updateCategory(id, { name });
     router.push("/dashboard/categories");
   }
 

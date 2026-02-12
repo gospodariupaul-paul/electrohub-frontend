@@ -2,23 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "@/lib/axios";
-import { deleteProduct } from "@/app/services/products";
+import { api } from "@/app/services/api";
+import { productService } from "@/app/services/productService";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
     async function load() {
-      const res = await axios.get("/products");
+      const res = await api.get("/products");
       setProducts(res.data);
     }
     load();
   }, []);
 
   async function handleDelete(id: number) {
-    await deleteProduct(id);
-    setProducts(products.filter((p: any) => p.id !== id));
+    await productService.remove(id);
+    setProducts((prev) => prev.filter((p) => p.id !== id));
   }
 
   return (
@@ -27,7 +27,7 @@ export default function ProductsPage() {
       <Link href="/dashboard/products/create">Add product</Link>
 
       <ul>
-        {products.map((p: any) => (
+        {products.map((p) => (
           <li key={p.id}>
             {p.name}
             <button onClick={() => handleDelete(p.id)}>Delete</button>

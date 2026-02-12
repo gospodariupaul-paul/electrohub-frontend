@@ -7,7 +7,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
 
   const handleLogout = () => {
-    document.cookie = "token=; path=/; max-age=0;";
+    // Șterge token-ul corect
+    document.cookie = "token=; path=/; max-age=0; SameSite=Lax;";
     router.push("/login");
   };
 
@@ -23,7 +24,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       >
         <h3>ElectroHub</h3>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 20 }}>
+        <nav
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            marginTop: 20,
+          }}
+        >
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/dashboard/users">Users</Link>
           <Link href="/dashboard/products">Products</Link>
@@ -42,10 +50,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             Logout
           </button>
-        </nav>
-      </aside>
-
-      <main style={{ flex: 1, padding: 30 }}>{children}</main>
-    </div>
-  );
-}

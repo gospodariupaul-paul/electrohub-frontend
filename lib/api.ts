@@ -5,4 +5,8 @@ export const API = {
   products: {
     list: "/products",
   },
+  auth: {
+    login: "/auth/login",
+    register: "/auth/register",
+  },
 };

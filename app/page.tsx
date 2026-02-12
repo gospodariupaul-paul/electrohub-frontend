@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { getProducts } from "@/app/services/products";
 import { getCategories } from "@/app/services/categories";

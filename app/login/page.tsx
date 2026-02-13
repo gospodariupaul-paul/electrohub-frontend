@@ -1,64 +1,85 @@
 "use client";
 
 import { useState } from "react";
-import { authService } from "../services/authService";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  async function handleLogin() {
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    setError("");
+
     try {
-      // Login + setarea cookie-urilor se face în authService.ts
-      await authService.login(email, password);
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + "/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-      setError("");
+      if (!res.ok) {
+        setError("Credențiale greșite");
+        return;
+      }
 
-      // Redirect către dashboard
+      const data = await res.json();
+      console.log("Login success:", data);
+
+      // Dacă backend-ul trimite token, îl poți salva aici:
+      // localStorage.setItem("token", data.token);
+
       window.location.href = "/dashboard";
     } catch (err) {
-      console.error("EROARE LOGIN:", err);
-      setError("Email sau parolă greșită");
+      setError("Eroare de server");
     }
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "50px auto" }}>
+    <div style={{ padding: 40 }}>
       <h1>Login</h1>
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ display: "block", width: "100%", marginBottom: 10 }}
-      />
-
-      <input
-        type="password"
-        placeholder="Parola"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ display: "block", width: "100%", marginBottom: 10 }}
-      />
-
-      <button
-        type="button"
-        onClick={handleLogin}
-        style={{
-          width: "100%",
-          padding: 10,
-          background: "black",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", maxWidth: 300 }}
       >
-        Login
-      </button>
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ padding: 8 }}
+        />
 
-      {error && <p style={{ color: "red", marginTop: 10 }}>{error}</p>}
+        <label style={{ marginTop: 10 }}>Parola</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ padding: 8 }}
+        />
+
+        {error && (
+          <p style={{ color: "red", marginTop: 10 }}>{error}</p>
+        )}
+
+        <button
+          type="submit"
+          style={{
+            marginTop: 20,
+            padding: 10,
+            background: "black",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </button>
+      </form>
     </div>
   );
 }

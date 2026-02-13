@@ -14,7 +14,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <h1>Dashboard</h1>
 
       <h2>Products</h2>

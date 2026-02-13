@@ -1,42 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { productService } from "@/app/services/productService";
+import axios from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
-export default function ProductPage() {
-  const params = useParams();
+export default function EditProductPage({ params }: any) {
+  const { id } = params;
+  const [name, setName] = useState("");
   const router = useRouter();
 
-  const id = params?.id as string;
-
-  const [name, setName] = useState("");
-
   useEffect(() => {
-    if (!id) return;
-
     async function load() {
-      try {
-        const data = await productService.getById(id);
-        setName(data.name);
-      } catch (err) {
-        console.error("Eroare la încărcarea produsului:", err);
-      }
+      const res = await axios.get(`/products/${id}`);
+      setName(res.data.name);
     }
-
     load();
   }, [id]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-    if (!id) return;
-
-    try {
-      await productService.update(id, { name });
-      router.push("/dashboard/products");
-    } catch (err) {
-      console.error("Eroare la actualizare:", err);
-    }
+    await axios.put(`/products/${id}`, { name });
+    router.push("/dashboard/products");
   }
 
   return (
@@ -45,12 +29,10 @@ export default function ProductPage() {
 
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          placeholder="Product name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="Product name"
         />
-
         <button type="submit">Save</button>
       </form>
     </div>

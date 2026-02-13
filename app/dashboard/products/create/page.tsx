@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import { productService } from "@/app/services/productService";
 
 export default function CreateProductPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
+  const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-
-    await productService.create({ name });
+    await axios.post("/products", { name });
     router.push("/dashboard/products");
   }
 
@@ -21,12 +20,10 @@ export default function CreateProductPage() {
 
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          placeholder="Product name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="Product name"
         />
-
         <button type="submit">Create</button>
       </form>
     </div>

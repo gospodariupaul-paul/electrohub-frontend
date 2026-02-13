@@ -1,80 +1,74 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { api } from "@/app/services/api";
+import { useParams, useRouter } from "next/navigation";
 
 export default function EditUserPage() {
+  const { id } = useParams();
   const router = useRouter();
-  const params = useParams();
-  const id = params.id as string;
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [user, setUser] = useState<any>({
+    name: "",
+    email: "",
+  });
 
   useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await api.get(`/users/${id}`);
-        setName(res.data.name);
-        setEmail(res.data.email);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadUser();
+    // DEMO — înlocuiești cu API-ul tău real
+    setUser({
+      name: "User Demo",
+      email: "demo@example.com",
+    });
   }, [id]);
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-
-    try {
-      await api.put(`/users/${id}`, { name, email });
-      router.push(`/dashboard/users/${id}`);
-    } finally {
-      setSaving(false);
-    }
+  function handleChange(e: any) {
+    setUser({ ...user, [e.target.name]: e.target.value });
   }
 
-  if (loading) return <p>Se încarcă...</p>;
+  function handleSubmit(e: any) {
+    e.preventDefault();
+
+    // aici vei pune updateUser(id, user)
+    console.log("Saving user:", user);
+
+    router.push(`/dashboard/users/${id}`);
+  }
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>Editare utilizator</h1>
+      <h1>Edit User #{id}</h1>
 
-      <form onSubmit={handleSave} style={{ marginTop: 20, maxWidth: 400 }}>
-        <label>Nume</label>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", maxWidth: 300 }}
+      >
+        <label style={{ marginTop: 10 }}>Name</label>
         <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
+          name="name"
+          value={user.name}
+          onChange={handleChange}
+          style={{ padding: 8 }}
         />
 
-        <label>Email</label>
+        <label style={{ marginTop: 10 }}>Email</label>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
+          name="email"
+          value={user.email}
+          onChange={handleChange}
+          style={{ padding: 8 }}
         />
 
         <button
           type="submit"
-          disabled={saving}
           style={{
-            padding: "8px 12px",
-            background: "#0275d8",
+            marginTop: 20,
+            padding: 10,
+            background: "black",
             color: "white",
             border: "none",
             cursor: "pointer",
           }}
         >
-          {saving ? "Se salvează..." : "Salvează"}
+          Save
         </button>
       </form>
     </div>

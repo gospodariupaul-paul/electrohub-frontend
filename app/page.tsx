@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getProducts } from "@/app/services/products";
 import { getCategories } from "@/app/services/categories";
 
+
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);

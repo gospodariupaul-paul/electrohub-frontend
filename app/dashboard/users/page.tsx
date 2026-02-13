@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { api } from "@/app/services/api";
+import axios from "@/lib/axios";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -11,7 +11,7 @@ export default function UsersPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await api.get("/users");
+        const res = await axios.get("/users");
         setUsers(res.data);
       } finally {
         setLoading(false);
@@ -25,7 +25,7 @@ export default function UsersPage() {
     const confirmDelete = confirm("Sigur vrei să ștergi acest utilizator?");
     if (!confirmDelete) return;
 
-    await api.delete(`/users/${id}`);
+    await axios.delete(`/users/${id}`);
     setUsers((prev) => prev.filter((u) => u.id !== id));
   }
 
@@ -53,4 +53,20 @@ export default function UsersPage() {
         {users.map((user) => (
           <li key={user.id} style={{ marginBottom: 10 }}>
             <strong>{user.name}</strong> — {user.email}
-
+            <button
+              onClick={() => handleDelete(user.id)}
+              style={{
+                marginLeft: 10,
+                background: "red",
+                color: "white",
+                padding: "4px 8px",
+              }}
+            >
+              Șterge
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

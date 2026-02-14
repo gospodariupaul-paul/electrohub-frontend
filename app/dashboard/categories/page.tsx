@@ -8,7 +8,7 @@ export default async function CategoriesPage() {
       <h1 className="text-2xl font-semibold mb-4">Categories</h1>
 
       <div className="space-y-2">
-        {categories && categories.length > 0 ? (
+        {Array.isArray(categories) && categories.length > 0 ? (
           categories.map((cat: any) => (
             <div
               key={cat.id}

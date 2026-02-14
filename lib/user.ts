@@ -1,12 +1,7 @@
 import axios from "@/lib/axios";
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export const getUser = () => axios.get("/user");
-export const updateUser = (data: Partial<User>) =>
-  axios.put("/user", data);
-export const deleteUser = () => axios.delete("/user");
+export const getUser = () => axios.get("/api/users/me");
+export const getUserById = (id: string) => axios.get(`/api/users/${id}`);
+export const updateUser = (data: any) =>
+  axios.patch("/api/users/me", data);
+export const deleteUser = () => axios.delete("/api/users/me");

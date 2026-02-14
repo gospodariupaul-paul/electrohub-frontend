@@ -1,49 +1,17 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { getCategory, updateCategory } from "@/app/services/categories";
+import { getCategory } from "@/lib/categories";
 
-export default function EditCategoryPage() {
-  const params = useParams();
-  const router = useRouter();
-
-  const [name, setName] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadCategory() {
-      const data = await getCategory(params.id as string);
-      setName(data.name);
-      setLoading(false);
-    }
-
-    loadCategory();
-  }, [params.id]);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    await updateCategory(params.id as string, { name });
-    router.push("/dashboard/categories");
-  }
-
-  if (loading) return <p>Loading...</p>;
+export default async function CategoryDetails({ params }: any) {
+  const { id } = params;
+  const { data: category } = await getCategory(id);
 
   return (
     <div>
-      <h1>Edit Category</h1>
+      <h1>Category Details</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Category name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <button type="submit">Save</button>
-      </form>
+      <p><strong>ID:</strong> {category.id}</p>
+      <p><strong>Name:</strong> {category.name}</p>
     </div>
   );
 }

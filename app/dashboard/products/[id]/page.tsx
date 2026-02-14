@@ -1,40 +1,19 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
-import axios from "@/lib/axios";
-import { useRouter } from "next/navigation";
+import { getProduct } from "@/lib/products";
 
-export default function EditProductPage({ params }: any) {
+export default async function ProductDetails({ params }: any) {
   const { id } = params;
-  const [name, setName] = useState("");
-  const router = useRouter();
-
-  useEffect(() => {
-    async function load() {
-      const res = await axios.get(`/products/${id}`);
-      setName(res.data.name);
-    }
-    load();
-  }, [id]);
-
-  async function handleSubmit(e: any) {
-    e.preventDefault();
-    await axios.put(`/products/${id}`, { name });
-    router.push("/dashboard/products");
-  }
+  const { data: product } = await getProduct(id);
 
   return (
     <div>
-      <h1>Edit Product</h1>
+      <h1>Product Details</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Product name"
-        />
-        <button type="submit">Save</button>
-      </form>
+      <p><strong>ID:</strong> {product.id}</p>
+      <p><strong>Name:</strong> {product.name}</p>
+      <p><strong>Price:</strong> {product.price}</p>
+      <p><strong>Description:</strong> {product.description}</p>
     </div>
   );
 }

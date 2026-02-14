@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { categoryService } from "@/app/services/categories";
+import { createCategory } from "@/app/services/categories";
 
 export default function CreateCategoryPage() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function CreateCategoryPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    await categoryService.createCategory({ name });
+    await createCategory({ name });
     router.push("/dashboard/categories");
   }
 

@@ -1,13 +1,13 @@
-export const categoryService = {
-  async getAll() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
-      cache: "no-store",
-    });
+import axios from "axios";
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch categories");
-    }
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    return res.json();
+export async function getCategories() {
+  try {
+    const response = await axios.get(`${API_URL}/categories`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
   }
-};
+}

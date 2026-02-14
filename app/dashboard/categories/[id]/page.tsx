@@ -2,34 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { categoryService } from "@/app/services/categories";
+import { getCategory, updateCategory } from "@/app/services/categories";
 
 export default function EditCategoryPage() {
   const params = useParams();
   const router = useRouter();
 
-  const id = params?.id as string;
-
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
-
-    async function load() {
-      const data = await categoryService.getCategoryById(id);
+    async function loadCategory() {
+      const data = await getCategory(params.id as string);
       setName(data.name);
+      setLoading(false);
     }
 
-    load();
-  }, [id]);
+    loadCategory();
+  }, [params.id]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!id) return;
 
-    await categoryService.updateCategory(id, { name });
+    await updateCategory(params.id as string, { name });
     router.push("/dashboard/categories");
   }
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>

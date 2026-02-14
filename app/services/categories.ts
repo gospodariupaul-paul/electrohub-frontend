@@ -1,18 +1,28 @@
 "use server";
 
+import axios from "@/lib/axios";
+
 export async function getCategories() {
-  try {
-    const response = await fetch("http://localhost:5000/api/categories", {
-      cache: "no-store",
-    });
+  const res = await axios.get("/categories");
+  return res.data;
+}
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch categories");
-    }
+export async function getCategory(id: string) {
+  const res = await axios.get(`/categories/${id}`);
+  return res.data;
+}
 
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
+export async function createCategory(data: { name: string }) {
+  const res = await axios.post("/categories", data);
+  return res.data;
+}
+
+export async function updateCategory(id: string, data: { name: string }) {
+  const res = await axios.put(`/categories/${id}`, data);
+  return res.data;
+}
+
+export async function deleteCategory(id: string) {
+  const res = await axios.delete(`/categories/${id}`);
+  return res.data;
 }

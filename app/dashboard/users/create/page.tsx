@@ -1,74 +1,45 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import api from '@/app/services/api'
+import { createUser } from "@/lib/users";
 
 export default function CreateUserPage() {
   const router = useRouter();
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [name, setName] = useState("");
 
-  async function handleCreate(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSaving(true);
 
-    try {
-      await api.post("/users", { name, email, password });
-      router.push("/dashboard/users");
-    } finally {
-      setSaving(false);
-    }
+    await createUser({ email, name });
+
+    router.push("/dashboard/users");
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Creare utilizator</h1>
+    <div>
+      <h1>Create User</h1>
 
-      <form onSubmit={handleCreate} style={{ marginTop: 20, maxWidth: 400 }}>
-        <label>Nume</label>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
+          placeholder="Full name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-          required
         />
 
-        <label>Email</label>
         <input
           type="email"
+          placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-          required
         />
 
-        <label>Parolă</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: 10 }}
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={saving}
-          style={{
-            padding: "8px 12px",
-            background: "#5cb85c",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          {saving ? "Se creează..." : "Creează utilizator"}
-        </button>
+        <button type="submit">Create</button>
       </form>
     </div>
   );

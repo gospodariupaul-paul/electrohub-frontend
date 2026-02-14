@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
-import { getUserById, updateUser } from "@/lib/user";
+
+import { getUsers } from "@/lib/user";
 
 export default async function UsersPage() {
   const { data: users } = await getUsers();

@@ -1,27 +1,8 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { getProducts } from "@/app/services/products";
-import { getCategories } from "@/app/services/categories";
-
-export default function Dashboard() {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-    getCategories().then(setCategories);
-  }, []);
-
+export default function DashboardPage() {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Dashboard</h1>
-
-      <h2>Products</h2>
-      <pre>{JSON.stringify(products, null, 2)}</pre>
-
-      <h2>Categories</h2>
-      <pre>{JSON.stringify(categories, null, 2)}</pre>
+    <div className="p-6">
+      <h1 className="text-3xl font-semibold">Dashboard</h1>
+      <p className="mt-4 text-gray-600">Welcome to your admin panel.</p>
     </div>
   );
 }

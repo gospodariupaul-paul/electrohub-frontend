@@ -1,10 +1,8 @@
-"use client";
-
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>ElectroHub</h1>
-      <p>Bine ai venit!</p>
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+      <p>Bine ai venit în dashboard!</p>
     </div>
   );
 }

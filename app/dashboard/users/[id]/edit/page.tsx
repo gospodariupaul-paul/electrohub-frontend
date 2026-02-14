@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { getUserById } from "@/lib/users";
+import { getUserById, updateUser } from "@/lib/user";
+
 
 export default async function UserDetails({ params }: any) {
   const { id } = params;

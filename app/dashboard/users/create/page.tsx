@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/users";
+import { createUser } from "@/lib/user";
 
 export default function CreateUserPage() {
   const router = useRouter();

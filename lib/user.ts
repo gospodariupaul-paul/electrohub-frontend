@@ -1,22 +1,12 @@
-import { api } from "./api";
+import axios from "@/lib/axios";
 
 export interface User {
   id: number;
+  name: string;
   email: string;
-  name?: string;
-  role?: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
-export const usersApi = {
-  async getAll(): Promise<User[]> {
-    const res = await api.get<User[]>("/users/all");
-    return res.data;
-  },
-
-  async getCurrent(): Promise<User> {
-    const res = await api.get<User>("/users/me");
-    return res.data;
-  },
-};
+export const getUser = () => axios.get("/user");
+export const updateUser = (data: Partial<User>) =>
+  axios.put("/user", data);
+export const deleteUser = () => axios.delete("/user");

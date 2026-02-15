@@ -32,12 +32,12 @@ const handler = NextAuth({
 
         const data = await response.json();
 
-        // NextAuth v5 are nevoie de un user cu id obligatoriu
+        // Returnăm un user valid pentru NextAuth v5
         return {
           id: data.id || data.userId || data._id || "generated-id",
           email: data.email || credentials.email,
           name: data.name || "User",
-          backendData: data, // 🔥 păstrăm TOT ce vine din backend
+          backendData: data, // păstrăm tot ce vine din backend
         };
       },
     }),
@@ -53,7 +53,7 @@ const handler = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        token.backendData = user.backendData; // 🔥 păstrăm datele backend-ului
+        token.backendData = user.backendData;
       }
       return token;
     },
@@ -63,4 +63,13 @@ const handler = NextAuth({
         id: token.id,
         email: token.email,
         name: token.name,
-        backend
+        backendData: token.backendData,
+      };
+      return session;
+    },
+  },
+
+  secret: process.env.NEXTAUTH_SECRET,
+});
+
+export { handler as GET, handler as POST };

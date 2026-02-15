@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-export default function HomePage() {
+export default function StartPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,7 +19,7 @@ export default function HomePage() {
     const res = await signIn("credentials", {
       email,
       password,
-      redirect: false,   // 🔥 NU MAI REDIRECTEAZĂ NICĂIERI
+      redirect: false,
     });
 
     if (res?.error) {
@@ -23,100 +27,72 @@ export default function HomePage() {
       return;
     }
 
-    // 🔥 LOGIN REUȘIT → mergi în dashboard
-    window.location.href = "/dashboard";
+    router.push("/dashboard");
   }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #0d1117, #111827)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#fff",
-        textAlign: "center",
-        padding: 40,
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 50,
-          fontWeight: 900,
-          background: "linear-gradient(135deg, #4e73df, #1cc88a)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          marginBottom: 10,
-        }}
-      >
+    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center text-white px-6">
+      
+      {/* LOGO */}
+      <h1 className="text-5xl font-extrabold mb-2 bg-gradient-to-r from-blue-500 to-green-400 bg-clip-text text-transparent">
         GOSPO ElectroHub
       </h1>
 
-      <p style={{ opacity: 0.8, marginBottom: 40 }}>
+      <p className="opacity-70 mb-10 text-center max-w-md">
         Platforma inteligentă pentru administrarea magazinului tău.
       </p>
 
-      <form
-        onSubmit={handleLogin}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 15,
-          width: 300,
-        }}
-      >
-        <input
-          type="email"
-          placeholder="admin@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            padding: "12px 16px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.2)",
-            background: "rgba(255,255,255,0.05)",
-            color: "#fff",
-            fontSize: 16,
-          }}
-        />
+      {/* Dacă ești logat → buton Logout */}
+      {session ? (
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-lg">Salut, {session.user.email}</p>
+          <button
+            onClick={() => signOut()}
+            className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 transition font-semibold"
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        /* Dacă NU ești logat → formular Login + Create Account */
+        <div className="w-full max-w-sm bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/10">
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <input
+              type="email"
+              placeholder="Email"
+              className="p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <input
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            padding: "12px 16px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.2)",
-            background: "rgba(255,255,255,0.05)",
-            color: "#fff",
-            fontSize: 16,
-          }}
-        />
+            <input
+              type="password"
+              placeholder="Parola"
+              className="p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-        {error && (
-          <div style={{ color: "#ff6b6b", fontSize: 14 }}>{error}</div>
-        )}
+            {error && (
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            )}
 
-        <button
-          type="submit"
-          style={{
-            padding: "12px 16px",
-            borderRadius: 10,
-            background: "linear-gradient(135deg, #4e73df, #1cc88a)",
-            color: "#fff",
-            fontSize: 18,
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </button>
-      </form>
+            <button
+              type="submit"
+              className="p-3 rounded-lg bg-gradient-to-r from-blue-600 to-green-500 font-semibold hover:opacity-90 transition"
+            >
+              Login
+            </button>
+          </form>
+
+          <button
+            onClick={() => router.push("/register")}
+            className="mt-4 w-full p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
+          >
+            Creează cont
+          </button>
+        </div>
+      )}
     </main>
   );
 }

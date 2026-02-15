@@ -70,18 +70,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           />
         </button>
 
-        {/* LOGO */}
+        {/* LOGO — GOSPO ELECTRO HUB */}
         <div
           style={{
             textAlign: collapsed ? "center" : "left",
-            fontSize: collapsed ? 26 : 30,
-            fontWeight: 800,
-            letterSpacing: 1,
-            color: "#4e73df",
-            transition: "0.25s",
+            fontSize: collapsed ? 24 : 28,
+            fontWeight: 900,
+            letterSpacing: collapsed ? 1 : 2,
+            background: "linear-gradient(135deg, #4e73df, #1cc88a)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            transition: "0.25s ease",
+            cursor: "default",
+            userSelect: "none",
           }}
         >
-          {collapsed ? "EH" : "ElectroHub"}
+          {collapsed ? "GEH" : "GOSPO Electro Hub"}
         </div>
 
         {/* USER MENU */}
@@ -109,7 +113,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 }}
               />
               <h3 style={{ margin: 0, fontSize: 18 }}>Admin Panel</h3>
-              <p style={{ margin: 0, opacity: 0.7, fontSize: 14 }}>ElectroHub</p>
+              <p style={{ margin: 0, opacity: 0.7, fontSize: 14 }}>GOSPO Electro Hub</p>
 
               {userMenu && (
                 <div

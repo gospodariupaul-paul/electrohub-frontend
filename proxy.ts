@@ -3,19 +3,27 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function proxy(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+
+  // EXCLUDEREA PAGINILOR PUBLICE
+  const publicRoutes = ["/", "/login", "/register"];
+  if (publicRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  // TOKEN
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
+  // RUTE PROTEJATE
   const protectedRoutes = [
     "/dashboard",
     "/products",
     "/categories",
     "/users",
   ];
-
-  const pathname = req.nextUrl.pathname;
 
   const isProtected = protectedRoutes.some((route) =>
     pathname.startsWith(route)
@@ -30,9 +38,6 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/products/:path*",
-    "/categories/:path*",
-    "/users/:path*",
+    "/:path*",
   ],
 };

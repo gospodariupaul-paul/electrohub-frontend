@@ -37,15 +37,14 @@ const handler = NextAuth({
           id: data.id || data.userId || data._id || "generated-id",
           email: data.email || credentials.email,
           name: data.name || "User",
-          token: data.token || null,
-          ...data,
+          backendData: data, // 🔥 păstrăm TOT ce vine din backend
         };
       },
     }),
   ],
 
   session: {
-    strategy: "jwt", // 🔥 în v5 este valid
+    strategy: "jwt",
   },
 
   callbacks: {
@@ -54,7 +53,7 @@ const handler = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        token.token = user.token;
+        token.backendData = user.backendData; // 🔥 păstrăm datele backend-ului
       }
       return token;
     },
@@ -64,13 +63,4 @@ const handler = NextAuth({
         id: token.id,
         email: token.email,
         name: token.name,
-        token: token.token,
-      };
-      return session;
-    },
-  },
-
-  secret: process.env.NEXTAUTH_SECRET,
-});
-
-export { handler as GET, handler as POST };
+        backend

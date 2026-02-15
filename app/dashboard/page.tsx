@@ -1,30 +1,27 @@
-import { FaUser, FaUserTie, FaUserAlt, FaEdit, FaTrash } from "react-icons/fa";
-import { getUsers } from "@/app/services/users";
+import { FaUsers, FaBoxOpen, FaTags, FaChartLine, FaBell, FaClock } from "react-icons/fa";
 
-export default async function UsersPage() {
-  let users = [];
+export default async function DashboardHome() {
+  // Date mock – pot fi înlocuite cu API real
+  const stats = {
+    users: 128,
+    products: 54,
+    categories: 12,
+    sales: 8740,
+  };
 
-  try {
-    users = await getUsers();
-  } catch (err) {
-    console.error("Error loading users:", err);
-    return (
-      <div style={{ padding: 30 }}>
-        <h1 style={{ fontSize: 28 }}>Users</h1>
-        <p style={{ color: "red", marginTop: 20 }}>
-          A apărut o eroare la încărcarea utilizatorilor.
-        </p>
-      </div>
-    );
-  }
+  const recentActivity = [
+    { id: 1, text: "New user registered: John Doe", time: "2 hours ago" },
+    { id: 2, text: "Product added: Lenovo ThinkPad X1", time: "5 hours ago" },
+    { id: 3, text: "Category updated: Electronics", time: "1 day ago" },
+  ];
 
-  const colors = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"];
+  const colors = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e"];
 
   return (
     <div style={{ padding: 30 }}>
-      <h1 style={{ fontSize: 28, marginBottom: 20 }}>Users</h1>
+      <h1 style={{ fontSize: 32, marginBottom: 30 }}>Dashboard Overview</h1>
 
-      {/* CARDURI COLORATE */}
+      {/* CARDURI STATISTICI */}
       <div
         style={{
           display: "grid",
@@ -33,117 +30,96 @@ export default async function UsersPage() {
           marginBottom: 40,
         }}
       >
-        {users.map((user: any, index: number) => (
-          <div
-            key={user.id}
-            style={{
-              background: colors[index % colors.length],
-              padding: 20,
-              borderRadius: 12,
-              color: "#fff",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            }}
-          >
-            <div style={{ fontSize: 40, marginBottom: 10 }}>
-              {getUserIcon(user.name)}
-            </div>
-
-            <h3 style={{ fontSize: 22, marginBottom: 5 }}>{user.name}</h3>
-            <p style={{ opacity: 0.9 }}>{user.email}</p>
-          </div>
-        ))}
+        <StatCard title="Total Users" value={stats.users} icon={<FaUsers />} color={colors[0]} />
+        <StatCard title="Products" value={stats.products} icon={<FaBoxOpen />} color={colors[1]} />
+        <StatCard title="Categories" value={stats.categories} icon={<FaTags />} color={colors[2]} />
+        <StatCard title="Monthly Sales" value={stats.sales + " RON"} icon={<FaChartLine />} color={colors[3]} />
       </div>
 
-      {/* TABEL PROFESIONAL */}
+      {/* SECȚIUNE GRAFIC (placeholder enterprise) */}
       <div
         style={{
           background: "#fff",
-          padding: 20,
-          borderRadius: 10,
+          padding: 30,
+          borderRadius: 12,
           border: "1px solid #ddd",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.08)",
+          marginBottom: 40,
         }}
       >
-        <h2 style={{ marginBottom: 20 }}>User List</h2>
+        <h2 style={{ fontSize: 26, marginBottom: 10 }}>Sales Overview</h2>
+        <p style={{ color: "#555", marginBottom: 20 }}>
+          Graficul real poate fi integrat cu Chart.js sau Recharts. Momentan este un placeholder enterprise.
+        </p>
 
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f8f9fc" }}>
-              <th style={thStyle}>Avatar</th>
-              <th style={thStyle}>Name</th>
-              <th style={thStyle}>Email</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
+        <div
+          style={{
+            height: 200,
+            background: "linear-gradient(135deg, #4e73df33, #1cc88a33)",
+            borderRadius: 10,
+          }}
+        ></div>
+      </div>
 
-          <tbody>
-            {users.map((user: any) => (
-              <tr key={user.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={tdStyle}>
-                  <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      user.name
-                    )}&background=random&color=fff`}
-                    alt="avatar"
-                    style={{ width: 40, height: 40, borderRadius: "50%" }}
-                  />
-                </td>
+      {/* ACTIVITATE RECENTĂ */}
+      <div
+        style={{
+          background: "#fff",
+          padding: 30,
+          borderRadius: 12,
+          border: "1px solid #ddd",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2 style={{ fontSize: 26, marginBottom: 20 }}>Recent Activity</h2>
 
-                <td style={tdStyle}>{user.name}</td>
-                <td style={tdStyle}>{user.email}</td>
-
-                <td style={tdStyle}>
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <button style={editBtn}><FaEdit /></button>
-                    <button style={deleteBtn}><FaTrash /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {recentActivity.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 15,
+                padding: "12px 15px",
+                background: "#f8f9fc",
+                borderRadius: 8,
+              }}
+            >
+              <FaBell style={{ fontSize: 22, color: "#4e73df" }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ margin: 0, fontWeight: 600 }}>{item.text}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#777", fontSize: 14 }}>
+                  <FaClock /> {item.time}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-/* ICONIȚE DIFERITE ÎN FUNCȚIE DE NUME */
-function getUserIcon(name: string) {
-  const lower = name.toLowerCase();
-
-  if (lower.includes("admin")) return <FaUserTie />;
-  if (lower.includes("a") || lower.includes("e")) return <FaUserAlt />;
-
-  return <FaUser />;
+/* COMPONENTA CARD STATISTIC */
+function StatCard({ title, value, icon, color }: any) {
+  return (
+    <div
+      style={{
+        background: color,
+        padding: 20,
+        borderRadius: 12,
+        color: "#fff",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+        transition: "0.2s",
+      }}
+    >
+      <div style={{ fontSize: 40 }}>{icon}</div>
+      <h3 style={{ fontSize: 20 }}>{title}</h3>
+      <p style={{ fontSize: 26, fontWeight: "bold" }}>{value}</p>
+    </div>
+  );
 }
-
-/* STILURI TABEL */
-const thStyle = {
-  padding: "12px 10px",
-  fontWeight: "600",
-  borderBottom: "2px solid #ddd",
-};
-
-const tdStyle = {
-  padding: "12px 10px",
-  fontSize: 15,
-};
-
-/* BUTOANE EDIT / DELETE */
-const editBtn = {
-  background: "#4e73df",
-  border: "none",
-  padding: 8,
-  borderRadius: 6,
-  color: "#fff",
-  cursor: "pointer",
-};
-
-const deleteBtn = {
-  background: "#e74a3b",
-  border: "none",
-  padding: 8,
-  borderRadius: 6,
-  color: "#fff",
-  cursor: "pointer",
-};

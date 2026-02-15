@@ -12,7 +12,7 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
 
@@ -22,21 +22,25 @@ const handler = NextAuth({
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
             credentials: "include",
+            body: JSON.stringify({
+              email: credentials?.email,
+              password: credentials?.password,
+            }),
           }
         );
 
+        if (!res.ok) return null;
+
         const data = await res.json();
 
-        if (!res.ok || !data.user) {
-          return null;
-        }
+        if (!data || !data.user) return null;
 
         return {
           id: data.user.id,
           email: data.user.email,
-          name: data.user.email, // NextAuth cere obligatoriu name
+          name: data.user.name ?? data.user.email,
+          role: data.user.role,
           access_token: data.access_token,
         };
       },
@@ -46,13 +50,23 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.access_token;
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
+        token.access_token = user.access_token;
       }
       return token;
     },
 
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
+      session.user = {
+        id: token.id as string,
+        email: token.email as string,
+        name: token.name as string,
+        role: token.role as string,
+        access_token: token.access_token as string,
+      };
       return session;
     },
   },

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function StartPage() {
-  const { data: session } = useSession();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -53,75 +52,64 @@ export default function StartPage() {
         </p>
 
         {/* Login Form */}
-        {!session && (
-          <>
-            <form onSubmit={handleLogin} className="flex flex-col gap-4 mb-6">
-              <input
-                type="email"
-                placeholder="Email"
-                className="p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+        <form onSubmit={handleLogin} className="flex flex-col gap-4 mb-6">
+          <input
+            type="email"
+            placeholder="Email"
+            className="p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-              <input
-                type="password"
-                placeholder="Parola"
-                className="p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+          <input
+            type="password"
+            placeholder="Parola"
+            className="p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-              {error && <p className="text-red-400 text-center">{error}</p>}
+          {error && <p className="text-red-400 text-center">{error}</p>}
 
-              <button
-                type="submit"
-                className="p-3 rounded-lg bg-gradient-to-r from-blue-600 to-green-500 font-semibold hover:opacity-90 transition"
-              >
-                Login
-              </button>
-            </form>
+          <button
+            type="submit"
+            className="p-3 rounded-lg bg-gradient-to-r from-blue-600 to-green-500 font-semibold hover:opacity-90 transition"
+          >
+            Login
+          </button>
+        </form>
 
-            {/* Login Providers */}
-            <div className="flex flex-col gap-3">
+        {/* Login Providers */}
+        <div className="flex flex-col gap-3">
 
-              <button
-                onClick={() => signIn("google")}
-                className="p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
-              >
-                Login cu Google
-              </button>
+          <button
+            onClick={() => signIn("google")}
+            className="p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
+          >
+            Login cu Google
+          </button>
 
-              <button
-                onClick={() => signIn("apple")}
-                className="p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
-              >
-                Login cu Apple
-              </button>
+          <button
+            onClick={() => signIn("apple")}
+            className="p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
+          >
+            Login cu Apple
+          </button>
 
-              <button
-                onClick={() => signIn("yahoo")}
-                className="p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
-              >
-                Login cu Yahoo
-              </button>
+          <button
+            onClick={() => signIn("yahoo")}
+            className="p-3 rounded-lg bg-white/20 hover:bg-white/30 transition font-semibold"
+          >
+            Login cu Yahoo
+          </button>
 
-              <button
-                onClick={() => router.push("/register")}
-                className="p-3 rounded-lg bg-blue-600/40 hover:bg-blue-600/60 transition font-semibold"
-              >
-                Creează cont
-              </button>
-            </div>
-          </>
-        )}
-
-        {/* Dacă e logat */}
-        {session && (
-          <div className="text-center text-xl font-semibold">
-            Bine ai revenit, {session.user.email}
-          </div>
-        )}
+          <button
+            onClick={() => router.push("/register")}
+            className="p-3 rounded-lg bg-blue-600/40 hover:bg-blue-600/60 transition font-semibold"
+          >
+            Creează cont
+          </button>
+        </div>
       </div>
     </main>
   );

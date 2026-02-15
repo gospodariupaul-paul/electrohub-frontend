@@ -10,8 +10,8 @@ export default async function CreateCategoryPage() {
   }
 
   return (
-    <div>
-      <h1>Create Category</h1>
+    <div style={{ padding: 20 }}>
+      <h1 style={{ fontSize: 28, marginBottom: 20 }}>Create Category</h1>
 
       <form
         style={{
@@ -19,7 +19,6 @@ export default async function CreateCategoryPage() {
           flexDirection: "column",
           gap: 16,
           width: 320,
-          marginTop: 20,
         }}
       >
         <input

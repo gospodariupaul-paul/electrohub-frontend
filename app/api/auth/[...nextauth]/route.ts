@@ -9,7 +9,7 @@ const handler = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
@@ -32,11 +32,12 @@ const handler = NextAuth({
 
         const data = await response.json();
 
-        // Returnăm DOAR câmpurile standard acceptate de NextAuth
         return {
           id: String(data.id || "1"),
           email: data.email || credentials.email,
           name: data.name || "User",
+          role: data.role || "user",
+          access_token: data.access_token || data.token || "",
         };
       },
     }),
@@ -52,6 +53,8 @@ const handler = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
+        token.role = user.role;
+        token.access_token = user.access_token;
       }
       return token;
     },
@@ -61,6 +64,8 @@ const handler = NextAuth({
         id: token.id,
         email: token.email,
         name: token.name,
+        role: token.role,
+        access_token: token.access_token,
       };
       return session;
     },

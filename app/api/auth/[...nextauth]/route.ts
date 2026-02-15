@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const authOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -14,7 +14,6 @@ export const authOptions = {
           return null;
         }
 
-        // Trimitem datele la backend-ul tău
         const response = await fetch(
           process.env.NEXT_PUBLIC_API_URL + "/login",
           {
@@ -27,31 +26,26 @@ export const authOptions = {
           }
         );
 
-        // Dacă backend-ul răspunde cu eroare → login invalid
         if (!response.ok) {
           return null;
         }
 
-        // Backend-ul tău poate returna ORICE structură
         const data = await response.json();
 
-        // NextAuth are nevoie de un user cu un ID obligatoriu
-        // Dacă backend-ul tău nu trimite id, îl generăm noi
-        const user = {
+        // NextAuth v5 are nevoie de un user cu id obligatoriu
+        return {
           id: data.id || data.userId || data._id || "generated-id",
           email: data.email || credentials.email,
           name: data.name || "User",
           token: data.token || null,
           ...data,
         };
-
-        return user;
       },
     }),
   ],
 
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // 🔥 în v5 este valid
   },
 
   callbacks: {
@@ -77,8 +71,6 @@ export const authOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };

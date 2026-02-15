@@ -1,20 +1,4 @@
-"use client";
-
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === "loading") return <p>Loading...</p>;
-
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
-
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* SIDEBAR */}
@@ -31,10 +15,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       >
         <h2 style={{ fontSize: 22, fontWeight: "bold" }}>Dashboard</h2>
 
-        <Link href="/dashboard" style={linkStyle}>Overview</Link>
-        <Link href="/dashboard/users" style={linkStyle}>Users</Link>
-        <Link href="/dashboard/products" style={linkStyle}>Products</Link>
-        <Link href="/dashboard/categories" style={linkStyle}>Categories</Link>
+        <a href="/dashboard" style={linkStyle}>Overview</a>
+        <a href="/dashboard/users" style={linkStyle}>Users</a>
+        <a href="/dashboard/products" style={linkStyle}>Products</a>
+        <a href="/dashboard/categories" style={linkStyle}>Categories</a>
       </aside>
 
       {/* CONTENT */}

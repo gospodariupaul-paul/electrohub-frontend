@@ -1,152 +1,101 @@
-import { FaLaptop, FaBoxOpen, FaMobileAlt, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-import Link from "next/link";
-import { getProducts } from "@/app/services/products";
+"use client";
 
-export default async function ProductsPage() {
-  const products = await getProducts();
+import { useState } from "react";
 
-  const colors = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"];
+export default function Products() {
+  const [products, setProducts] = useState([]);
+  const [preview, setPreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [name, setName] = useState("");
+
+  function handleImage(e) {
+    const file = e.target.files[0];
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
+  }
+
+  function addProduct() {
+    if (!imageFile || !name) return;
+
+    const newProduct = {
+      id: Date.now(),
+      name,
+      image: preview,
+    };
+
+    setProducts([...products, newProduct]);
+    setName("");
+    setPreview(null);
+    setImageFile(null);
+  }
 
   return (
-    <div style={{ padding: 30 }}>
-      {/* HEADER */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ fontSize: 28 }}>Products</h1>
+    <main className="min-h-screen bg-black text-white p-10">
 
-        <Link
-          href="/dashboard/products/add"
-          style={{
-            background: "#1cc88a",
-            padding: "10px 18px",
-            borderRadius: 8,
-            color: "#fff",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            fontWeight: "600",
-          }}
+      <h1 className="text-4xl font-bold mb-8">Products</h1>
+
+      {/* CARD ADAUGARE PRODUS */}
+      <div className="bg-white/10 p-8 rounded-2xl border border-white/20 max-w-xl mb-12">
+
+        <h2 className="text-2xl font-semibold mb-4">Adaugă produs</h2>
+
+        {/* PREVIEW IMAGINE */}
+        <div className="w-full flex justify-center mb-6">
+          <div className="w-48 h-48 rounded-xl bg-white/10 border border-white/20 overflow-hidden">
+            {preview ? (
+              <img src={preview} alt="product" className="w-full h-full object-cover" />
+            ) : (
+              <div className="flex items-center justify-center h-full opacity-40">
+                Nicio imagine
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* INPUT NUME PRODUS */}
+        <input
+          type="text"
+          placeholder="Nume produs"
+          className="w-full p-3 mb-4 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        {/* INPUT ÎNCĂRCARE IMAGINE */}
+        <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
+          Încarcă imagine
+          <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
+        </label>
+
+        {/* BUTON ADAUGĂ */}
+        <button
+          onClick={addProduct}
+          className="mt-4 w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 transition font-semibold"
         >
-          <FaPlus /> Add Product
-        </Link>
+          Adaugă produs
+        </button>
       </div>
 
-      {/* CARDURI COLORATE */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: 20,
-          marginTop: 30,
-        }}
-      >
-        {products.map((prod: any, index: number) => (
+      {/* LISTĂ PRODUSE */}
+      <h2 className="text-3xl font-bold mb-6">Lista produselor</h2>
+
+      {products.length === 0 && (
+        <p className="opacity-60">Nu există produse încă.</p>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {products.map((prod) => (
           <div
             key={prod.id}
-            style={{
-              background: colors[index % colors.length],
-              padding: 20,
-              borderRadius: 12,
-              color: "#fff",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            }}
+            className="bg-white/10 p-4 rounded-xl border border-white/20 shadow-lg"
           >
-            <div style={{ fontSize: 40, marginBottom: 10 }}>
-              {getProductIcon(prod.name)}
+            <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
+              <img src={prod.image} alt={prod.name} className="w-full h-full object-cover" />
             </div>
-
-            <h3 style={{ fontSize: 22, marginBottom: 5 }}>{prod.name}</h3>
-            <p style={{ opacity: 0.9 }}>{prod.description || "No description"}</p>
-            <p style={{ marginTop: 10, fontWeight: "bold" }}>{prod.price} RON</p>
+            <h3 className="text-xl font-semibold">{prod.name}</h3>
           </div>
         ))}
       </div>
-
-      {/* TABEL PROFESIONAL */}
-      <div
-        style={{
-          marginTop: 40,
-          background: "#fff",
-          padding: 20,
-          borderRadius: 10,
-          border: "1px solid #ddd",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        }}
-      >
-        <h2 style={{ marginBottom: 20 }}>Product List</h2>
-
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f8f9fc", textAlign: "left" }}>
-              <th style={thStyle}>Icon</th>
-              <th style={thStyle}>Name</th>
-              <th style={thStyle}>Price</th>
-              <th style={thStyle}>Description</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {products.map((prod: any) => (
-              <tr key={prod.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={tdStyle}>{getProductIcon(prod.name)}</td>
-                <td style={tdStyle}>{prod.name}</td>
-                <td style={tdStyle}>{prod.price} RON</td>
-                <td style={tdStyle}>{prod.description}</td>
-                <td style={tdStyle}>
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <button style={editBtn}><FaEdit /></button>
-                    <button style={deleteBtn}><FaTrash /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </main>
   );
 }
-
-/* ICONIȚE DIFERITE ÎN FUNCȚIE DE PRODUS */
-function getProductIcon(name: string) {
-  const lower = name.toLowerCase();
-
-  if (lower.includes("laptop")) return <FaLaptop />;
-  if (lower.includes("phone") || lower.includes("telefon")) return <FaMobileAlt />;
-  if (lower.includes("box") || lower.includes("produs")) return <FaBoxOpen />;
-
-  return <FaBoxOpen />;
-}
-
-/* STILURI TABEL */
-const thStyle = {
-  padding: "12px 10px",
-  fontWeight: "600",
-  fontSize: 15,
-  borderBottom: "2px solid #ddd",
-};
-
-const tdStyle = {
-  padding: "12px 10px",
-  fontSize: 15,
-};
-
-/* BUTOANE EDIT / DELETE */
-const editBtn = {
-  background: "#4e73df",
-  border: "none",
-  padding: 8,
-  borderRadius: 6,
-  color: "#fff",
-  cursor: "pointer",
-};
-
-const deleteBtn = {
-  background: "#e74a3b",
-  border: "none",
-  padding: 8,
-  borderRadius: 6,
-  color: "#fff",
-  cursor: "pointer",
-};

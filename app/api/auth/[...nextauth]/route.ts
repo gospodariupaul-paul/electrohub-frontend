@@ -41,7 +41,7 @@ const handler = NextAuth({
           email: data.user.email,
           name: data.user.name ?? data.user.email,
           role: data.user.role,
-          access_token: data.access_token,
+          access_token: data.access_token, // ← OBLIGATORIU
         };
       },
     }),

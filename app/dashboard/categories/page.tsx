@@ -1,146 +1,164 @@
-import { FaLaptop, FaCogs, FaBox, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { getCategories } from "@/app/services/categories";
 
-export default async function CategoriesPage() {
-  const categories = await getCategories();
+export default function CategoriesPage() {
+  const [sort, setSort] = useState("newest");
+  const [filterPrice, setFilterPrice] = useState("all");
 
-  const colors = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"];
+  const categories = [
+    { name: "Electronice", slug: "electronice" },
+    { name: "Telefoane", slug: "telefoane" },
+    { name: "Laptopuri", slug: "laptopuri" },
+    { name: "Accesorii", slug: "accesorii" },
+    { name: "Electrocasnice", slug: "electrocasnice" },
+  ];
+
+  const products = [
+    {
+      id: 1,
+      name: "Telefon X Pro 2026",
+      price: 2999,
+      stock: "În stoc",
+      rating: 5,
+      image: "/placeholder-product.jpg",
+    },
+    {
+      id: 2,
+      name: "Laptop UltraTech 15",
+      price: 4999,
+      stock: "Stoc limitat",
+      rating: 4,
+      image: "/placeholder2.jpg",
+    },
+    {
+      id: 3,
+      name: "Căști Wireless Pro",
+      price: 499,
+      stock: "În stoc",
+      rating: 5,
+      image: "/placeholder3.jpg",
+    },
+  ];
 
   return (
-    <div style={{ padding: 30 }}>
-      {/* HEADER */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ fontSize: 28 }}>Categories</h1>
+    <main className="min-h-screen bg-white text-gray-900 p-10">
 
-        <Link
-          href="/dashboard/categories/add"
-          style={{
-            background: "#1cc88a",
-            padding: "10px 18px",
-            borderRadius: 8,
-            color: "#fff",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            fontWeight: "600",
-          }}
+      {/* BREADCRUMB */}
+      <nav className="text-xs opacity-70 mb-4">
+        <Link href="/">Acasă</Link> {" > "}
+        <span className="font-semibold">Categorii</span>
+      </nav>
+
+      {/* TITLU SEO */}
+      <h1 className="text-3xl font-bold mb-2">Categorii Produse</h1>
+
+      {/* DESCRIERE SEO */}
+      <p className="text-sm opacity-70 max-w-2xl mb-8">
+        Explorează toate categoriile disponibile în magazinul tău tehnic. 
+        Produse premium, livrare rapidă și garanție extinsă. 
+        Alege categoria potrivită pentru nevoile tale.
+      </p>
+
+      {/* SUBCATEGORII */}
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold mb-3">Subcategorii</h2>
+
+        <div className="flex flex-wrap gap-3">
+          {categories.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/dashboard/categories/${cat.slug}`}
+              className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm hover:bg-gray-200 transition"
+            >
+              {cat.name}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* FILTRE + SORTARE */}
+      <section className="flex flex-wrap items-center justify-between mb-6 gap-4">
+
+        {/* FILTRU PREȚ */}
+        <select
+          className="p-2 border border-gray-300 rounded-lg text-sm bg-white"
+          value={filterPrice}
+          onChange={(e) => setFilterPrice(e.target.value)}
         >
-          <FaPlus /> Add Category
-        </Link>
-      </div>
+          <option value="all">Toate prețurile</option>
+          <option value="0-500">0 - 500 lei</option>
+          <option value="500-2000">500 - 2000 lei</option>
+          <option value="2000-5000">2000 - 5000 lei</option>
+        </select>
 
-      {/* CARDURI COLORATE */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: 20,
-          marginTop: 30,
-        }}
-      >
-        {categories.map((cat: any, index: number) => (
-          <div
-            key={cat.id}
-            style={{
-              background: colors[index % colors.length],
-              padding: 20,
-              borderRadius: 12,
-              color: "#fff",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            }}
-          >
-            <div style={{ fontSize: 40, marginBottom: 10 }}>
-              {getCategoryIcon(cat.name)}
+        {/* SORTARE */}
+        <select
+          className="p-2 border border-gray-300 rounded-lg text-sm bg-white"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="newest">Cele mai noi</option>
+          <option value="price-asc">Preț crescător</option>
+          <option value="price-desc">Preț descrescător</option>
+          <option value="rating">Rating</option>
+        </select>
+      </section>
+
+      {/* GRID PRODUSE */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">Produse</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {products.map((prod) => (
+            <div
+              key={prod.id}
+              className="bg-gray-100 border border-gray-300 rounded-xl p-4 shadow-sm"
+            >
+              {/* IMAGINE */}
+              <div className="w-full h-48 rounded-lg overflow-hidden mb-4 bg-white border border-gray-300">
+                <img src={prod.image} alt={prod.name} className="w-full h-full object-cover" />
+              </div>
+
+              {/* TITLU */}
+              <h3 className="text-lg font-semibold mb-1">{prod.name}</h3>
+
+              {/* PREȚ */}
+              <p className="text-green-600 font-bold text-lg mb-1">{prod.price} lei</p>
+
+              {/* STOC */}
+              <p className="text-xs opacity-70 mb-2">{prod.stock}</p>
+
+              {/* RATING */}
+              <p className="text-yellow-500 text-sm mb-2">★★★★★</p>
+
+              {/* CTA */}
+              <button className="w-full p-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition">
+                Adaugă în coș
+              </button>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <h3 style={{ fontSize: 22, marginBottom: 5 }}>{cat.name}</h3>
-            <p style={{ opacity: 0.9 }}>{cat.description || "No description"}</p>
-          </div>
-        ))}
+      {/* LOAD MORE */}
+      <div className="flex justify-center mt-10">
+        <button className="px-6 py-3 bg-gray-200 border border-gray-300 rounded-lg text-sm hover:bg-gray-300 transition">
+          Încarcă mai multe
+        </button>
       </div>
 
-      {/* TABEL PROFESIONAL */}
-      <div
-        style={{
-          marginTop: 40,
-          background: "#fff",
-          padding: 20,
-          borderRadius: 10,
-          border: "1px solid #ddd",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        }}
-      >
-        <h2 style={{ marginBottom: 20 }}>Category List</h2>
-
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f8f9fc", textAlign: "left" }}>
-              <th style={thStyle}>Icon</th>
-              <th style={thStyle}>Name</th>
-              <th style={thStyle}>Description</th>
-              <th style={thStyle}>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {categories.map((cat: any) => (
-              <tr key={cat.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={tdStyle}>{getCategoryIcon(cat.name)}</td>
-                <td style={tdStyle}>{cat.name}</td>
-                <td style={tdStyle}>{cat.description}</td>
-                <td style={tdStyle}>
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <button style={editBtn}><FaEdit /></button>
-                    <button style={deleteBtn}><FaTrash /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+      {/* DESCRIERE SEO FINALĂ */}
+      <section className="mt-12">
+        <h2 className="text-lg font-semibold mb-2">Despre această categorie</h2>
+        <p className="text-sm opacity-70 max-w-3xl leading-relaxed">
+          Această pagină conține toate categoriile de produse disponibile în magazinul tău.
+          Fiecare categorie este optimizată pentru o navigare rapidă, filtre eficiente și
+          o experiență de cumpărături modernă. Actualizăm constant produsele pentru a oferi
+          cele mai noi tehnologii și cele mai bune oferte.
+        </p>
+      </section>
+    </main>
   );
 }
-
-function getCategoryIcon(name: string) {
-  const lower = name.toLowerCase();
-
-  if (lower.includes("laptop")) return <FaLaptop />;
-  if (lower.includes("electronic")) return <FaCogs />;
-  if (lower.includes("produs")) return <FaBox />;
-
-  return <FaBox />;
-}
-
-const thStyle = {
-  padding: "12px 10px",
-  fontWeight: "600",
-  fontSize: 15,
-  borderBottom: "2px solid #ddd",
-};
-
-const tdStyle = {
-  padding: "12px 10px",
-  fontSize: 15,
-};
-
-const editBtn = {
-  background: "#4e73df",
-  border: "none",
-  padding: 8,
-  borderRadius: 6,
-  color: "#fff",
-  cursor: "pointer",
-};
-
-const deleteBtn = {
-  background: "#e74a3b",
-  border: "none",
-  padding: 8,
-  borderRadius: 6,
-  color: "#fff",
-  cursor: "pointer",
-};

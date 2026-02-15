@@ -117,6 +117,7 @@ export default function Home() {
               <input
                 type="email"
                 placeholder="Email"
+                autoComplete="off"
                 style={inputStyle}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -128,6 +129,7 @@ export default function Home() {
               <input
                 type="password"
                 placeholder="Password"
+                autoComplete="new-password"
                 style={inputStyle}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

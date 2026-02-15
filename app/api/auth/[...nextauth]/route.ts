@@ -32,9 +32,9 @@ const handler = NextAuth({
 
         const data = await response.json();
 
-        // Returnăm un user simplu și valid pentru NextAuth v5
+        // Returnăm DOAR câmpurile standard acceptate de NextAuth
         return {
-          id: data.id || "generated-id",
+          id: String(data.id || "1"),
           email: data.email || credentials.email,
           name: data.name || "User",
         };

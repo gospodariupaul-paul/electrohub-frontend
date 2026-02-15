@@ -10,37 +10,34 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
 
-      async authorize(credentials) {
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include", // IMPORTANT pentru cookie JWT
-              body: JSON.stringify({
-                email: credentials?.email,
-                password: credentials?.password,
-              }),
-            }
-          );
+      async authorize(credentials, req) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              email: credentials?.email,
+              password: credentials?.password,
+            }),
+          }
+        );
 
-          if (!res.ok) return null;
+        if (!res.ok) return null;
 
-          const data = await res.json();
+        const data = await res.json();
 
-          if (!data || !data.user) return null;
+        if (!data || !data.user) return null;
 
-          return {
-            id: data.user.id,
-            name: data.user.name,
-            email: data.user.email,
-            role: data.user.role,
-          };
-        } catch (error) {
-          console.error("Login error:", error);
-          return null;
-        }
+        // RETURNĂM TOT CE CERE TIPUL USER
+        return {
+          id: data.user.id,
+          name: data.user.name ?? data.user.email,
+          email: data.user.email,
+          role: data.user.role,
+          access_token: data.access_token, // ← OBLIGATORIU
+        };
       },
     }),
   ],
@@ -60,6 +57,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.role = user.role;
+        token.access_token = user.access_token; // ← OBLIGATORIU
       }
       return token;
     },
@@ -70,6 +68,7 @@ export const authOptions: NextAuthOptions = {
         email: token.email as string,
         name: token.name as string,
         role: token.role as string,
+        access_token: token.access_token as string, // ← OBLIGATORIU
       };
       return session;
     },

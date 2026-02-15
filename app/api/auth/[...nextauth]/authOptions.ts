@@ -18,17 +18,43 @@ export const authOptions: NextAuthOptions = {
             id: "1",
             name: "Admin User",
             email: "admin@example.com",
+            role: "admin",
           };
         }
         return null;
       },
     }),
   ],
+
   pages: {
     signIn: "/login",
   },
+
   session: {
     strategy: "jwt",
   },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user = {
+        id: token.id as string,
+        email: token.email as string,
+        name: token.name as string,
+        role: token.role as string,
+      };
+      return session;
+    },
+  },
+
   secret: process.env.NEXTAUTH_SECRET,
 };

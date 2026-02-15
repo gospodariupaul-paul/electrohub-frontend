@@ -69,10 +69,12 @@ export default function StartPage() {
             <div>
               <h2 className="text-3xl font-bold mb-6">Autentificare</h2>
 
-              <form onSubmit={handleLogin} className="flex flex-col gap-4 mb-6">
+              <form onSubmit={handleLogin} autoComplete="off" className="flex flex-col gap-4 mb-6">
+
                 <input
                   type="email"
                   placeholder="Email"
+                  autoComplete="off"
                   className="p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -81,6 +83,7 @@ export default function StartPage() {
                 <input
                   type="password"
                   placeholder="Parola"
+                  autoComplete="new-password"
                   className="p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

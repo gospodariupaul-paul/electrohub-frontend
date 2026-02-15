@@ -10,28 +10,72 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) return null;
+        if (!credentials?.email || !credentials.password) {
+          return null;
+        }
 
-        // AICI ERA LOGICA TA ORIGINALĂ
-        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/login", {
-          method: "POST",
-          body: JSON.stringify({
-            email: credentials.email,
-            password: credentials.password,
-          }),
-          headers: { "Content-Type": "application/json" },
-        });
+        // Trimitem datele la backend-ul tău
+        const response = await fetch(
+          process.env.NEXT_PUBLIC_API_URL + "/login",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          }
+        );
 
-        const user = await res.json();
-        if (!res.ok) return null;
+        // Dacă backend-ul răspunde cu eroare → login invalid
+        if (!response.ok) {
+          return null;
+        }
+
+        // Backend-ul tău poate returna ORICE structură
+        const data = await response.json();
+
+        // NextAuth are nevoie de un user cu un ID obligatoriu
+        // Dacă backend-ul tău nu trimite id, îl generăm noi
+        const user = {
+          id: data.id || data.userId || data._id || "generated-id",
+          email: data.email || credentials.email,
+          name: data.name || "User",
+          token: data.token || null,
+          ...data,
+        };
 
         return user;
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
+
+  session: {
+    strategy: "jwt",
   },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.token = user.token;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user = {
+        id: token.id,
+        email: token.email,
+        name: token.name,
+        token: token.token,
+      };
+      return session;
+    },
+  },
+
   secret: process.env.NEXTAUTH_SECRET,
 };
 

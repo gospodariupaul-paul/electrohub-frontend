@@ -5,12 +5,47 @@ import { redirect } from "next/navigation";
 export default async function CreateCategoryPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session) redirect("/login");
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
     <div>
       <h1>Create Category</h1>
-      {/* formularul tău aici */}
+
+      <form
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          width: 320,
+          marginTop: 20,
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Category name"
+          style={{
+            padding: 10,
+            borderRadius: 6,
+            border: "1px solid #ccc",
+          }}
+        />
+
+        <button
+          type="submit"
+          style={{
+            padding: 12,
+            background: "#4e73df",
+            color: "#fff",
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer",
+          }}
+        >
+          Create
+        </button>
+      </form>
     </div>
   );
 }

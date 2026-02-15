@@ -32,18 +32,11 @@ const handler = NextAuth({
 
         const data = await response.json();
 
-        // Construim user-ul EXACT cum îl cere tipul tău
+        // Returnăm un user simplu și valid pentru NextAuth v5
         return {
-          id: data.id || data.userId || data._id || "generated-id",
+          id: data.id || "generated-id",
           email: data.email || credentials.email,
           name: data.name || "User",
-
-          // câmpuri cerute de tipul User din proiectul tău
-          role: data.role || "user",
-          access_token: data.access_token || data.token || null,
-
-          // păstrăm tot backend-ul
-          backendData: data,
         };
       },
     }),
@@ -59,11 +52,6 @@ const handler = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-
-        token.role = user.role;
-        token.access_token = user.access_token;
-
-        token.backendData = user.backendData;
       }
       return token;
     },
@@ -73,11 +61,6 @@ const handler = NextAuth({
         id: token.id,
         email: token.email,
         name: token.name,
-
-        role: token.role,
-        access_token: token.access_token,
-
-        backendData: token.backendData,
       };
       return session;
     },

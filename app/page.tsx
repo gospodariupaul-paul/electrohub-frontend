@@ -34,9 +34,13 @@ export default function StartPage() {
           dintr‑un panou centralizat, rapid și intuitiv.
         </p>
 
-        {/* HERO IMAGE */}
-        <div className="w-full h-48 bg-gray-200 border border-gray-300 rounded-xl flex items-center justify-center text-gray-500 text-sm">
-          (Hero Image / Preview App)
+        {/* HERO IMAGE CU ELECTRONICE */}
+        <div className="w-full h-56 md:h-72 bg-gray-200 border border-gray-300 rounded-xl overflow-hidden shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200"
+            alt="Electronice moderne"
+            className="w-full h-full object-cover"
+          />
         </div>
       </section>
 

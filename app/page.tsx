@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export default function StartPage() {
@@ -47,7 +48,7 @@ export default function StartPage() {
             <i className="fa-solid fa-clapperboard text-xl"></i>
           </Link>
 
-          {/* PROFIL / AUTENTIFICARE */}
+          {/* PROFIL */}
           <Link href="/login" className="hover:text-black transition">
             <i className="fa-solid fa-user text-xl"></i>
           </Link>
@@ -55,9 +56,24 @@ export default function StartPage() {
         </div>
       </div>
 
+      {/* HERO SECTION CU IMAGINEA TA */}
+      <section className="relative w-full h-[400px]">
+        <Image
+          src="/hero.jpg"   // pune aici imaginea ta originală
+          alt="Hero Image"
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <h1 className="text-4xl font-bold text-white drop-shadow-lg">
+            GOSPO Electro Hub
+          </h1>
+        </div>
+      </section>
+
       {/* CONȚINUT PAGINĂ */}
       <section className="p-6">
-        <h1 className="text-3xl font-bold">Bine ai venit în GOSPO Electro Hub</h1>
+        <h2 className="text-3xl font-bold">Bine ai venit în GOSPO Electro Hub</h2>
         <p className="text-gray-600 mt-2">
           Aici poți gestiona produse, contul tău, notificări, grupuri și multe altele.
         </p>

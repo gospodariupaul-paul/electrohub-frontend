@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -215,29 +215,47 @@ export default function HomePage() {
         )}
 
         {session && (
-          <a
-            href="/dashboard"
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            style={{
-              padding: "16px 34px",
-              background: hover
-                ? "linear-gradient(135deg, #1cc88a, #4e73df)"
-                : "linear-gradient(135deg, #4e73df, #1cc88a)",
-              borderRadius: 14,
-              color: "#fff",
-              fontSize: 20,
-              fontWeight: 700,
-              textDecoration: "none",
-              boxShadow: hover
-                ? "0 8px 25px rgba(0,0,0,0.4)"
-                : "0 4px 15px rgba(0,0,0,0.3)",
-              transform: hover ? "scale(1.05)" : "scale(1)",
-              transition: "0.25s ease",
-            }}
-          >
-            Intră în Dashboard
-          </a>
+          <>
+            <a
+              href="/dashboard"
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+              style={{
+                padding: "16px 34px",
+                background: hover
+                  ? "linear-gradient(135deg, #1cc88a, #4e73df)"
+                  : "linear-gradient(135deg, #4e73df, #1cc88a)",
+                borderRadius: 14,
+                color: "#fff",
+                fontSize: 20,
+                fontWeight: 700,
+                textDecoration: "none",
+                boxShadow: hover
+                  ? "0 8px 25px rgba(0,0,0,0.4)"
+                  : "0 4px 15px rgba(0,0,0,0.3)",
+                transform: hover ? "scale(1.05)" : "scale(1)",
+                transition: "0.25s ease",
+              }}
+            >
+              Intră în Dashboard
+            </a>
+
+            <button
+              onClick={() => signOut()}
+              style={{
+                padding: "14px 28px",
+                background: "rgba(255,255,255,0.1)",
+                borderRadius: 12,
+                color: "#fff",
+                fontSize: 18,
+                fontWeight: 600,
+                border: "1px solid rgba(255,255,255,0.2)",
+                cursor: "pointer",
+              }}
+            >
+              Logout
+            </button>
+          </>
         )}
       </div>
 

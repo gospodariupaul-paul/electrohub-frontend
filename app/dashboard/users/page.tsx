@@ -1,19 +1,13 @@
-export const dynamic = "force-dynamic";
-
-import { getUsers } from "@/lib/user";
+import { getUsers } from "@/app/services/users";
+import UsersClient from "./UsersClient";
 
 export default async function UsersPage() {
-  const { data: users } = await getUsers();
+  const users = await getUsers();
 
   return (
-    <div>
-      <h1>Users</h1>
-
-      <ul>
-        {users?.map((u: any) => (
-          <li key={u.id}>{u.email}</li>
-        ))}
-      </ul>
+    <div style={{ padding: 30 }}>
+      <h1 style={{ fontSize: 28, marginBottom: 20 }}>Users</h1>
+      <UsersClient users={users} />
     </div>
   );
 }

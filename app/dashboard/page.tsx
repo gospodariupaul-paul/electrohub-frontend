@@ -1,12 +1,30 @@
-"use client";
+import { FaUser, FaUserTie, FaUserAlt, FaEdit, FaTrash } from "react-icons/fa";
+import { getUsers } from "@/app/services/users";
 
-export default function DashboardHome() {
+export default async function UsersPage() {
+  let users = [];
+
+  try {
+    users = await getUsers();
+  } catch (err) {
+    console.error("Error loading users:", err);
+    return (
+      <div style={{ padding: 30 }}>
+        <h1 style={{ fontSize: 28 }}>Users</h1>
+        <p style={{ color: "red", marginTop: 20 }}>
+          A apărut o eroare la încărcarea utilizatorilor.
+        </p>
+      </div>
+    );
+  }
+
+  const colors = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"];
+
   return (
     <div style={{ padding: 30 }}>
-      {/* Header */}
-      <h1 style={{ fontSize: 28, marginBottom: 20 }}>Dashboard Overview</h1>
+      <h1 style={{ fontSize: 28, marginBottom: 20 }}>Users</h1>
 
-      {/* Cards */}
+      {/* CARDURI COLORATE */}
       <div
         style={{
           display: "grid",
@@ -15,72 +33,117 @@ export default function DashboardHome() {
           marginBottom: 40,
         }}
       >
-        <div style={cardStyle}>
-          <h3 style={cardTitle}>Total Users</h3>
-          <p style={cardNumber}>124</p>
-        </div>
+        {users.map((user: any, index: number) => (
+          <div
+            key={user.id}
+            style={{
+              background: colors[index % colors.length],
+              padding: 20,
+              borderRadius: 12,
+              color: "#fff",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+            }}
+          >
+            <div style={{ fontSize: 40, marginBottom: 10 }}>
+              {getUserIcon(user.name)}
+            </div>
 
-        <div style={cardStyle}>
-          <h3 style={cardTitle}>Total Products</h3>
-          <p style={cardNumber}>58</p>
-        </div>
-
-        <div style={cardStyle}>
-          <h3 style={cardTitle}>Categories</h3>
-          <p style={cardNumber}>12</p>
-        </div>
-
-        <div style={cardStyle}>
-          <h3 style={cardTitle}>Revenue</h3>
-          <p style={cardNumber}>32,450 RON</p>
-        </div>
+            <h3 style={{ fontSize: 22, marginBottom: 5 }}>{user.name}</h3>
+            <p style={{ opacity: 0.9 }}>{user.email}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Recent Activity */}
-      <div style={sectionStyle}>
-        <h2 style={{ marginBottom: 15 }}>Recent Activity</h2>
+      {/* TABEL PROFESIONAL */}
+      <div
+        style={{
+          background: "#fff",
+          padding: 20,
+          borderRadius: 10,
+          border: "1px solid #ddd",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+        }}
+      >
+        <h2 style={{ marginBottom: 20 }}>User List</h2>
 
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          <li style={activityItem}>New user registered: <strong>paul.st</strong></li>
-          <li style={activityItem}>New product added: <strong>Laptop Lenovo ThinkPad</strong></li>
-          <li style={activityItem}>Category updated: <strong>Electronics</strong></li>
-          <li style={activityItem}>Order #1024 completed</li>
-        </ul>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#f8f9fc" }}>
+              <th style={thStyle}>Avatar</th>
+              <th style={thStyle}>Name</th>
+              <th style={thStyle}>Email</th>
+              <th style={thStyle}>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {users.map((user: any) => (
+              <tr key={user.id} style={{ borderBottom: "1px solid #eee" }}>
+                <td style={tdStyle}>
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      user.name
+                    )}&background=random&color=fff`}
+                    alt="avatar"
+                    style={{ width: 40, height: 40, borderRadius: "50%" }}
+                  />
+                </td>
+
+                <td style={tdStyle}>{user.name}</td>
+                <td style={tdStyle}>{user.email}</td>
+
+                <td style={tdStyle}>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button style={editBtn}><FaEdit /></button>
+                    <button style={deleteBtn}><FaTrash /></button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
 
-const cardStyle = {
-  background: "#fff",
-  padding: "20px",
-  borderRadius: 10,
-  border: "1px solid #ddd",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+/* ICONIȚE DIFERITE ÎN FUNCȚIE DE NUME */
+function getUserIcon(name: string) {
+  const lower = name.toLowerCase();
+
+  if (lower.includes("admin")) return <FaUserTie />;
+  if (lower.includes("a") || lower.includes("e")) return <FaUserAlt />;
+
+  return <FaUser />;
+}
+
+/* STILURI TABEL */
+const thStyle = {
+  padding: "12px 10px",
+  fontWeight: "600",
+  borderBottom: "2px solid #ddd",
 };
 
-const cardTitle = {
-  fontSize: 16,
-  marginBottom: 10,
-  color: "#555",
-};
-
-const cardNumber = {
-  fontSize: 26,
-  fontWeight: "bold",
-  color: "#000",
-};
-
-const sectionStyle = {
-  background: "#fff",
-  padding: 20,
-  borderRadius: 10,
-  border: "1px solid #ddd",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-};
-
-const activityItem = {
-  padding: "10px 0",
-  borderBottom: "1px solid #eee",
+const tdStyle = {
+  padding: "12px 10px",
   fontSize: 15,
+};
+
+/* BUTOANE EDIT / DELETE */
+const editBtn = {
+  background: "#4e73df",
+  border: "none",
+  padding: 8,
+  borderRadius: 6,
+  color: "#fff",
+  cursor: "pointer",
+};
+
+const deleteBtn = {
+  background: "#e74a3b",
+  border: "none",
+  padding: 8,
+  borderRadius: 6,
+  color: "#fff",
+  cursor: "pointer",
 };

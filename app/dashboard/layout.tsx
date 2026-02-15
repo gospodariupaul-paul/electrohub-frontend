@@ -11,7 +11,7 @@ export default function DashboardLayout({
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <aside
         style={{
-          width: 220,
+          width: 260, // lățime mărită ca să nu taie textul
           background: "#f5f5f5",
           padding: 20,
           borderRight: "1px solid #ddd",
@@ -20,16 +20,19 @@ export default function DashboardLayout({
         <h2>Dashboard</h2>
 
         <ul style={{ marginTop: 20, listStyle: "none", padding: 0 }}>
-          <li>
+          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
             <Link href="/dashboard">Home</Link>
           </li>
-          <li>
+
+          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
             <Link href="/dashboard/users">Users</Link>
           </li>
-          <li>
+
+          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
             <Link href="/dashboard/products">Products</Link>
           </li>
-          <li>
+
+          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
             <Link href="/dashboard/categories">Categories</Link>
           </li>
         </ul>

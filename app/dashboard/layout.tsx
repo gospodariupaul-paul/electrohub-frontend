@@ -1,55 +1,62 @@
 "use client";
 
 import Link from "next/link";
+import { FaHome, FaUsers, FaBoxOpen, FaTags } from "react-icons/fa";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f0f2f5" }}>
+      
+      {/* SIDEBAR */}
       <aside
         style={{
           width: 260,
-          background: "#f5f5f5",
-          padding: 20,
-          borderRight: "1px solid #ddd",
-          color: "#000",            // text clar
-          fontSize: 16,             // font clar
-          fontWeight: "500",        // mai lizibil
+          background: "#1e1e2f",
+          padding: "25px 20px",
+          color: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
         }}
       >
-        <h2 style={{ marginBottom: 20 }}>Dashboard</h2>
+        <h2 style={{ fontSize: 22, marginBottom: 10 }}>Dashboard</h2>
 
-        <ul style={{ marginTop: 20, listStyle: "none", padding: 0 }}>
-          <li style={{ marginBottom: 12 }}>
-            <Link href="/dashboard" style={{ textDecoration: "none", color: "#000" }}>
-              Home
-            </Link>
-          </li>
+        <nav style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          
+          <SidebarItem href="/dashboard" icon={<FaHome />} label="Home" />
+          <SidebarItem href="/dashboard/users" icon={<FaUsers />} label="Users" />
+          <SidebarItem href="/dashboard/products" icon={<FaBoxOpen />} label="Products" />
+          <SidebarItem href="/dashboard/categories" icon={<FaTags />} label="Categories" />
 
-          <li style={{ marginBottom: 12 }}>
-            <Link href="/dashboard/users" style={{ textDecoration: "none", color: "#000" }}>
-              Users
-            </Link>
-          </li>
-
-          <li style={{ marginBottom: 12 }}>
-            <Link href="/dashboard/products" style={{ textDecoration: "none", color: "#000" }}>
-              Products
-            </Link>
-          </li>
-
-          <li style={{ marginBottom: 12 }}>
-            <Link href="/dashboard/categories" style={{ textDecoration: "none", color: "#000" }}>
-              Categories
-            </Link>
-          </li>
-        </ul>
+        </nav>
       </aside>
 
-      <main style={{ flex: 1, padding: 20 }}>{children}</main>
+      {/* CONTENT */}
+      <main style={{ flex: 1, padding: 30 }}>{children}</main>
     </div>
+  );
+}
+
+function SidebarItem({ href, icon, label }: any) {
+  return (
+    <Link
+      href={href}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "12px 15px",
+        borderRadius: 8,
+        textDecoration: "none",
+        color: "#fff",
+        fontSize: 16,
+        transition: "0.2s",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = "#2d2d44")}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+    >
+      <span style={{ fontSize: 18 }}>{icon}</span>
+      {label}
+    </Link>
   );
 }

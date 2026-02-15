@@ -1,9 +1,9 @@
 export const dynamic = "force-dynamic";
 
-import { getCategories } from "@/lib/categories";
+import { getCategories } from "@/app/services/categories";
 
 export default async function CategoriesPage() {
-  const { data: categories } = await getCategories();
+  const categories = await getCategories();
 
   return (
     <div>
@@ -17,4 +17,3 @@ export default async function CategoriesPage() {
     </div>
   );
 }
-

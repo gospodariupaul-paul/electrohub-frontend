@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import { redirect } from "next/navigation";
+type Props = {
+  children: React.ReactNode;
+};
 
-export default async function DashboardLayout({ children }) {
+export default async function DashboardLayout({ children }: Props) {
   const session = await getServerSession(authOptions);
 
   if (!session) redirect("/login");

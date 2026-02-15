@@ -11,29 +11,40 @@ export default function DashboardLayout({
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <aside
         style={{
-          width: 260, // lățime mărită ca să nu taie textul
+          width: 260,
           background: "#f5f5f5",
           padding: 20,
           borderRight: "1px solid #ddd",
+          color: "#000",            // text clar
+          fontSize: 16,             // font clar
+          fontWeight: "500",        // mai lizibil
         }}
       >
-        <h2>Dashboard</h2>
+        <h2 style={{ marginBottom: 20 }}>Dashboard</h2>
 
         <ul style={{ marginTop: 20, listStyle: "none", padding: 0 }}>
-          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
-            <Link href="/dashboard">Home</Link>
+          <li style={{ marginBottom: 12 }}>
+            <Link href="/dashboard" style={{ textDecoration: "none", color: "#000" }}>
+              Home
+            </Link>
           </li>
 
-          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
-            <Link href="/dashboard/users">Users</Link>
+          <li style={{ marginBottom: 12 }}>
+            <Link href="/dashboard/users" style={{ textDecoration: "none", color: "#000" }}>
+              Users
+            </Link>
           </li>
 
-          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
-            <Link href="/dashboard/products">Products</Link>
+          <li style={{ marginBottom: 12 }}>
+            <Link href="/dashboard/products" style={{ textDecoration: "none", color: "#000" }}>
+              Products
+            </Link>
           </li>
 
-          <li style={{ whiteSpace: "normal", overflow: "visible", marginBottom: 10 }}>
-            <Link href="/dashboard/categories">Categories</Link>
+          <li style={{ marginBottom: 12 }}>
+            <Link href="/dashboard/categories" style={{ textDecoration: "none", color: "#000" }}>
+              Categories
+            </Link>
           </li>
         </ul>
       </aside>

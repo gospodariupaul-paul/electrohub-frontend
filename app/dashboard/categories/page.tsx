@@ -10,7 +10,7 @@ export default async function CategoriesPage() {
       <h1>Categories</h1>
 
       <ul>
-        {categories?.map((c: any) => (
+        {categories.map((c: any) => (
           <li key={c.id}>{c.name}</li>
         ))}
       </ul>

@@ -1,8 +1,11 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+"use client";
 
-export default async function HomePage() {
-  const session = await getServerSession(authOptions);
+import { useSession, signIn } from "next-auth/react";
+import { useState } from "react";
+
+export default function HomePage() {
+  const { data: session } = useSession();
+  const [hover, setHover] = useState(false);
 
   return (
     <main
@@ -62,7 +65,7 @@ export default async function HomePage() {
           animation: "shine 3s infinite linear",
         }}
       >
-        GOSPO Electro Hub
+        GOSPO ElectroHub
       </h1>
 
       <p
@@ -141,8 +144,8 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* BUTTONS */}
-      <div style={{ display: "flex", gap: 20, zIndex: 2 }}>
+      {/* AUTH BUTTONS */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 15, zIndex: 2 }}>
         {!session && (
           <>
             <a
@@ -156,7 +159,6 @@ export default async function HomePage() {
                 fontWeight: 600,
                 textDecoration: "none",
                 border: "1px solid rgba(255,255,255,0.2)",
-                transition: "0.25s",
               }}
             >
               Login
@@ -173,26 +175,64 @@ export default async function HomePage() {
                 fontWeight: 600,
                 textDecoration: "none",
                 boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
-                transition: "0.25s",
               }}
             >
               Create Account
             </a>
+
+            <button
+              onClick={() => signIn("google")}
+              style={{
+                padding: "14px 28px",
+                background: "#db4437",
+                borderRadius: 12,
+                color: "#fff",
+                fontSize: 18,
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Login with Google
+            </button>
+
+            <button
+              onClick={() => signIn("github")}
+              style={{
+                padding: "14px 28px",
+                background: "#333",
+                borderRadius: 12,
+                color: "#fff",
+                fontSize: 18,
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Login with GitHub
+            </button>
           </>
         )}
 
         {session && (
           <a
             href="/dashboard"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
             style={{
               padding: "16px 34px",
-              background: "linear-gradient(135deg, #4e73df, #1cc88a)",
+              background: hover
+                ? "linear-gradient(135deg, #1cc88a, #4e73df)"
+                : "linear-gradient(135deg, #4e73df, #1cc88a)",
               borderRadius: 14,
               color: "#fff",
               fontSize: 20,
               fontWeight: 700,
               textDecoration: "none",
-              boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+              boxShadow: hover
+                ? "0 8px 25px rgba(0,0,0,0.4)"
+                : "0 4px 15px rgba(0,0,0,0.3)",
+              transform: hover ? "scale(1.05)" : "scale(1)",
               transition: "0.25s ease",
             }}
           >

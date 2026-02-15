@@ -20,8 +20,6 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    console.log("LOGIN RESPONSE:", res);
-
     if (res?.error) {
       setError("Email sau parolă greșită");
       return;

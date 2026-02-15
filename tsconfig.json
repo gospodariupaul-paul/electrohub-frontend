@@ -21,10 +21,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-
-    "types": ["next-auth"]   ← AICI E LINIA LIPSĂ
+    "types": ["next-auth"]
   },
-
   "include": [
     "next-env.d.ts",
     "**/*.ts",

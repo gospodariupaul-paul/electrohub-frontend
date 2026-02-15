@@ -5,9 +5,17 @@ import { getToken } from "next-auth/jwt";
 export async function proxy(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  // EXCLUDEREA PAGINILOR PUBLICE
-  const publicRoutes = ["/", "/login", "/register"];
-  if (publicRoutes.includes(pathname)) {
+  // PAGINI PUBLICE + RUTE NEXTAUTH
+  const publicRoutes = [
+    "/",
+    "/login",
+    "/register",
+    "/api/auth",
+    "/api/auth/:path*"
+  ];
+
+  // dacă ruta este publică → nu o protejăm
+  if (publicRoutes.some(route => pathname.startsWith(route))) {
     return NextResponse.next();
   }
 
@@ -42,6 +50,6 @@ export const config = {
     "/products/:path*",
     "/categories/:path*",
     "/users/:path*",
+    "/api/auth/:path*"
   ],
 };
-

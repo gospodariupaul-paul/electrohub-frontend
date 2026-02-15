@@ -1,11 +1,8 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-
-export default function HomePage() {
-  const { data: session } = useSession();
-  const [hover, setHover] = useState(false);
+export default async function HomePage() {
+  const session = await getServerSession(authOptions);
 
   return (
     <main
@@ -50,7 +47,7 @@ export default function HomePage() {
         }}
       />
 
-      {/* LOGO GOSPO ELECTRO HUB */}
+      {/* LOGO */}
       <h1
         style={{
           fontSize: 60,
@@ -68,7 +65,6 @@ export default function HomePage() {
         GOSPO Electro Hub
       </h1>
 
-      {/* SUBTEXT */}
       <p
         style={{
           fontSize: 22,
@@ -188,22 +184,15 @@ export default function HomePage() {
         {session && (
           <a
             href="/dashboard"
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
             style={{
               padding: "16px 34px",
-              background: hover
-                ? "linear-gradient(135deg, #1cc88a, #4e73df)"
-                : "linear-gradient(135deg, #4e73df, #1cc88a)",
+              background: "linear-gradient(135deg, #4e73df, #1cc88a)",
               borderRadius: 14,
               color: "#fff",
               fontSize: 20,
               fontWeight: 700,
               textDecoration: "none",
-              boxShadow: hover
-                ? "0 8px 25px rgba(0,0,0,0.4)"
-                : "0 4px 15px rgba(0,0,0,0.3)",
-              transform: hover ? "scale(1.05)" : "scale(1)",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
               transition: "0.25s ease",
             }}
           >
@@ -212,7 +201,6 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* KEYFRAMES */}
       <style>{`
         @keyframes shine {
           0% { filter: brightness(1); }

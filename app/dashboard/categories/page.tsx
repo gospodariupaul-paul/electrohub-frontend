@@ -1,5 +1,3 @@
-"use client";
-
 import { FaLaptop, FaCogs, FaBox, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import Link from "next/link";
 import { getCategories } from "@/app/services/categories";
@@ -7,7 +5,6 @@ import { getCategories } from "@/app/services/categories";
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
-  // CULORI DIFERITE PENTRU CARDURI
   const colors = ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"];
 
   return (
@@ -108,7 +105,6 @@ export default async function CategoriesPage() {
   );
 }
 
-/* ICONIȚE DIFERITE ÎN FUNCȚIE DE CATEGORIE */
 function getCategoryIcon(name: string) {
   const lower = name.toLowerCase();
 
@@ -119,7 +115,6 @@ function getCategoryIcon(name: string) {
   return <FaBox />;
 }
 
-/* STILURI TABEL */
 const thStyle = {
   padding: "12px 10px",
   fontWeight: "600",
@@ -132,7 +127,6 @@ const tdStyle = {
   fontSize: 15,
 };
 
-/* BUTOANE EDIT / DELETE */
 const editBtn = {
   background: "#4e73df",
   border: "none",

@@ -6,32 +6,31 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials.password) return null;
+
         // AICI ERA LOGICA TA ORIGINALĂ
-        // O păstrăm EXACT cum era înainte
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/login", {
           method: "POST",
           body: JSON.stringify({
-            email: credentials?.email,
-            password: credentials?.password,
+            email: credentials.email,
+            password: credentials.password,
           }),
           headers: { "Content-Type": "application/json" },
         });
 
         const user = await res.json();
-        if (res.ok && user) return user;
-        return null;
+        if (!res.ok) return null;
+
+        return user;
       },
     }),
   ],
   pages: {
     signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -10,7 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("admin123");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const res = await signIn("credentials", {
@@ -30,7 +31,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <form
         onSubmit={handleLogin}
         style={{ display: "flex", flexDirection: "column", gap: 16, width: 320 }}

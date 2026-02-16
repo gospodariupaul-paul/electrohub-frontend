@@ -32,7 +32,6 @@ const handler = NextAuth({
         const data = await res.json();
         if (!data || !data.user) return null;
 
-        // Returnăm userul EXACT cum îl vrea NextAuth
         return {
           id: data.user.id,
           email: data.user.email,

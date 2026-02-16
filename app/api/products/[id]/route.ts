@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
-import { Product } from "@/models/Product";
+import Product from "@/models/Product";
 
 type RouteContext = {
   params: {
@@ -8,24 +8,21 @@ type RouteContext = {
   };
 };
 
-export async function GET(req: NextRequest, context: RouteContext) {
+export async function GET(req: NextRequest, { params }: RouteContext) {
   await connectDB();
-  const { id } = context.params;
-  const product = await Product.findById(id);
+  const product = await Product.findById(params.id);
   return NextResponse.json(product);
 }
 
-export async function PUT(req: NextRequest, context: RouteContext) {
+export async function PUT(req: NextRequest, { params }: RouteContext) {
   await connectDB();
-  const { id } = context.params;
   const data = await req.json();
-  const updated = await Product.findByIdAndUpdate(id, data, { new: true });
+  const updated = await Product.findByIdAndUpdate(params.id, data, { new: true });
   return NextResponse.json(updated);
 }
 
-export async function DELETE(req: NextRequest, context: RouteContext) {
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
   await connectDB();
-  const { id } = context.params;
-  await Product.findByIdAndDelete(id);
+  await Product.findByIdAndDelete(params.id);
   return NextResponse.json({ message: "Deleted" });
 }

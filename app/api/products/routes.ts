@@ -1,16 +1,31 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
-import { Product } from "@/models/Product";
+import Product from "@/models/Product";
 
-export async function GET() {
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
+// GET PRODUCT BY ID
+export async function GET(req: NextRequest, { params }: RouteContext) {
   await connectDB();
-  const products = await Product.find().sort({ createdAt: -1 });
-  return NextResponse.json(products);
+  const product = await Product.findById(params.id);
+  return NextResponse.json(product);
 }
 
-export async function POST(req: Request) {
+// UPDATE PRODUCT
+export async function PUT(req: NextRequest, { params }: RouteContext) {
   await connectDB();
-  const body = await req.json();
-  const product = await Product.create(body);
-  return NextResponse.json(product, { status: 201 });
+  const data = await req.json();
+  const updated = await Product.findByIdAndUpdate(params.id, data, { new: true });
+  return NextResponse.json(updated);
+}
+
+// DELETE PRODUCT
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
+  await connectDB();
+  await Product.findByIdAndDelete(params.id);
+  return NextResponse.json({ message: "Deleted" });
 }

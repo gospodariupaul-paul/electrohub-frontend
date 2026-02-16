@@ -1,19 +1,30 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+async authorize(credentials) {
+  console.log("CREDENTIALS RECEIVED BY NEXTAUTH:", credentials);
 
-// GET /products  → toate produsele
-export async function GET() {
-  try {
-    const products = await prisma.product.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-
-    return NextResponse.json(products);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return NextResponse.json(
-      { error: "Failed to load products" },
-      { status: 500 }
-    );
+  if (!credentials?.email || !credentials?.password) {
+    return null;
   }
+
+  const res = await fetch(
+    `${process.env.API_URL}/auth/login`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password,
+      }),
+    }
+  );
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  if (!data?.user) return null;
+
+  return {
+    id: data.user.id,
+    email: data.user.email,
+    role: data.user.role,
+  };
 }

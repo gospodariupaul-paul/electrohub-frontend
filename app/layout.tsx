@@ -1,4 +1,7 @@
-export const metadata = {
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
   title: "GOSPO Electro Hub",
   description: "Platformă tehnică modernă și enterprise",
 };

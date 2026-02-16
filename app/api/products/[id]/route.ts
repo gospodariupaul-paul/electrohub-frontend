@@ -1,27 +1,31 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Product } from "@/models/Product";
 
-interface Params {
-  params: { id: string };
-}
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
 
-export async function GET(_req: Request, { params }: Params) {
+export async function GET(req: NextRequest, context: RouteContext) {
   await connectDB();
-  const product = await Product.findById(params.id);
-  if (!product) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const { id } = context.params;
+  const product = await Product.findById(id);
   return NextResponse.json(product);
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: NextRequest, context: RouteContext) {
   await connectDB();
-  const body = await req.json();
-  const product = await Product.findByIdAndUpdate(params.id, body, { new: true });
-  return NextResponse.json(product);
+  const { id } = context.params;
+  const data = await req.json();
+  const updated = await Product.findByIdAndUpdate(id, data, { new: true });
+  return NextResponse.json(updated);
 }
 
-export async function DELETE(_req: Request, { params }: Params) {
+export async function DELETE(req: NextRequest, context: RouteContext) {
   await connectDB();
-  await Product.findByIdAndDelete(params.id);
-  return NextResponse.json({ success: true });
+  const { id } = context.params;
+  await Product.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Deleted" });
 }

@@ -157,6 +157,3 @@ function SocialButton({ icon, label, color }) {
     </button>
   );
 }
-git add .
-git commit -m "Add futuristic landing page with hero, CTA, social login and fix layout isolation"
-git push

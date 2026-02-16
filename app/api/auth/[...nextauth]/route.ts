@@ -4,18 +4,19 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
 
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_URL + "/auth/login",
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -26,24 +27,25 @@ const handler = NextAuth({
           }
         );
 
-        if (!response.ok) {
-          return null;
-        }
+        if (!res.ok) return null;
 
-        const data = await response.json();
+        const data = await res.json();
+        if (!data || !data.user) return null;
 
-        // 🔥 AICI ERA PROBLEMA — datele sunt în data.user
-        const user = data.user;
-
+        // Returnăm userul EXACT cum îl vrea NextAuth
         return {
-          id: String(user.id),
-          email: user.email,
-          name: user.name || "User",
-          role: user.role,
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.email,
+          role: data.user.role,
         };
       },
     }),
   ],
+
+  pages: {
+    signIn: "/login",
+  },
 
   session: {
     strategy: "jwt",

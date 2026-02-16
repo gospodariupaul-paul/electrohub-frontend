@@ -19,13 +19,14 @@ export default function StartPage() {
         </p>
       </section>
 
-      {/* IMAGINE HERO */}
-      <section className="relative w-full h-[260px]">
+      {/* IMAGINE HERO — FĂRĂ ABSOLUTE, FĂRĂ OVERLAY */}
+      <section className="w-full h-[260px]">
         <Image
           src="/hero.jpg"
           alt="Electronice moderne"
-          fill
-          className="object-cover"
+          width={1200}
+          height={600}
+          className="w-full h-full object-cover rounded-none"
         />
       </section>
 

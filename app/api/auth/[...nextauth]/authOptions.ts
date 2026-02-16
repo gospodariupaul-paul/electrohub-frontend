@@ -10,13 +10,12 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
 
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
             body: JSON.stringify({
               email: credentials?.email,
               password: credentials?.password,
@@ -30,13 +29,13 @@ export const authOptions: NextAuthOptions = {
 
         if (!data || !data.user) return null;
 
-        // RETURNĂM TOT CE CERE TIPUL USER
         return {
           id: data.user.id,
           name: data.user.name ?? data.user.email,
           email: data.user.email,
           role: data.user.role,
-          access_token: data.access_token, // ← OBLIGATORIU
+          access_token: data.access_token ?? null,
+          refresh_token: data.refresh_token ?? null,
         };
       },
     }),
@@ -57,7 +56,8 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.role = user.role;
-        token.access_token = user.access_token; // ← OBLIGATORIU
+        token.access_token = user.access_token;
+        token.refresh_token = user.refresh_token;
       }
       return token;
     },
@@ -68,7 +68,8 @@ export const authOptions: NextAuthOptions = {
         email: token.email as string,
         name: token.name as string,
         role: token.role as string,
-        access_token: token.access_token as string, // ← OBLIGATORIU
+        access_token: token.access_token as string,
+        refresh_token: token.refresh_token as string,
       };
       return session;
     },

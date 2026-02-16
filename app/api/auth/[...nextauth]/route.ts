@@ -9,7 +9,7 @@ const handler = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
@@ -32,12 +32,14 @@ const handler = NextAuth({
 
         const data = await response.json();
 
+        // 🔥 AICI ERA PROBLEMA — datele sunt în data.user
+        const user = data.user;
+
         return {
-          id: String(data.id || "1"),
-          email: data.email || credentials.email,
-          name: data.name || "User",
-          role: data.role || "user",
-          access_token: data.access_token || data.token || "",
+          id: String(user.id),
+          email: user.email,
+          name: user.name || "User",
+          role: user.role,
         };
       },
     }),
@@ -54,7 +56,6 @@ const handler = NextAuth({
         token.email = user.email;
         token.name = user.name;
         token.role = user.role;
-        token.access_token = user.access_token;
       }
       return token;
     },
@@ -65,7 +66,6 @@ const handler = NextAuth({
         email: token.email,
         name: token.name,
         role: token.role,
-        access_token: token.access_token,
       };
       return session;
     },

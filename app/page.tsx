@@ -46,19 +46,35 @@ export default function HomePage() {
         <a href="#" className="hover:text-white transition">Oferte</a>
       </nav>
 
-      {/* HERO BANNER */}
-      <section className="relative h-[420px] w-full">
+      {/* ⭐⭐⭐ HERO CU CIRCUITE INTEGRATE ⭐⭐⭐ */}
+      <section className="relative w-full h-[480px] flex items-center justify-center text-center">
+
+        {/* BACKGROUND IMAGE */}
         <Image
-          src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1920"
-          alt="Hero Electronics"
+          src="https://images.unsplash.com/photo-1581091870627-3a5c7f3c1c56?q=80&w=1920"
+          alt="Circuite integrate"
           fill
           className="object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent flex flex-col justify-center px-10">
-          <h2 className="text-4xl font-bold mb-4">Super Oferte la Electronice</h2>
-          <p className="text-gray-300 mb-6">Reduceri masive la branduri premium — doar săptămâna aceasta.</p>
-          <a href="#" className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold w-fit">
-            Vezi Ofertele
+
+        {/* OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
+
+        {/* CONTENT */}
+        <div className="relative z-10 max-w-3xl px-6">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            Puterea Tehnologiei în Mâinile Tale
+          </h1>
+
+          <p className="text-lg md:text-xl text-gray-300 mb-8">
+            GOSPO Electro Hub îți oferă control total asupra electronicelor, produselor și categoriilor — rapid, sigur și intuitiv.
+          </p>
+
+          <a
+            href="/register"
+            className="px-8 py-4 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-semibold text-lg shadow-lg transition"
+          >
+            Începe Acum
           </a>
         </div>
       </section>
@@ -94,36 +110,6 @@ export default function HomePage() {
               <p className="font-semibold">Produs {i}</p>
               <p className="text-sm text-gray-400 line-through">999 lei</p>
               <p className="text-cyan-400 font-bold">699 lei</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* RECOMMENDED */}
-      <section className="px-6 py-12">
-        <h3 className="text-2xl font-bold mb-6">Recomandate pentru tine</h3>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[1,2,3,4].map((i) => (
-            <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition">
-              <div className="h-40 bg-white/10 rounded-lg mb-4"></div>
-              <p className="font-semibold">Recomandat {i}</p>
-              <p className="text-cyan-400 font-bold">1.299 lei</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* REFURBISHED */}
-      <section className="px-6 py-12 bg-[#0f131b]">
-        <h3 className="text-2xl font-bold mb-6">Recondiționate / Second Hand</h3>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[1,2,3,4].map((i) => (
-            <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition">
-              <div className="h-40 bg-white/10 rounded-lg mb-4"></div>
-              <p className="font-semibold">Refurbished {i}</p>
-              <p className="text-cyan-400 font-bold">899 lei</p>
             </div>
           ))}
         </div>

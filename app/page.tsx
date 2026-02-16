@@ -35,7 +35,7 @@ export default function HomePage() {
             href="/register"
             className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-black font-semibold shadow-lg shadow-cyan-500/30 transition"
           >
-            Încearcă Gratuit
+            Înregistrează-te
           </a>
 
           <a
@@ -49,7 +49,7 @@ export default function HomePage() {
         {/* HERO VISUAL */}
         <div className="mt-14 mx-auto max-w-4xl rounded-3xl p-[2px] bg-gradient-to-r from-cyan-500/40 to-purple-500/40 backdrop-blur-xl shadow-xl">
           <div className="rounded-3xl bg-[#0d1224] p-6 h-72 flex items-center justify-center text-gray-400">
-            <span>[ Aici poți pune un screenshot / video al aplicației ]</span>
+            <span>[ Screenshot / Video al aplicației ]</span>
           </div>
         </div>
       </section>

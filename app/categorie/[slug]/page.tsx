@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
-// Next.js needs this to generate dynamic routes in production
 export function generateStaticParams() {
   return [
     { slug: "telefoane" },
@@ -12,19 +13,28 @@ export function generateStaticParams() {
   ];
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage({ params }: { params: Promise<{ slug?: string }> }) {
+  const resolvedParams = await params;
+
+  console.log("PARAMS:", resolvedParams);
+
   try {
+    if (!resolvedParams?.slug) {
+      throw new Error("Slug is missing");
+    }
+
     await connectDB();
 
-    // Safe query: case-insensitive, no crash if category doesn't exist
     const products = await Product.find({
-      category: { $regex: new RegExp(`^${params.slug}$`, "i") }
+      category: { $regex: new RegExp(`^${resolvedParams.slug}$`, "i") }
     });
+
+    console.log("PRODUCTS FOUND:", products.length);
 
     return (
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-6 capitalize">
-          {params?.slug?.replace("-", " ") ?? "Categorie"}
+          {resolvedParams.slug.replace("-", " ")}
         </h1>
 
         {products.length === 0 && (
@@ -46,9 +56,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
     return (
       <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6 capitalize">
-          {params?.slug?.replace("-", " ") ?? "Categorie"}
-        </h1>
+        <h1 className="text-3xl font-bold mb-6">Categorie</h1>
         <p className="text-red-500">A apărut o eroare la încărcarea categoriei.</p>
       </div>
     );

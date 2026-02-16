@@ -38,29 +38,26 @@ export default function HomePage() {
 
       {/* CATEGORY MENU */}
       <nav className="w-full bg-[#0f131b] border-b border-white/10 px-6 py-3 flex gap-6 text-gray-300 text-sm">
-        <a href="#" className="hover:text-white transition">Telefoane</a>
-        <a href="#" className="hover:text-white transition">Laptopuri</a>
-        <a href="#" className="hover:text-white transition">Smart Home</a>
-        <a href="#" className="hover:text-white transition">Electrocasnice</a>
-        <a href="#" className="hover:text-white transition">Audio-Video</a>
-        <a href="#" className="hover:text-white transition">Oferte</a>
+        <a href="/categorie/telefoane" className="hover:text-white transition">Telefoane</a>
+        <a href="/categorie/laptopuri" className="hover:text-white transition">Laptopuri</a>
+        <a href="/categorie/smart-home" className="hover:text-white transition">Smart Home</a>
+        <a href="/categorie/electrocasnice" className="hover:text-white transition">Electrocasnice</a>
+        <a href="/categorie/audio-video" className="hover:text-white transition">Audio-Video</a>
+        <a href="/categorie/oferte" className="hover:text-white transition">Oferte</a>
       </nav>
 
-      {/* ⭐⭐⭐ HERO CU IMAGINEA TA LOCALĂ ⭐⭐⭐ */}
+      {/* HERO */}
       <section className="relative w-full h-[480px] flex items-center justify-center text-center">
 
-        {/* BACKGROUND IMAGE LOCALĂ */}
         <Image
-          src="/circuite.jpg"   // ← poza ta din public/
+          src="/circuite.jpg"
           alt="Circuite integrate"
           fill
           className="object-cover opacity-40"
         />
 
-        {/* OVERLAY */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
 
-        {/* CONTENT */}
         <div className="relative z-10 max-w-3xl px-6">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
             Puterea Tehnologiei în Mâinile Tale
@@ -91,10 +88,19 @@ export default function HomePage() {
         <h3 className="text-2xl font-bold mb-6">Categorii Populare</h3>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {["Smartphone", "Laptopuri", "Audio-Video", "Smart Home"].map((cat) => (
-            <div key={cat} className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition">
-              <p className="text-lg font-semibold">{cat}</p>
-            </div>
+          {[
+            { name: "Smartphone", slug: "telefoane" },
+            { name: "Laptopuri", slug: "laptopuri" },
+            { name: "Audio-Video", slug: "audio-video" },
+            { name: "Smart Home", slug: "smart-home" },
+          ].map((cat) => (
+            <a
+              key={cat.slug}
+              href={`/categorie/${cat.slug}`}
+              className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition block"
+            >
+              <p className="text-lg font-semibold">{cat.name}</p>
+            </a>
           ))}
         </div>
       </section>

@@ -56,6 +56,16 @@ export default function DashboardLayout({
 
         {/* NAVIGATION */}
         <div className="mt-10 flex flex-col gap-3">
+
+          {/* BACK TO HOME BUTTON */}
+          <SidebarLink
+            href="/"
+            icon={<FaHome />}
+            label="Back to Home"
+            active={false}
+            collapsed={collapsed}
+          />
+
           <SidebarLink
             href="/dashboard"
             icon={<FaHome />}
@@ -115,7 +125,7 @@ export default function DashboardLayout({
   );
 }
 
-/* 🔥 AICI ERA PROBLEMA — TIPURILE CORECTE */
+/* SIDEBAR LINK COMPONENT */
 function SidebarLink({
   href,
   icon,

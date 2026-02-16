@@ -13,7 +13,11 @@ import {
   FaCog,
 } from "react-icons/fa";
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -101,7 +105,7 @@ export default function DashboardLayout({ children }) {
           icon={<FaSignOutAlt />}
           label="Logout"
           collapsed={collapsed}
-          danger
+          danger={true}
         />
       </aside>
 
@@ -111,7 +115,22 @@ export default function DashboardLayout({ children }) {
   );
 }
 
-function SidebarLink({ href, icon, label, active, collapsed, danger }) {
+/* 🔥 AICI ERA PROBLEMA — TIPURILE CORECTE */
+function SidebarLink({
+  href,
+  icon,
+  label,
+  active = false,
+  collapsed,
+  danger = false,
+}: {
+  href: string;
+  icon: any;
+  label: string;
+  active?: boolean;
+  collapsed: boolean;
+  danger?: boolean;
+}) {
   return (
     <Link
       href={href}

@@ -1,76 +1,70 @@
 "use client";
 
-import React from "react";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
-    const res = await signIn("credentials", {
+    const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
-    if (res?.error) {
+    if (result?.error) {
       setError("Email sau parolă greșită");
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/");
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0d14] text-white">
       <form
         onSubmit={handleLogin}
-        style={{ display: "flex", flexDirection: "column", gap: 16, width: 320 }}
+        className="bg-[#0f131b] p-8 rounded-xl border border-white/10 w-full max-w-md"
       >
-        <h2>Login</h2>
+        <h1 className="text-3xl font-bold mb-6 text-center">Autentificare</h1>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: 10, borderRadius: 6, border: "1px solid #ccc" }}
-        />
+        {error && (
+          <p className="text-red-500 text-center mb-4">{error}</p>
+        )}
 
-        <input
-          type="password"
-          placeholder="Parola"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: 10, borderRadius: 6, border: "1px solid #ccc" }}
-        />
+        <div className="mb-4">
+          <label className="block mb-1">Email</label>
+          <input
+            type="email"
+            className="w-full p-3 rounded bg-white/10 border border-white/10 outline-none"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div className="mb-6">
+          <label className="block mb-1">Parolă</label>
+          <input
+            type="password"
+            className="w-full p-3 rounded bg-white/10 border border-white/10 outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
 
         <button
           type="submit"
-          style={{
-            padding: 12,
-            background: "#4e73df",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-          }}
+          className="w-full bg-cyan-600 hover:bg-cyan-500 py-3 rounded-xl font-semibold"
         >
           Login
         </button>

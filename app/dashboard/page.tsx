@@ -1,44 +1,83 @@
 "use client";
 
+import { FaSearch, FaCog, FaSignOutAlt, FaBox, FaTags, FaUser } from "react-icons/fa";
+
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-[#0d1224] text-white px-6 py-10">
+    <div className="text-white">
 
-      <h1 className="text-4xl font-bold mb-10">Dashboard</h1>
+      {/* TOP BAR */}
+      <div className="flex items-center justify-between mb-10">
 
+        {/* SEARCH BAR */}
+        <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full max-w-md">
+          <FaSearch className="text-gray-400 mr-3" />
+          <input
+            type="text"
+            placeholder="Caută produse, utilizatori, categorii..."
+            className="bg-transparent outline-none text-gray-200 w-full placeholder-gray-400"
+          />
+        </div>
+
+        {/* ACTION BUTTONS */}
+        <div className="flex items-center gap-4 ml-6">
+          <a
+            href="/dashboard/settings"
+            className="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition border border-white/10"
+          >
+            <FaCog className="text-xl" />
+          </a>
+
+          <a
+            href="/logout"
+            className="p-3 rounded-xl bg-red-500/20 hover:bg-red-500/40 transition border border-red-500/40"
+          >
+            <FaSignOutAlt className="text-xl text-red-400" />
+          </a>
+        </div>
+      </div>
+
+      {/* TITLE */}
+      <h1 className="text-4xl font-bold mb-10">Dashboard Overview</h1>
+
+      {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <a href="/products" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block">
-          <h2 className="text-xl font-semibold mb-2">Products</h2>
-          <p className="text-gray-300">Administrează produsele tale.</p>
-        </a>
+        <DashboardCard
+          href="/dashboard/products"
+          icon={<FaBox className="text-3xl text-cyan-400" />}
+          title="Products"
+          desc="Administrează produsele tale"
+        />
 
-        <a href="/categories" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition block">
-          <h2 className="text-xl font-semibold mb-2">Categories</h2>
-          <p className="text-gray-300">Organizează produsele pe categorii.</p>
-        </a>
+        <DashboardCard
+          href="/dashboard/categories"
+          icon={<FaTags className="text-3xl text-purple-400" />}
+          title="Categories"
+          desc="Organizează produsele pe categorii"
+        />
 
-        <a href="/settings" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block">
-          <h2 className="text-xl font-semibold mb-2">Settings</h2>
-          <p className="text-gray-300">Setări cont și aplicație.</p>
-        </a>
-
-        <a href="/users" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition block">
-          <h2 className="text-xl font-semibold mb-2">Users</h2>
-          <p className="text-gray-300">Gestionează utilizatorii.</p>
-        </a>
-
-        <a href="/orders" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block">
-          <h2 className="text-xl font-semibold mb-2">Orders</h2>
-          <p className="text-gray-300">Monitorizează comenzile.</p>
-        </a>
-
-        <a href="/stats" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition block">
-          <h2 className="text-xl font-semibold mb-2">Statistics</h2>
-          <p className="text-gray-300">Analize și rapoarte.</p>
-        </a>
+        <DashboardCard
+          href="/dashboard/users"
+          icon={<FaUser className="text-3xl text-green-400" />}
+          title="Users"
+          desc="Gestionează utilizatorii"
+        />
 
       </div>
-    </main>
+    </div>
+  );
+}
+
+function DashboardCard({ href, icon, title, desc }) {
+  return (
+    <a
+      href={href}
+      className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block shadow-lg hover:shadow-cyan-500/20"
+    >
+      <div className="mb-4">{icon}</div>
+      <h2 className="text-xl font-semibold mb-2">{title}</h2>
+      <p className="text-gray-300">{desc}</p>
+    </a>
   );
 }

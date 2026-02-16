@@ -1,13 +1,13 @@
 export const metadata = {
   title: "GOSPO Electro Hub",
-  description: "Platformă tehnică enterprise pentru management inteligent",
+  description: "Platformă tehnică modernă și enterprise",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <head>
-        {/* Font general + iconițe */}
+        {/* Font Awesome pentru iconițe */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -15,10 +15,11 @@ export default function RootLayout({ children }) {
       </head>
 
       {/* IMPORTANT:
-          - NU punem background global
-          - NU punem culori globale
-          - NU punem padding global
-          - Dashboard-ul rămâne intact
+          - Fără background global
+          - Fără culori globale
+          - Fără padding global
+          - Fără layout-uri care afectează dashboard-ul
+          - Lăsăm fiecare pagină să-și controleze designul
       */}
 
       <body className="antialiased">

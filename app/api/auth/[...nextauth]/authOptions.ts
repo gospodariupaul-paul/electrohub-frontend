@@ -10,7 +10,6 @@ export const authOptions = {
       },
 
       async authorize(credentials) {
-        // 🔥 AICI AM PUS LINIA
         console.log("CREDENTIALS RECEIVED BY NEXTAUTH:", credentials);
 
         if (!credentials?.email || !credentials?.password) {
@@ -18,7 +17,7 @@ export const authOptions = {
         }
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+          `${process.env.API_URL}/auth/login`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -67,3 +66,4 @@ export const authOptions = {
     strategy: "jwt",
   },
 };
+

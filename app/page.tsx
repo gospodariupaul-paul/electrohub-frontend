@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
-export default function StartPage() {
+export default function HomePage() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
 
@@ -19,21 +18,8 @@ export default function StartPage() {
         </p>
       </section>
 
-      {/* HERO MIC — NU MAI BLOCA PAGINA */}
-      <section className="px-6">
-        <div className="w-full h-[140px] overflow-hidden rounded-xl shadow">
-          <Image
-            src="/hero.jpg"
-            alt="Electronice moderne"
-            width={1200}
-            height={600}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </section>
-
       {/* SEARCH BAR */}
-      <section className="px-6 mt-6">
+      <section className="px-6 mt-4">
         <input
           type="text"
           placeholder="Caută funcții, module sau produse..."
@@ -44,14 +30,20 @@ export default function StartPage() {
       {/* CARDURI */}
       <section className="px-6 mt-8 pb-10 space-y-4">
 
-        {/* LOGIN + CREATE ACCOUNT */}
+        {/* LOGIN + REGISTER */}
         <div className="grid grid-cols-2 gap-4">
-          <Link href="/login" className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+          <Link
+            href="/login"
+            className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition"
+          >
             <h3 className="text-lg font-semibold">Login</h3>
             <p className="text-gray-600 text-sm mt-1">Autentificare rapidă.</p>
           </Link>
 
-          <Link href="/create-account" className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+          <Link
+            href="/register"
+            className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition"
+          >
             <h3 className="text-lg font-semibold">Create Account</h3>
             <p className="text-gray-600 text-sm mt-1">Creează un cont nou.</p>
           </Link>
@@ -59,24 +51,40 @@ export default function StartPage() {
 
         {/* MODULE */}
         <div className="grid grid-cols-2 gap-4">
-          <Link href="/dashboard" className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+          <Link
+            href="/dashboard"
+            className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition"
+          >
             <h3 className="text-lg font-semibold">Dashboard</h3>
             <p className="text-gray-600 text-sm mt-1">Panoul tehnic principal.</p>
           </Link>
 
-          <Link href="/products" className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+          <Link
+            href="/services"
+            className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition"
+          >
             <h3 className="text-lg font-semibold">Products</h3>
-            <p className="text-gray-600 text-sm mt-1">Încarcă poze și administrează produse.</p>
+            <p className="text-gray-600 text-sm mt-1">
+              Încarcă poze și administrează produse.
+            </p>
           </Link>
 
-          <Link href="/settings" className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+          <Link
+            href="/settings"
+            className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition"
+          >
             <h3 className="text-lg font-semibold">Settings</h3>
             <p className="text-gray-600 text-sm mt-1">Setări cont și avatar.</p>
           </Link>
 
-          <Link href="/avatar-upload" className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+          <Link
+            href="/settings/avatar"
+            className="block p-4 bg-white rounded-xl shadow hover:shadow-md transition"
+          >
             <h3 className="text-lg font-semibold">Avatar Upload</h3>
-            <p className="text-gray-600 text-sm mt-1">Încarcă sau schimbă poza de profil.</p>
+            <p className="text-gray-600 text-sm mt-1">
+              Încarcă sau schimbă poza de profil.
+            </p>
           </Link>
         </div>
 

@@ -5,16 +5,23 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ro" className="dark">
+    <html lang="ro">
       <head>
-        {/* FontAwesome pentru iconițe */}
+        {/* Font general + iconițe */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         />
       </head>
 
-      <body className="bg-[#0a0f1f] text-white antialiased">
+      {/* IMPORTANT:
+          - NU punem background global
+          - NU punem culori globale
+          - NU punem padding global
+          - Dashboard-ul rămâne intact
+      */}
+
+      <body className="antialiased">
         {children}
       </body>
     </html>

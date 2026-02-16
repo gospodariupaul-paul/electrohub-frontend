@@ -46,12 +46,12 @@ export default function HomePage() {
         <a href="#" className="hover:text-white transition">Oferte</a>
       </nav>
 
-      {/* ⭐⭐⭐ HERO CU CIRCUITE INTEGRATE ⭐⭐⭐ */}
+      {/* ⭐⭐⭐ HERO CU IMAGINEA TA LOCALĂ ⭐⭐⭐ */}
       <section className="relative w-full h-[480px] flex items-center justify-center text-center">
 
-        {/* BACKGROUND IMAGE */}
+        {/* BACKGROUND IMAGE LOCALĂ */}
         <Image
-          src="https://images.unsplash.com/photo-1581091870627-3a5c7f3c1c56?q=80&w=1920"
+          src="/circuite.jpg"   // ← poza ta din public/
           alt="Circuite integrate"
           fill
           className="object-cover opacity-40"
@@ -94,22 +94,6 @@ export default function HomePage() {
           {["Smartphone", "Laptopuri", "Audio-Video", "Smart Home"].map((cat) => (
             <div key={cat} className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition">
               <p className="text-lg font-semibold">{cat}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* TOP OFFERS */}
-      <section className="px-6 py-12 bg-[#0f131b]">
-        <h3 className="text-2xl font-bold mb-6">Top Oferte</h3>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[1,2,3,4].map((i) => (
-            <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition">
-              <div className="h-40 bg-white/10 rounded-lg mb-4"></div>
-              <p className="font-semibold">Produs {i}</p>
-              <p className="text-sm text-gray-400 line-through">999 lei</p>
-              <p className="text-cyan-400 font-bold">699 lei</p>
             </div>
           ))}
         </div>

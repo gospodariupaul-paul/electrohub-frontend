@@ -2,19 +2,19 @@
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#0b0f19] text-white">
+    <main className="min-h-screen bg-[#0a0f1f] text-white">
 
       {/* HERO */}
-      <section className="px-6 pt-20 pb-16 text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
+      <section className="px-6 pt-20 pb-16 text-center max-w-4xl mx-auto">
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">
           GOSPO Electro Hub
         </h1>
 
-        <p className="mt-4 text-lg text-gray-300">
-          Platformă tehnică modernă pentru gestionarea produselor, utilizatorilor și setărilor.
+        <p className="mt-6 text-lg text-gray-300">
+          Platformă tehnică futuristă pentru gestionarea produselor, utilizatorilor și setărilor.
         </p>
 
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-10 flex justify-center gap-4">
           <a
             href="/register"
             className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition"
@@ -31,22 +31,13 @@ export default function HomePage() {
         </div>
 
         {/* HERO IMAGE */}
-        <div className="mt-12 mx-auto max-w-4xl rounded-3xl overflow-hidden border border-white/10 shadow-xl">
+        <div className="mt-14 mx-auto max-w-4xl rounded-3xl overflow-hidden border border-white/10 shadow-xl">
           <img
             src="/hero-tech.jpg"
             alt="Imagine tehnică"
-            className="w-full h-72 object-cover opacity-80"
+            className="w-full h-80 object-cover opacity-90"
           />
         </div>
-      </section>
-
-      {/* SEARCH */}
-      <section className="px-6 max-w-xl mx-auto">
-        <input
-          type="text"
-          placeholder="Caută funcții, module sau produse..."
-          className="w-full px-5 py-3 rounded-xl bg-white/10 border border-white/20 text-gray-200 placeholder-gray-400 focus:outline-none focus:border-cyan-400"
-        />
       </section>
 
       {/* FUNCTIONALITATI */}
@@ -55,17 +46,17 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition">
             <h3 className="text-xl font-semibold mb-2">Automatizare</h3>
             <p className="text-gray-300">Procese automate pentru eficiență maximă.</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition">
             <h3 className="text-xl font-semibold mb-2">Management Produse</h3>
             <p className="text-gray-300">Organizezi și administrezi produse ușor.</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition">
             <h3 className="text-xl font-semibold mb-2">Dashboard Inteligent</h3>
             <p className="text-gray-300">Statistici în timp real și rapoarte.</p>
           </div>

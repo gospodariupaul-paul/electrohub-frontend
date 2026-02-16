@@ -1,109 +1,44 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-import Link from "next/link";
-import { useState } from "react";
-
-export default function Dashboard() {
-  const [items, setItems] = useState([
-    { id: 1, name: "Sistem Monitorizare" },
-    { id: 2, name: "Panou Control" },
-    { id: 3, name: "Modul Senzori" },
-  ]);
-
-  function deleteItem(id) {
-    setItems(items.filter((i) => i.id !== id));
-  }
-
+export default function DashboardPage() {
   return (
-    <main className="min-h-screen flex bg-white text-gray-900">
+    <main className="min-h-screen bg-[#0d1224] text-white px-6 py-10">
 
-      {/* SIDEBAR FUTURIST TEHNIC */}
-      <aside className="w-72 bg-gradient-to-b from-gray-200 to-gray-300 border-r border-gray-400 p-6 flex flex-col gap-4 shadow-xl">
+      <h1 className="text-4xl font-bold mb-10">Dashboard</h1>
 
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-800">
-          GOSPO Hub
-        </h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <nav className="flex flex-col gap-2 text-sm font-medium">
+        <a href="/products" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block">
+          <h2 className="text-xl font-semibold mb-2">Products</h2>
+          <p className="text-gray-300">Administrează produsele tale.</p>
+        </a>
 
-          <Link href="/dashboard" className="p-2 rounded-lg hover:bg-gray-400/40 transition">
-            Dashboard
-          </Link>
+        <a href="/categories" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition block">
+          <h2 className="text-xl font-semibold mb-2">Categories</h2>
+          <p className="text-gray-300">Organizează produsele pe categorii.</p>
+        </a>
 
-          <Link href="/dashboard/settings" className="p-2 rounded-lg hover:bg-gray-400/40 transition">
-            Settings
-          </Link>
+        <a href="/settings" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block">
+          <h2 className="text-xl font-semibold mb-2">Settings</h2>
+          <p className="text-gray-300">Setări cont și aplicație.</p>
+        </a>
 
-          <Link href="/dashboard/products" className="p-2 rounded-lg hover:bg-gray-400/40 transition">
-            Products
-          </Link>
+        <a href="/users" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition block">
+          <h2 className="text-xl font-semibold mb-2">Users</h2>
+          <p className="text-gray-300">Gestionează utilizatorii.</p>
+        </a>
 
-          <Link href="/dashboard/orders" className="p-2 rounded-lg hover:bg-gray-400/40 transition">
-            Orders
-          </Link>
+        <a href="/orders" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block">
+          <h2 className="text-xl font-semibold mb-2">Orders</h2>
+          <p className="text-gray-300">Monitorizează comenzile.</p>
+        </a>
 
-          <Link href="/dashboard/analytics" className="p-2 rounded-lg hover:bg-gray-400/40 transition">
-            Analytics
-          </Link>
+        <a href="/stats" className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/40 transition block">
+          <h2 className="text-xl font-semibold mb-2">Statistics</h2>
+          <p className="text-gray-300">Analize și rapoarte.</p>
+        </a>
 
-          <Link href="/dashboard/messages" className="p-2 rounded-lg hover:bg-gray-400/40 transition">
-            Messages
-          </Link>
-
-          <button
-            onClick={() => signOut()}
-            className="p-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition mt-4"
-          >
-            Logout
-          </button>
-        </nav>
-
-        <div className="mt-auto text-xs opacity-60">
-          © 2026 GOSPO Electro Hub
-        </div>
-      </aside>
-
-      {/* CONȚINUT DASHBOARD */}
-      <section className="flex-1 p-10">
-
-        <h2 className="text-3xl font-bold mb-6">Dashboard</h2>
-
-        <p className="text-sm opacity-70 mb-6">
-          Panou tehnic de control — versiune minimalistă, fundal alb, text mic.
-        </p>
-
-        {/* LISTĂ ELEMENTE CU DELETE */}
-        <div className="bg-gray-100 border border-gray-300 rounded-xl p-6 max-w-xl">
-          <h3 className="text-xl font-semibold mb-4">Module active</h3>
-
-          <ul className="space-y-3">
-            {items.map((item) => (
-              <li
-                key={item.id}
-                className="p-3 bg-white border border-gray-300 rounded-lg flex justify-between items-center text-sm relative"
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  deleteItem(item.id);
-                }}
-              >
-                {item.name}
-
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="text-red-600 hover:text-red-800 text-xs font-semibold"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <p className="text-xs opacity-60 mt-3">
-            Poți șterge un element fie cu butonul Delete, fie cu click dreapta.
-          </p>
-        </div>
-      </section>
+      </div>
     </main>
   );
 }

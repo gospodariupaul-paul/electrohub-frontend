@@ -10,12 +10,10 @@ export default function HomePage() {
       {/* HEADER */}
       <header className="w-full border-b border-white/10 bg-[#0f131b] px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         
-        {/* LOGO */}
         <a href="/" className="text-2xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
           GOSPO Electro Hub
         </a>
 
-        {/* SEARCH BAR */}
         <div className="flex items-center bg-white/10 border border-white/10 rounded-xl px-4 py-2 w-full max-w-xl">
           <FaSearch className="text-gray-400 mr-3" />
           <input
@@ -25,7 +23,6 @@ export default function HomePage() {
           />
         </div>
 
-        {/* USER ACTIONS */}
         <div className="flex items-center gap-6 text-xl">
           <a href="/favorites" className="hover:text-cyan-400 transition"><FaHeart /></a>
           <a href="/cart" className="hover:text-cyan-400 transition relative">
@@ -46,21 +43,20 @@ export default function HomePage() {
         <a href="#" className="hover:text-white transition">Oferte</a>
       </nav>
 
-      {/* ⭐⭐⭐ HERO CU IMAGINEA TA LOCALĂ ⭐⭐⭐ */}
+      {/* ⭐⭐⭐ HERO CU POZA TA ⭐⭐⭐ */}
       <section className="relative w-full h-[480px] flex items-center justify-center text-center">
 
         {/* BACKGROUND IMAGE LOCALĂ */}
         <Image
-          src="/circuite.jpg"   // ← poza ta din public/
+          src="/circuite.png"   // ← poza ta
           alt="Circuite integrate"
           fill
-          className="object-cover opacity-40"
+          className="object-cover"
         />
 
-        {/* OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
+        {/* OVERLAY MAI TRANSPARENT */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/70" />
 
-        {/* CONTENT */}
         <div className="relative z-10 max-w-3xl px-6">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
             Puterea Tehnologiei în Mâinile Tale
@@ -78,55 +74,6 @@ export default function HomePage() {
           </a>
         </div>
       </section>
-
-      {/* TRUST BAR */}
-      <section className="grid grid-cols-3 text-center py-6 bg-[#0f131b] border-b border-white/10">
-        <p className="text-gray-300">🚚 Livrare rapidă</p>
-        <p className="text-gray-300">↩️ Retur gratuit 30 zile</p>
-        <p className="text-gray-300">🛡️ Garanție extinsă</p>
-      </section>
-
-      {/* POPULAR CATEGORIES */}
-      <section className="px-6 py-12">
-        <h3 className="text-2xl font-bold mb-6">Categorii Populare</h3>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {["Smartphone", "Laptopuri", "Audio-Video", "Smart Home"].map((cat) => (
-            <div key={cat} className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition">
-              <p className="text-lg font-semibold">{cat}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="px-6 py-12 bg-[#0f131b] border-t border-white/10 text-gray-400 text-sm">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div>
-            <h4 className="font-semibold text-white mb-3">Suport</h4>
-            <p>Contact</p>
-            <p>FAQ</p>
-            <p>Retur & Garanție</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-3">Companie</h4>
-            <p>Despre noi</p>
-            <p>Cariere</p>
-            <p>Presă</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-3">Legal</h4>
-            <p>Termeni & Condiții</p>
-            <p>Politica de Confidențialitate</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-3">Urmărește-ne</h4>
-            <p>Facebook</p>
-            <p>Instagram</p>
-            <p>YouTube</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

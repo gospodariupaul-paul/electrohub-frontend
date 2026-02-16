@@ -19,15 +19,17 @@ export default function StartPage() {
         </p>
       </section>
 
-      {/* IMAGINE HERO — FĂRĂ ABSOLUTE, FĂRĂ OVERLAY */}
-      <section className="w-full h-[260px]">
-        <Image
-          src="/hero.jpg"
-          alt="Electronice moderne"
-          width={1200}
-          height={600}
-          className="w-full h-full object-cover rounded-none"
-        />
+      {/* HERO MIC — NU MAI BLOCA PAGINA */}
+      <section className="px-6">
+        <div className="w-full h-[140px] overflow-hidden rounded-xl shadow">
+          <Image
+            src="/hero.jpg"
+            alt="Electronice moderne"
+            width={1200}
+            height={600}
+            className="w-full h-full object-cover"
+          />
+        </div>
       </section>
 
       {/* SEARCH BAR */}

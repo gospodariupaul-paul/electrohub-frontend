@@ -15,8 +15,8 @@ export default function LoginPage() {
     setError("");
 
     const result = await signIn("credentials", {
-      email: email,
-      password: password,
+      email,
+      password,
       redirect: false,
     });
 
@@ -44,6 +44,7 @@ export default function LoginPage() {
           <label className="block mb-1">Email</label>
           <input
             type="email"
+            name="email"
             className="w-full p-3 rounded bg-white/10 border border-white/10 outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -55,6 +56,7 @@ export default function LoginPage() {
           <label className="block mb-1">Parolă</label>
           <input
             type="password"
+            name="password"
             className="w-full p-3 rounded bg-white/10 border border-white/10 outline-none"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

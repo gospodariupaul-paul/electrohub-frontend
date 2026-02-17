@@ -11,6 +11,7 @@ import {
   FaSignOutAlt,
   FaChevronLeft,
   FaCog,
+  FaChartLine,
 } from "react-icons/fa";
 
 export default function DashboardLayout({
@@ -22,42 +23,46 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#0d1117] text-white">
+    <div className="flex min-h-screen bg-[#020312] text-white">
 
-      {/* SIDEBAR */}
+      {/* SIDEBAR FUTURISTIC NEON */}
       <aside
-        className="relative flex flex-col transition-all duration-300"
+        className={`relative flex flex-col transition-all duration-300 border-r border-cyan-500/30 bg-[#05071a]/80 backdrop-blur-xl shadow-[0_0_25px_rgba(34,211,238,0.15)]`}
         style={{
           width: collapsed ? 80 : 260,
-          background: "rgba(17, 25, 40, 0.75)",
-          backdropFilter: "blur(18px)",
-          borderRight: "1px solid rgba(255,255,255,0.08)",
           padding: "25px 15px",
         }}
       >
         {/* COLLAPSE BUTTON */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center transition"
+          className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.6)] flex items-center justify-center transition"
         >
           <FaChevronLeft
             className={`transition ${collapsed ? "rotate-180" : ""}`}
           />
         </button>
 
-        {/* LOGO */}
-        <div
-          className={`font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 transition text-center ${
-            collapsed ? "text-xl" : "text-2xl"
-          }`}
-        >
-          {collapsed ? "GEH" : "GOSPO Electro Hub"}
+        {/* LOGO FUTURIST */}
+        <div className="flex flex-col items-center mt-2">
+          <div className="h-10 w-10 rounded-full bg-cyan-500 blur-md" />
+          <div
+            className={`font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 transition text-center mt-2 ${
+              collapsed ? "text-xl" : "text-2xl"
+            }`}
+          >
+            {collapsed ? "GEH" : "GOSPO Electro Hub"}
+          </div>
+          {!collapsed && (
+            <p className="text-xs text-white/60 mt-1 tracking-wide">
+              AI Control Center
+            </p>
+          )}
         </div>
 
         {/* NAVIGATION */}
         <div className="mt-10 flex flex-col gap-3">
 
-          {/* BACK TO HOME BUTTON */}
           <SidebarLink
             href="/"
             icon={<FaHome />}
@@ -68,8 +73,8 @@ export default function DashboardLayout({
 
           <SidebarLink
             href="/dashboard"
-            icon={<FaHome />}
-            label="Overview"
+            icon={<FaChartLine />}
+            label="Dashboard"
             active={pathname === "/dashboard"}
             collapsed={collapsed}
           />
@@ -120,7 +125,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* CONTENT */}
-      <main className="flex-1 p-10">{children}</main>
+      <main className="flex-1 p-6 md:p-10">{children}</main>
     </div>
   );
 }
@@ -144,13 +149,14 @@ function SidebarLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-        active ? "bg-white/20 font-semibold" : "hover:bg-white/10"
-      } ${danger ? "text-red-400" : "text-white"}`}
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+        ${active ? "bg-cyan-600/30 border border-cyan-400/40 shadow-[0_0_15px_rgba(34,211,238,0.3)]" : "hover:bg-white/10"}
+        ${danger ? "text-red-400 hover:bg-red-500/20" : "text-white"}
+      `}
       style={{ justifyContent: collapsed ? "center" : "flex-start" }}
     >
       <span className="text-lg">{icon}</span>
-      {!collapsed && <span>{label}</span>}
+      {!collapsed && <span className="tracking-wide">{label}</span>}
     </Link>
   );
 }

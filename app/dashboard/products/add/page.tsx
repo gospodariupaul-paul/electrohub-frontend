@@ -20,7 +20,7 @@ export default function AddProductPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch("https://BACKEND_URL/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

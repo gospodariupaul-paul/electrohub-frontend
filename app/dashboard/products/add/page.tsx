@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,7 +19,6 @@ export default function AddProductPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load categories
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -81,7 +81,6 @@ export default function AddProductPage() {
         onSubmit={handleSubmit}
         className="bg-[#0f131b] p-6 rounded-xl border border-white/10 max-w-xl"
       >
-        {/* IMAGE */}
         <div className="mb-4">
           <label className="block mb-1">Imagine produs</label>
           <input
@@ -92,7 +91,6 @@ export default function AddProductPage() {
           />
         </div>
 
-        {/* NAME */}
         <div className="mb-4">
           <label className="block mb-1">Nume produs</label>
           <input
@@ -104,7 +102,6 @@ export default function AddProductPage() {
           />
         </div>
 
-        {/* PRICE */}
         <div className="mb-4">
           <label className="block mb-1">Preț (lei)</label>
           <input
@@ -116,7 +113,6 @@ export default function AddProductPage() {
           />
         </div>
 
-        {/* STOCK */}
         <div className="mb-4">
           <label className="block mb-1">Stoc</label>
           <select
@@ -130,7 +126,6 @@ export default function AddProductPage() {
           </select>
         </div>
 
-        {/* CATEGORY */}
         <div className="mb-4">
           <label className="block mb-1">Categorie</label>
           <select
@@ -148,7 +143,6 @@ export default function AddProductPage() {
           </select>
         </div>
 
-        {/* DESCRIPTION */}
         <div className="mb-4">
           <label className="block mb-1">Descriere produs</label>
           <textarea
@@ -160,7 +154,6 @@ export default function AddProductPage() {
           ></textarea>
         </div>
 
-        {/* SUBMIT */}
         <button
           type="submit"
           disabled={loading}

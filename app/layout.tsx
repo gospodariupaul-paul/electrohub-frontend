@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -23,6 +24,12 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
       </body>
+=======
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+>>>>>>> 54933bd (update env and config)
     </html>
   );
 }

@@ -1,30 +1,34 @@
-async authorize(credentials) {
-  console.log("CREDENTIALS RECEIVED BY NEXTAUTH:", credentials);
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-  if (!credentials?.email || !credentials?.password) {
-    return null;
-  }
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { name, price, description, image, inStock } = body;
 
-  const res = await fetch(
-    `${process.env.API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: credentials.email,
-        password: credentials.password,
-      }),
+    if (!name || !price) {
+      return NextResponse.json(
+        { success: false, error: "Name and price are required" },
+        { status: 400 }
+      );
     }
-  );
 
-  if (!res.ok) return null;
+    const product = await prisma.product.create({
+      data: {
+        name,
+        price: parseFloat(price),
+        description: description || "",
+        image: image || "",
+        inStock: inStock ?? true,
+      },
+    });
 
-  const data = await res.json();
-  if (!data?.user) return null;
-
-  return {
-    id: data.user.id,
-    email: data.user.email,
-    role: data.user.role,
-  };
+    return NextResponse.json({ success: true, product }, { status: 201 });
+  } catch (error) {
+    console.error("Error creating product:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to create product" },
+      { status: 500 }
+    );
+  }
 }

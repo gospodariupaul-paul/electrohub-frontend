@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "GOSPO Electro Hub",
@@ -22,9 +22,7 @@ export default function RootLayout({
       </head>
 
       <body className="antialiased">
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

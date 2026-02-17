@@ -1,83 +1,48 @@
-"use client";
+import prisma from "@/lib/prisma";
 
-import { FaSearch, FaCog, FaSignOutAlt, FaBox, FaTags, FaUser } from "react-icons/fa";
+export default async function DashboardPage() {
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
-export default function DashboardPage() {
   return (
-    <div className="text-white">
+    <div className="min-h-screen bg-[#050814] text-white p-10">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-      {/* TOP BAR */}
-      <div className="flex items-center justify-between mb-10">
+      <a
+        href="/dashboard/products/add"
+        className="inline-block mb-6 bg-cyan-600 hover:bg-cyan-500 px-4 py-2 rounded-lg"
+      >
+        + Adaugă produs
+      </a>
 
-        {/* SEARCH BAR */}
-        <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3 w-full max-w-md">
-          <FaSearch className="text-gray-400 mr-3" />
-          <input
-            type="text"
-            placeholder="Caută produse, utilizatori, categorii..."
-            className="bg-transparent outline-none text-gray-200 w-full placeholder-gray-400"
-          />
+      {products.length === 0 ? (
+        <p className="opacity-70">Nu există produse încă.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {products.map((p) => (
+            <div
+              key={p.id}
+              className="bg-[#0b1020] border border-white/10 p-5 rounded-xl"
+            >
+              <h2 className="text-xl font-semibold">{p.name}</h2>
+              <p className="opacity-70">{p.description}</p>
+              <p className="mt-2 font-bold">{p.price} lei</p>
+              <p className="text-sm opacity-50">
+                {p.inStock ? "În stoc" : "Stoc epuizat"}
+              </p>
+
+              {p.image && (
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  className="mt-3 rounded-lg max-h-40 object-cover"
+                />
+              )}
+            </div>
+          ))}
         </div>
-
-        {/* ACTION BUTTONS */}
-        <div className="flex items-center gap-4 ml-6">
-          <a
-            href="/dashboard/settings"
-            className="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition border border-white/10"
-          >
-            <FaCog className="text-xl" />
-          </a>
-
-          <a
-            href="/logout"
-            className="p-3 rounded-xl bg-red-500/20 hover:bg-red-500/40 transition border border-red-500/40"
-          >
-            <FaSignOutAlt className="text-xl text-red-400" />
-          </a>
-        </div>
-      </div>
-
-      {/* TITLE */}
-      <h1 className="text-4xl font-bold mb-10">Dashboard Overview</h1>
-
-      {/* CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-        <DashboardCard
-          href="/dashboard/products"
-          icon={<FaBox className="text-3xl text-cyan-400" />}
-          title="Products"
-          desc="Administrează produsele tale"
-        />
-
-        <DashboardCard
-          href="/dashboard/categories"
-          icon={<FaTags className="text-3xl text-purple-400" />}
-          title="Categories"
-          desc="Organizează produsele pe categorii"
-        />
-
-        <DashboardCard
-          href="/dashboard/users"
-          icon={<FaUser className="text-3xl text-green-400" />}
-          title="Users"
-          desc="Gestionează utilizatorii"
-        />
-
-      </div>
+      )}
     </div>
-  );
-}
-
-function DashboardCard({ href, icon, title, desc }) {
-  return (
-    <a
-      href={href}
-      className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 transition block shadow-lg hover:shadow-cyan-500/20"
-    >
-      <div className="mb-4">{icon}</div>
-      <h2 className="text-xl font-semibold mb-2">{title}</h2>
-      <p className="text-gray-300">{desc}</p>
-    </a>
   );
 }

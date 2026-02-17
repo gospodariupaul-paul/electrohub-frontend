@@ -25,7 +25,8 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/");
+    // 🔥 Redirect corect după login
+    router.push("/dashboard");
   };
 
   return (

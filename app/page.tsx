@@ -28,7 +28,6 @@ export default function HomePage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // aici poți conecta căutarea la backend / AI
     console.log("Căutare:", search);
   };
 
@@ -36,39 +35,54 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#050712] text-white flex flex-col">
       {/* NAVBAR */}
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          {/* LOGO */}
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center text-xs font-bold tracking-tight">
-              G
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          {/* LOGO FUTURIST MĂRIT */}
+          <a href="/" className="flex items-center gap-3 group">
+            {/* ICONIȚĂ FUTURISTĂ */}
+            <div className="relative">
+              <div
+                className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-600
+                           flex items-center justify-center shadow-[0_0_25px_rgba(0,255,255,0.5)]
+                           group-hover:shadow-[0_0_40px_rgba(0,255,255,0.8)]
+                           transition-all duration-300"
+              >
+                <span className="text-3xl font-extrabold tracking-tight text-black drop-shadow-md">
+                  G
+                </span>
+              </div>
+
+              {/* INEL HOLOGRAFIC ANIMAT */}
+              <div className="absolute inset-0 rounded-2xl border border-cyan-400/50 animate-pulse blur-[1px]" />
             </div>
+
+            {/* TEXT LOGO */}
             <div className="flex flex-col leading-tight">
-              <span className="font-semibold text-sm tracking-wide">
+              <span className="font-bold text-2xl tracking-wide group-hover:text-cyan-300 transition">
                 GOSPO <span className="text-cyan-400">Electro</span> Hub
               </span>
-              <span className="text-[11px] text-white/60">
+              <span className="text-[12px] text-white/60">
                 Viitorul electronicii, la un click distanță
               </span>
             </div>
-          </div>
+          </a>
 
           {/* AUTH BUTTONS */}
           <div className="flex items-center gap-3 text-sm">
             <a
               href="/login"
-              className="px-3 py-1.5 rounded-lg border border-white/15 hover:border-cyan-400 hover:text-cyan-300 transition"
+              className="px-4 py-2 rounded-lg border border-white/15 hover:border-cyan-400 hover:text-cyan-300 transition"
             >
               Login
             </a>
             <a
               href="/register"
-              className="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition"
+              className="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition"
             >
               Create account
             </a>
             <a
               href="/logout"
-              className="hidden sm:inline px-3 py-1.5 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10 text-xs transition"
+              className="hidden sm:inline px-4 py-2 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10 text-xs transition"
             >
               Logout
             </a>
@@ -136,7 +150,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* HERO VISUAL / FUTURISTIC CARD */}
+            {/* HERO VISUAL */}
             <div className="relative">
               <div className="absolute -inset-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-transparent blur-3xl pointer-events-none" />
               <div className="relative bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-4">

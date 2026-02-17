@@ -2,12 +2,21 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AddProductPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const preselectedCategory = searchParams.get("category");
+
+  // Luăm categoria din URL manual (fără useSearchParams)
+  const [preselectedCategory, setPreselectedCategory] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get("category");
+      if (cat) setPreselectedCategory(cat);
+    }
+  }, []);
 
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
@@ -15,10 +24,11 @@ export default function AddProductPage() {
   const [stock, setStock] = useState("in stoc");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
-  const [category, setCategory] = useState(preselectedCategory || "");
+  const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Load categories
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -27,13 +37,17 @@ export default function AddProductPage() {
         );
         const data = await res.json();
         setCategories(data.categories || []);
+
+        if (preselectedCategory) {
+          setCategory(preselectedCategory);
+        }
       } catch (err) {
         console.log(err);
       }
     };
 
     loadCategories();
-  }, []);
+  }, [preselectedCategory]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

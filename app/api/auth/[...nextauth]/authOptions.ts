@@ -57,4 +57,11 @@ export const authOptions: NextAuthOptions = {
         email: token.email,
         role: token.role,
       };
-      return session
+      return session;
+    },
+  },
+
+  session: {
+    strategy: "jwt",
+  },
+};

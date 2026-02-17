@@ -30,12 +30,20 @@ export const authOptions: NextAuthOptions = {
         if (!res.ok) return null;
 
         const data = await res.json();
-        if (!data?.user) return null;
+
+        // Acceptă ORICE format de user
+        const user =
+          data.user ||
+          data.data?.user ||
+          data.data ||
+          data;
+
+        if (!user) return null;
 
         return {
-          id: data.user.id,
-          email: data.user.email,
-          role: data.user.role,
+          id: user.id || user._id,
+          email: user.email,
+          role: user.role,
         };
       },
     }),

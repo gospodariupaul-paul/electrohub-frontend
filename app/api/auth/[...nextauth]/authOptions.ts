@@ -1,6 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions } from "next-auth";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -10,8 +11,6 @@ export const authOptions = {
       },
 
       async authorize(credentials) {
-        console.log("CREDENTIALS RECEIVED BY NEXTAUTH:", credentials);
-
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -58,11 +57,4 @@ export const authOptions = {
         email: token.email,
         role: token.role,
       };
-      return session;
-    },
-  },
-
-  session: {
-    strategy: "jwt",
-  },
-};
+      return session

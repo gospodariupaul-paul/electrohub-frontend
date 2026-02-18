@@ -17,7 +17,7 @@ export default function AddProductPage() {
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // 🔥 PREVIEW IMAGINE
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -36,8 +36,13 @@ export default function AddProductPage() {
         formData.append("image", image);
       }
 
+      const token = localStorage.getItem("accessToken");
+
       const res = await fetch(`${API_BASE}/products`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 

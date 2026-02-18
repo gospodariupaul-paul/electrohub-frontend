@@ -14,7 +14,7 @@ export default function AddCategoryPage() {
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // PREVIEW
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -30,8 +30,13 @@ export default function AddCategoryPage() {
         formData.append("image", image);
       }
 
+      const token = localStorage.getItem("accessToken");
+
       const res = await fetch(`${API_BASE}/categories`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 

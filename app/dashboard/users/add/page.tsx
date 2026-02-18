@@ -9,7 +9,16 @@ export default function AddUserPage() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("user");
   const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const handleImageChange = (e: any) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file)); // PREVIEW
+    }
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -89,9 +98,20 @@ export default function AddUserPage() {
             type="file"
             accept="image/*"
             className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            onChange={(e) => setImage(e.target.files?.[0] || null)}
+            onChange={handleImageChange}
           />
         </div>
+
+        {preview && (
+          <div className="mt-4">
+            <p className="mb-2 opacity-70">Preview avatar:</p>
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-40 h-40 object-cover rounded-full border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+            />
+          </div>
+        )}
 
         <button
           type="submit"

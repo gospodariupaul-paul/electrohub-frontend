@@ -7,7 +7,16 @@ const API_BASE = "https://electrohub-backend.vercel.app";
 export default function AddCategoryPage() {
   const [name, setName] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const handleImageChange = (e: any) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file)); // PREVIEW
+    }
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -62,10 +71,21 @@ export default function AddCategoryPage() {
             type="file"
             accept="image/*"
             className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            onChange={(e) => setImage(e.target.files?.[0] || null)}
+            onChange={handleImageChange}
             required
           />
         </div>
+
+        {preview && (
+          <div className="mt-4">
+            <p className="mb-2 opacity-70">Preview imagine:</p>
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-48 h-48 object-cover rounded-lg border border-purple-500/40 shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+            />
+          </div>
+        )}
 
         <button
           type="submit"

@@ -4,11 +4,10 @@ import { useState } from "react";
 
 const API_BASE = "https://electrohub-backend.vercel.app";
 
-export default function AddProductPage() {
+export default function AddUserPage() {
   const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [description, setDescription] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("user");
   const [image, setImage] = useState<File | null>(null);
   const [error, setError] = useState("");
 
@@ -19,15 +18,14 @@ export default function AddProductPage() {
     try {
       const formData = new FormData();
       formData.append("name", name);
-      formData.append("price", price);
-      formData.append("stock", stock);
-      formData.append("description", description);
+      formData.append("email", email);
+      formData.append("role", role);
 
       if (image) {
         formData.append("image", image);
       }
 
-      const res = await fetch(`${API_BASE}/products`, {
+      const res = await fetch(`${API_BASE}/users`, {
         method: "POST",
         body: formData,
       });
@@ -37,7 +35,7 @@ export default function AddProductPage() {
         return;
       }
 
-      window.location.href = "/dashboard/products";
+      window.location.href = "/dashboard/users";
     } catch (err) {
       console.error(err);
       setError("A apărut o eroare neașteptată");
@@ -46,14 +44,14 @@ export default function AddProductPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-cyan-300">Adaugă un produs nou</h1>
+      <h1 className="text-2xl font-bold text-emerald-300">Adaugă user nou</h1>
 
       {error && <p className="text-red-500">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
         <div>
-          <label className="block mb-1">Nume produs</label>
+          <label className="block mb-1">Nume</label>
           <input
             className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
             value={name}
@@ -63,53 +61,43 @@ export default function AddProductPage() {
         </div>
 
         <div>
-          <label className="block mb-1">Preț (lei)</label>
+          <label className="block mb-1">Email</label>
           <input
-            type="number"
+            type="email"
             className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
 
         <div>
-          <label className="block mb-1">În stoc</label>
-          <input
-            type="number"
+          <label className="block mb-1">Rol</label>
+          <select
             className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            required
-          />
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="user">User</option>
+            <option value="admin">Administrator</option>
+          </select>
         </div>
 
         <div>
-          <label className="block mb-1">Descriere produs</label>
-          <textarea
-            className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Imagine produs</label>
+          <label className="block mb-1">Avatar user</label>
           <input
             type="file"
             accept="image/*"
             className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
             onChange={(e) => setImage(e.target.files?.[0] || null)}
-            required
           />
         </div>
 
         <button
           type="submit"
-          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg shadow-[0_0_15px_rgba(34,211,238,0.4)] transition"
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.4)] transition"
         >
-          Adaugă produs
+          Adaugă user
         </button>
       </form>
     </div>

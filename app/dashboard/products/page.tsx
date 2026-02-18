@@ -13,8 +13,8 @@ export default function ProductsPage() {
       try {
         const res = await fetch(`${API_BASE}/products`);
         if (res.ok) setProducts(await res.json());
-      } catch (e) {
-        console.error("Eroare:", e);
+      } catch (err) {
+        console.error("Eroare la încărcarea produselor:", err);
       } finally {
         setLoading(false);
       }
@@ -25,9 +25,9 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-8">
-
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-cyan-300">Produse</h1>
+
         <a
           href="/dashboard/products/add"
           className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-sm shadow-[0_0_15px_rgba(34,211,238,0.4)] transition"

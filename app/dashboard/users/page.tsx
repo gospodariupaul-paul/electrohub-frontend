@@ -13,8 +13,8 @@ export default function UsersPage() {
       try {
         const res = await fetch(`${API_BASE}/users`);
         if (res.ok) setUsers(await res.json());
-      } catch (e) {
-        console.error("Eroare:", e);
+      } catch (err) {
+        console.error("Eroare la încărcarea userilor:", err);
       } finally {
         setLoading(false);
       }
@@ -25,8 +25,16 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-cyan-300">Useri</h1>
 
-      <h1 className="text-2xl font-bold text-cyan-300">Useri</h1>
+        <a
+          href="/dashboard/users/add"
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm shadow-[0_0_15px_rgba(16,185,129,0.4)] transition"
+        >
+          + Adaugă user
+        </a>
+      </div>
 
       {loading ? (
         <p className="opacity-70">Se încarcă...</p>

@@ -13,8 +13,8 @@ export default function CategoriesPage() {
       try {
         const res = await fetch(`${API_BASE}/categories`);
         if (res.ok) setCategories(await res.json());
-      } catch (e) {
-        console.error("Eroare:", e);
+      } catch (err) {
+        console.error("Eroare la încărcarea categoriilor:", err);
       } finally {
         setLoading(false);
       }
@@ -25,8 +25,16 @@ export default function CategoriesPage() {
 
   return (
     <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-cyan-300">Categorii</h1>
 
-      <h1 className="text-2xl font-bold text-cyan-300">Categorii</h1>
+        <a
+          href="/dashboard/categories/add"
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-sm shadow-[0_0_15px_rgba(168,85,247,0.4)] transition"
+        >
+          + Adaugă categorie
+        </a>
+      </div>
 
       {loading ? (
         <p className="opacity-70">Se încarcă...</p>

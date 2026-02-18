@@ -19,9 +19,9 @@ export default function DashboardPage() {
           fetch(`${API_BASE}/users`),
         ]);
 
-        if (pRes.ok) setProducts((await pRes.json()).products || []);
-        if (cRes.ok) setCategories((await cRes.json()).categories || []);
-        if (uRes.ok) setUsers((await uRes.json()).users || []);
+        if (pRes.ok) setProducts(await pRes.json());
+        if (cRes.ok) setCategories(await cRes.json());
+        if (uRes.ok) setUsers(await uRes.json());
       } catch (e) {
         console.error("Eroare:", e);
       } finally {

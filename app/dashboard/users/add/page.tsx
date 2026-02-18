@@ -16,7 +16,7 @@ export default function AddUserPage() {
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // PREVIEW
+      setPreview(URL.createObjectURL(file)); // PREVIEW IMAGINE
     }
   };
 

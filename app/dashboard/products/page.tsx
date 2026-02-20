@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
+import Link from "next/link";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -33,18 +34,17 @@ export default function ProductsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((p: any) => (
-            <div
-              key={p.id}
-              className="bg-[#070a20] border border-white/10 rounded-xl p-4"
-            >
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold">{p.name}</h4>
-                <span className="text-sm font-bold text-cyan-300">
-                  {p.price} lei
-                </span>
+            <Link key={p.id} href={`/dashboard/products/${p.id}`}>
+              <div className="bg-[#070a20] border border-white/10 rounded-xl p-4 cursor-pointer hover:border-cyan-400 transition">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold">{p.name}</h4>
+                  <span className="text-sm font-bold text-cyan-300">
+                    {p.price} lei
+                  </span>
+                </div>
+                <p className="text-xs opacity-70">{p.description}</p>
               </div>
-              <p className="text-xs opacity-70">{p.description}</p>
-            </div>
+            </Link>
           ))}
         </div>
       )}

@@ -25,7 +25,17 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Produse</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Produse</h1>
+
+        {/* BUTON ADD PRODUCT */}
+        <Link
+          href="/dashboard/products/add"
+          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded"
+        >
+          Adaugă produs
+        </Link>
+      </div>
 
       {loading ? (
         <p className="opacity-70">Se încarcă...</p>

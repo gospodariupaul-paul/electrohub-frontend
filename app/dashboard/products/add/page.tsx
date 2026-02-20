@@ -8,6 +8,7 @@ export default function AddProductPage() {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -20,8 +21,9 @@ export default function AddProductPage() {
     formData.append("price", price);
     formData.append("stock", stock);
     formData.append("description", description);
+    formData.append("categoryId", categoryId); // 🔥 OBLIGATORIU
 
-    // MULTIPLE IMAGINI
+    // 🔥 MULTIPLE IMAGINI — CORECT
     images.forEach((img) => {
       formData.append("images", img);
     });
@@ -39,6 +41,7 @@ export default function AddProductPage() {
       setPrice("");
       setStock("");
       setDescription("");
+      setCategoryId("");
       setImages([]);
     } catch (err) {
       console.error("Eroare la creare produs:", err);
@@ -89,7 +92,17 @@ export default function AddProductPage() {
           required
         />
 
-        {/* MULTIPLE IMAGINI */}
+        {/* 🔥 INPUT CATEGORY ID */}
+        <input
+          type="number"
+          placeholder="ID categorie"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+          required
+        />
+
+        {/* 🔥 MULTIPLE IMAGINI */}
         <input
           type="file"
           accept="image/*"

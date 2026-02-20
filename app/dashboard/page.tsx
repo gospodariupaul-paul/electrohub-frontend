@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 
-
 export default function DashboardPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);

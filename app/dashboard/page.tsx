@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axiosInstance from "@/axios";
+import axiosInstance from "@/lib/axios";
+
 
 export default function DashboardPage() {
   const [products, setProducts] = useState([]);

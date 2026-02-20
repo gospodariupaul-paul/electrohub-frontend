@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const API_BASE = "https://electrohub-backend.vercel.app";
+import axiosInstance from "@/axios";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -11,10 +10,10 @@ export default function ProductsPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`${API_BASE}/products`);
-        if (res.ok) setProducts(await res.json());
-      } catch (err) {
-        console.error("Eroare la încărcarea produselor:", err);
+        const res = await axiosInstance.get("/products");
+        setProducts(res.data || []);
+      } catch (e) {
+        console.error("Eroare:", e);
       } finally {
         setLoading(false);
       }
@@ -24,32 +23,27 @@ export default function ProductsPage() {
   }, []);
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-cyan-300">Produse</h1>
-
-        <a
-          href="/dashboard/products/add"
-          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-sm shadow-[0_0_15px_rgba(34,211,238,0.4)] transition"
-        >
-          + Adaugă produs
-        </a>
-      </div>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Produse</h1>
 
       {loading ? (
         <p className="opacity-70">Se încarcă...</p>
       ) : products.length === 0 ? (
         <p className="opacity-70">Nu există produse.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((p: any) => (
             <div
               key={p.id}
-              className="bg-[#070a20] border border-cyan-500/30 rounded-xl p-5 hover:border-cyan-400 transition"
+              className="bg-[#070a20] border border-white/10 rounded-xl p-4"
             >
-              <h3 className="text-lg font-semibold">{p.name}</h3>
-              <p className="text-sm opacity-70 mt-1">{p.description}</p>
-              <p className="text-cyan-300 font-bold mt-3">{p.price} lei</p>
+              <div className="flex items-center justify-between">
+                <h4 className="font-semibold">{p.name}</h4>
+                <span className="text-sm font-bold text-cyan-300">
+                  {p.price} lei
+                </span>
+              </div>
+              <p className="text-xs opacity-70">{p.description}</p>
             </div>
           ))}
         </div>

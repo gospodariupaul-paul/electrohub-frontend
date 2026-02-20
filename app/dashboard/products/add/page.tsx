@@ -1,141 +1,49 @@
 "use client";
-export const dynamic = "force-dynamic";
 
 import { useState } from "react";
-
-const API_BASE = "https://electrohub-backend.vercel.app";
+import axiosInstance from "@/axios";
 
 export default function AddProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState("");
 
-  const handleImageChange = (e: any) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("price", price);
-      formData.append("stock", stock);
-      formData.append("description", description);
+    await axiosInstance.post("/products", {
+      name,
+      price: Number(price),
+    });
 
-      if (image) {
-        formData.append("image", image);
-      }
-
-      const token = localStorage.getItem("accessToken");
-
-      const res = await fetch(`${API_BASE}/products`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        setError("A apărut o eroare neașteptată");
-        return;
-      }
-
-      window.location.href = "/dashboard/products";
-    } catch (err) {
-      console.error(err);
-      setError("A apărut o eroare neașteptată");
-    }
+    alert("Produs creat!");
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-cyan-300">Adaugă un produs nou</h1>
-
-      {error && <p className="text-red-500">{error}</p>}
+      <h1 className="text-2xl font-bold">Adaugă produs</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Nume produs"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+        />
 
-        <div>
-          <label className="block mb-1">Nume produs</label>
-          <input
-            className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Preț (lei)</label>
-          <input
-            type="number"
-            className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">În stoc</label>
-          <input
-            type="number"
-            className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Descriere produs</label>
-          <textarea
-            className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Imagine produs</label>
-          <input
-            type="file"
-            accept="image/*"
-            className="w-full p-2 rounded bg-[#0b0f2a] border border-white/20"
-            onChange={handleImageChange}
-            required
-          />
-        </div>
-
-        {preview && (
-          <div className="mt-4">
-            <p className="mb-2 opacity-70">Preview imagine:</p>
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-48 h-48 object-cover rounded-lg border border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.3)]"
-            />
-          </div>
-        )}
+        <input
+          type="number"
+          placeholder="Preț"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+        />
 
         <button
           type="submit"
-          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg shadow-[0_0_15px_rgba(34,211,238,0.4)] transition"
+          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded"
         >
-          Adaugă produs
+          Creează
         </button>
       </form>
     </div>

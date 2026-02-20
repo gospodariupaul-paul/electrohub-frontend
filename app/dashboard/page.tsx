@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const API_BASE = "https://electrohub-backend.vercel.app";
+import axiosInstance from "@/axios";
 
 export default function DashboardPage() {
   const [products, setProducts] = useState([]);
@@ -14,14 +13,14 @@ export default function DashboardPage() {
     const load = async () => {
       try {
         const [pRes, cRes, uRes] = await Promise.all([
-          fetch(`${API_BASE}/products`),
-          fetch(`${API_BASE}/categories`),
-          fetch(`${API_BASE}/users`),
+          axiosInstance.get("/products"),
+          axiosInstance.get("/categories"),
+          axiosInstance.get("/users"),
         ]);
 
-        if (pRes.ok) setProducts(await pRes.json());
-        if (cRes.ok) setCategories(await cRes.json());
-        if (uRes.ok) setUsers(await uRes.json());
+        setProducts(pRes.data || []);
+        setCategories(cRes.data || []);
+        setUsers(uRes.data || []);
       } catch (e) {
         console.error("Eroare:", e);
       } finally {

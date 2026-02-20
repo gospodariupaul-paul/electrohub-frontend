@@ -33,6 +33,7 @@ export default function AddProductPage() {
       });
 
       alert("Produs creat cu succes!");
+
       setName("");
       setPrice("");
       setStock("");
@@ -93,6 +94,17 @@ export default function AddProductPage() {
           onChange={(e) => setImage(e.target.files?.[0] || null)}
           className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
         />
+
+        {image && (
+          <div className="mt-4">
+            <p className="text-sm opacity-70 mb-2">Preview imagine:</p>
+            <img
+              src={URL.createObjectURL(image)}
+              alt="Preview"
+              className="w-40 h-40 object-cover rounded-lg border border-white/10"
+            />
+          </div>
+        )}
 
         <button
           type="submit"

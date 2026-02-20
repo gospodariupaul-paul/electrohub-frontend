@@ -26,7 +26,7 @@ export default function AddProductPage() {
     }
 
     try {
-      await axiosInstance.post("/products", formData, {
+      await axiosInstance.post("/products/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

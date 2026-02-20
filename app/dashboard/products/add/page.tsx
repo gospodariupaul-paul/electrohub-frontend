@@ -8,10 +8,10 @@ export default function AddProductPage() {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -21,9 +21,10 @@ export default function AddProductPage() {
     formData.append("stock", stock);
     formData.append("description", description);
 
-    if (image) {
-      formData.append("image", image);
-    }
+    // MULTIPLE IMAGINI
+    images.forEach((img) => {
+      formData.append("images", img);
+    });
 
     try {
       await axiosInstance.post("/products/create", formData, {
@@ -38,7 +39,7 @@ export default function AddProductPage() {
       setPrice("");
       setStock("");
       setDescription("");
-      setImage(null);
+      setImages([]);
     } catch (err) {
       console.error("Eroare la creare produs:", err);
       alert("Eroare la creare produs!");
@@ -88,21 +89,26 @@ export default function AddProductPage() {
           required
         />
 
+        {/* MULTIPLE IMAGINI */}
         <input
           type="file"
           accept="image/*"
-          onChange={(e) => setImage(e.target.files?.[0] || null)}
+          multiple
+          onChange={(e) => setImages(Array.from(e.target.files || []))}
           className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
         />
 
-        {image && (
-          <div className="mt-4">
-            <p className="text-sm opacity-70 mb-2">Preview imagine:</p>
-            <img
-              src={URL.createObjectURL(image)}
-              alt="Preview"
-              className="w-40 h-40 object-cover rounded-lg border border-white/10"
-            />
+        {/* PREVIEW MULTIPLE IMAGINI */}
+        {images.length > 0 && (
+          <div className="grid grid-cols-3 gap-3 mt-4">
+            {images.map((img, i) => (
+              <img
+                key={i}
+                src={URL.createObjectURL(img)}
+                alt="Preview"
+                className="w-24 h-24 object-cover rounded border border-white/10"
+              />
+            ))}
           </div>
         )}
 

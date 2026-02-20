@@ -1,50 +1,99 @@
 "use client";
 
 import { useState } from "react";
+import axios from "axios";
 
-export default function Settings() {
-  const [avatar, setAvatar] = useState(null);
-  const [preview, setPreview] = useState(null);
+export default function SettingsPage() {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [image, setImage] = useState<File | null>(null);
 
-  function handleAvatar(e) {
-    const file = e.target.files[0];
-    setAvatar(file);
-    setPreview(URL.createObjectURL(file));
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!image) {
+      alert("Selectează o imagine!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("stock", stock);
+    formData.append("description", description);
+    formData.append("categoryId", categoryId);
+    formData.append("image", image);
+
+    try {
+      const res = await axios.post(
+        "https://electrohub-backend-1-10qa.onrender.com/products/create",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      alert("Produs creat cu succes!");
+      console.log(res.data);
+
+    } catch (err) {
+      console.error("Eroare la creare produs:", err);
+      alert("Nu s-a putut crea produsul.");
+    }
+  };
 
   return (
-    <main className="min-h-screen bg-black text-white p-10">
+    <div style={{ padding: 20 }}>
+      <h1>Adaugă produs</h1>
 
-      <h1 className="text-4xl font-bold mb-8">Settings</h1>
+      <form onSubmit={handleSubmit}>
 
-      <div className="bg-white/10 p-8 rounded-2xl border border-white/20 max-w-xl">
+        <input
+          type="text"
+          placeholder="Nume produs"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-        <h2 className="text-2xl font-semibold mb-4">Avatar</h2>
+        <input
+          type="number"
+          placeholder="Preț"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
 
-        <div className="flex items-center gap-6">
+        <input
+          type="number"
+          placeholder="Stoc"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+        />
 
-          {/* PREVIEW AVATAR */}
-          <div className="w-32 h-32 rounded-full bg-white/10 border border-white/20 overflow-hidden">
-            {preview ? (
-              <img src={preview} alt="avatar" className="w-full h-full object-cover" />
-            ) : (
-              <div className="flex items-center justify-center h-full opacity-40">
-                Nicio poză
-              </div>
-            )}
-          </div>
+        <textarea
+          placeholder="Descriere produs"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
-          {/* INPUT UPLOAD */}
-          <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
-            Încarcă poză
-            <input type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
-          </label>
-        </div>
+        <input
+          type="number"
+          placeholder="ID categorie"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+        />
 
-        <p className="opacity-60 mt-4 text-sm">
-          Poza este doar previzualizată. Dacă vrei, pot să o fac să se salveze în baza de date.
-        </p>
-      </div>
-    </main>
+        <input
+          type="file"
+          onChange={(e) => setImage(e.target.files?.[0] || null)}
+        />
+
+        <button type="submit">Creează</button>
+      </form>
+    </div>
   );
 }

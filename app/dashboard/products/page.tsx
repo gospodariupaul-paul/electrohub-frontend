@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axiosInstance from "@/axios";
+import axiosInstance from "@/lib/axios";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);

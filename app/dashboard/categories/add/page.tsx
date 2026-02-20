@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import axiosInstance from "@/axios";
+import axiosInstance from "@/lib/axios";
 
 export default function AddCategoryPage() {
   const [name, setName] = useState("");

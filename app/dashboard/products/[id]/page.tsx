@@ -31,9 +31,9 @@ export default function ProductDetailsPage() {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">{product.name}</h1>
 
-      {product.image && (
+      {product.imageUrl && (
         <img
-          src={product.image}
+          src={product.imageUrl}
           alt={product.name}
           className="w-64 h-64 object-cover rounded-lg border border-white/10"
         />

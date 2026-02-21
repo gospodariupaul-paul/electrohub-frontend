@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 
 export function middleware(req) {
-  const token = req.cookies.get("token");
+  const jwtToken = req.cookies.get("token");
+  const nextAuthToken =
+    req.cookies.get("next-auth.session-token") ||
+    req.cookies.get("__Secure-next-auth.session-token");
 
-  if (!token) {
+  // dacă nu există nici JWT, nici NextAuth → redirect
+  if (!jwtToken && !nextAuthToken) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 

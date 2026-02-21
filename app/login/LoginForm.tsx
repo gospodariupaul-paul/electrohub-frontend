@@ -12,23 +12,32 @@ export default function LoginForm() {
   const [dark, setDark] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
-
-    if (!email.includes("@")) {
-      setError("Email invalid");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Parola trebuie să aibă minim 6 caractere");
-      return;
-    }
-
     setError("");
 
-    // Redirect automat după login
-    router.push("/dashboard");
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        setError("Email sau parolă greșită");
+        return;
+      }
+
+      const data = await res.json();
+
+      // salvăm token-ul JWT
+      localStorage.setItem("token", data.accessToken);
+
+      router.push("/dashboard");
+    } catch (err) {
+      console.error(err);
+      setError("Eroare de server");
+    }
   };
 
   return (

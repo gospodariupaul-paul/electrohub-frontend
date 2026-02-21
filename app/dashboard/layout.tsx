@@ -22,21 +22,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [collapsed, setCollapsed] = useState(false);
 
   // 🔥 FIX FINAL: NU mai blocăm login-ul înainte să ruleze
-  useEffect(() => {
-    // dacă URL-ul conține login sau register → nu verificăm nimic
-    if (pathname.includes("login") || pathname.includes("register")) return;
+ useEffect(() => {
+  // dacă suntem pe login/register → nu verificăm nimic
+  if (pathname.includes("login") || pathname.includes("register")) return;
 
-    const token = localStorage.getItem("token");
+  // așteptăm încărcarea sesiunii NextAuth
+  if (session === undefined) return;
 
-    // ADMIN → are session
-    if (session?.user) return;
+  const token = typeof window !== "undefined"
+    ? localStorage.getItem("token")
+    : null;
 
-    // USER → are token
-    if (token) return;
+  // ADMIN → are session
+  if (session?.user) return;
 
-    // altfel → redirect la login
-    router.push("/login");
-  }, [session, pathname]);
+  // USER → are token
+  if (token) return;
+
+  // altfel → redirect la login
+  router.push("/login");
+}, [session, pathname]);
 
   return (
     <div className="flex min-h-screen bg-[#020312] text-white">

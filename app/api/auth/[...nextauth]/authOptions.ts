@@ -15,6 +15,19 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // 🔥 1. LOGIN ADMIN DIRECT (fără backend)
+        if (
+          credentials.email === "admin@electrohub.com" &&
+          credentials.password === "123456"
+        ) {
+          return {
+            id: "admin-1",
+            email: "admin@electrohub.com",
+            role: "ADMIN",
+          };
+        }
+
+        // 🔥 2. LOGIN USER NORMAL (prin backend)
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
@@ -31,7 +44,6 @@ export const authOptions: NextAuthOptions = {
 
         const data = await res.json();
 
-        // Acceptă ORICE format de user
         const user =
           data.user ||
           data.data?.user ||
@@ -43,7 +55,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id || user._id,
           email: user.email,
-          role: user.role,
+          role: user.role || "USER",
         };
       },
     }),

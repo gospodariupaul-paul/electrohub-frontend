@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import {
   FaUser,
   FaBox,
@@ -16,7 +17,20 @@ import {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session } = useSession();
   const [collapsed, setCollapsed] = useState(false);
+
+  // 🔥 PERMITEM ACCESUL LA DASHBOARD PENTRU:
+  // - ADMIN (NextAuth)
+  // - USER (JWT token)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!session?.user && !token) {
+      router.push("/login");
+    }
+  }, [session]);
 
   return (
     <div className="flex min-h-screen bg-[#020312] text-white">
@@ -29,6 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           padding: "25px 15px",
         }}
       >
+        {/* Collapse button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center transition"
@@ -36,6 +51,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <FaChevronLeft className={`transition ${collapsed ? "rotate-180" : ""}`} />
         </button>
 
+        {/* Logo */}
         <div className="flex flex-col items-center mt-2">
           <div className="h-10 w-10 rounded-full bg-cyan-500 blur-md" />
           <div
@@ -52,6 +68,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
         </div>
 
+        {/* Navigation */}
         <div className="mt-10 flex flex-col gap-3">
           <SidebarLink href="/" icon={<FaHome />} label="Back to Home" active={false} collapsed={collapsed} />
           <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" active={pathname === "/dashboard"} collapsed={collapsed} />
@@ -63,14 +80,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="flex-1" />
 
+        {/* Logout */}
         <SidebarLink href="/logout" icon={<FaSignOutAlt />} label="Logout" collapsed={collapsed} danger={true} />
       </aside>
 
+      {/* CONTENT */}
       <main className="flex-1 p-6 md:p-10">{children}</main>
     </div>
   );
 }
 
+/* SIDEBAR LINK COMPONENT */
 function SidebarLink({
   href,
   icon,

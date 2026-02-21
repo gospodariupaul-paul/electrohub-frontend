@@ -14,19 +14,46 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    // 🔥 Dacă este admin → folosește NextAuth (nu schimbăm nimic)
+    if (email === "admin@admin.com") {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setError("Email sau parolă greșită");
+      if (result?.error) {
+        setError("Email sau parolă greșită");
+        return;
+      }
+
+      router.push("/dashboard");
       return;
     }
 
-    // 🔥 Redirect corect după login
-    router.push("/dashboard");
+    // 🔥 Dacă este user normal → login prin backend
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        setError("Email sau parolă greșită");
+        return;
+      }
+
+      const data = await res.json();
+
+      // salvăm token-ul JWT
+      localStorage.setItem("token", data.access_token);
+
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+      setError("Eroare de server");
+    }
   };
 
   return (

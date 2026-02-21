@@ -10,7 +10,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = (e: any) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
 
     if (name.length < 3) {
@@ -28,8 +28,25 @@ export default function RegisterPage() {
       return;
     }
 
-    setError("");
-    alert("Cont creat cu succes! (mock)");
+    try {
+      setError("");
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!res.ok) {
+        setError("Eroare la crearea contului");
+        return;
+      }
+
+      alert("Cont creat cu succes!");
+    } catch (err) {
+      console.error(err);
+      setError("Eroare de server");
+    }
   };
 
   return (

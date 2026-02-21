@@ -23,10 +23,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // 🔥 FIX FINAL: NU mai blocăm login-ul înainte să ruleze
  useEffect(() => {
-  // dacă suntem pe login/register → nu verificăm nimic
   if (pathname.includes("login") || pathname.includes("register")) return;
 
-  // așteptăm încărcarea sesiunii NextAuth
+  // Așteptăm încărcarea sesiunii NextAuth
   if (session === undefined) return;
 
   const token = typeof window !== "undefined"

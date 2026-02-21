@@ -30,7 +30,6 @@ export default function HomePage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Căutare:", search);
-  };
 
   return (
     <div className="min-h-screen bg-[#050712] text-white flex flex-col">

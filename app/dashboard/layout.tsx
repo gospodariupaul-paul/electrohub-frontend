@@ -15,6 +15,9 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 
+import { Providers } from "../providers";
+import Navbar from "../components/Navbar";
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -23,78 +26,78 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // 🔥 FIX FINAL — logică 100% corectă
   useEffect(() => {
-    // nu blocăm login/register
     if (pathname.includes("login") || pathname.includes("register")) return;
 
-    // încă se încarcă sesiunea → nu facem nimic
     if (status === "loading") return;
 
-    // dacă userul este logat prin NextAuth → acces
     if (session?.user) return;
 
-    // dacă userul este logat prin JWT → acces
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (token) return;
 
-    // altfel → redirect
     router.push("/login");
   }, [session, status, pathname]);
 
   return (
-    <div className="flex min-h-screen bg-[#020312] text-white">
+    <Providers>
+      {/* NAVBAR GLOBAL */}
+      <Navbar />
 
-      {/* SIDEBAR */}
-      <aside
-        className={`relative flex flex-col transition-all duration-300 border-r border-cyan-500/30 bg-[#05071a]/80 backdrop-blur-xl`}
-        style={{
-          width: collapsed ? 80 : 260,
-          padding: "25px 15px",
-        }}
-      >
-        {/* Collapse button */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center transition"
+      <div className="flex min-h-screen bg-[#020312] text-white">
+
+        {/* SIDEBAR */}
+        <aside
+          className={`relative flex flex-col transition-all duration-300 border-r border-cyan-500/30 bg-[#05071a]/80 backdrop-blur-xl`}
+          style={{
+            width: collapsed ? 80 : 260,
+            padding: "25px 15px",
+          }}
         >
-          <FaChevronLeft className={`transition ${collapsed ? "rotate-180" : ""}`} />
-        </button>
-
-        {/* Logo */}
-        <div className="flex flex-col items-center mt-2">
-          <div className="h-10 w-10 rounded-full bg-cyan-500 blur-md" />
-          <div
-            className={`font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mt-2 ${
-              collapsed ? "text-xl" : "text-2xl"
-            }`}
+          {/* Collapse button */}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center transition"
           >
-            {collapsed ? "GEH" : "GOSPO Electro Hub"}
+            <FaChevronLeft className={`transition ${collapsed ? "rotate-180" : ""}`} />
+          </button>
+
+          {/* Logo */}
+          <div className="flex flex-col items-center mt-2">
+            <div className="h-10 w-10 rounded-full bg-cyan-500 blur-md" />
+            <div
+              className={`font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mt-2 ${
+                collapsed ? "text-xl" : "text-2xl"
+              }`}
+            >
+              {collapsed ? "GEH" : "GOSPO Electro Hub"}
+            </div>
+            {!collapsed && (
+              <p className="text-xs text-white/60 mt-1 tracking-wide">
+                AI Control Center
+              </p>
+            )}
           </div>
-          {!collapsed && (
-            <p className="text-xs text-white/60 mt-1 tracking-wide">
-              AI Control Center
-            </p>
-          )}
-        </div>
 
-        {/* Navigation */}
-        <div className="mt-10 flex flex-col gap-3">
-          <SidebarLink href="/" icon={<FaHome />} label="Back to Home" active={false} collapsed={collapsed} />
-          <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" active={pathname === "/dashboard"} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" active={pathname.startsWith("/dashboard/products")} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" active={pathname.startsWith("/dashboard/categories")} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" active={pathname.startsWith("/dashboard/users")} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/settings" icon={<FaCog />} label="Settings" active={pathname.startsWith("/dashboard/settings")} collapsed={collapsed} />
-        </div>
+          {/* Navigation */}
+          <div className="mt-10 flex flex-col gap-3">
+            <SidebarLink href="/" icon={<FaHome />} label="Back to Home" active={false} collapsed={collapsed} />
+            <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" active={pathname === "/dashboard"} collapsed={collapsed} />
+            <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" active={pathname.startsWith("/dashboard/products")} collapsed={collapsed} />
+            <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" active={pathname.startsWith("/dashboard/categories")} collapsed={collapsed} />
+            <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" active={pathname.startsWith("/dashboard/users")} collapsed={collapsed} />
+            <SidebarLink href="/dashboard/settings" icon={<FaCog />} label="Settings" active={pathname.startsWith("/dashboard/settings")} collapsed={collapsed} />
+          </div>
 
-        <div className="flex-1" />
+          <div className="flex-1" />
 
-        {/* Logout */}
-        <SidebarLink href="/logout" icon={<FaSignOutAlt />} label="Logout" collapsed={collapsed} danger={true} />
-      </aside>
+          {/* Logout */}
+          <SidebarLink href="/logout" icon={<FaSignOutAlt />} label="Logout" collapsed={collapsed} danger={true} />
+        </aside>
 
-      {/* CONTENT */}
-      <main className="flex-1 p-6 md:p-10">{children}</main>
-    </div>
+        {/* CONTENT */}
+        <main className="flex-1 p-6 md:p-10">{children}</main>
+      </div>
+    </Providers>
   );
 }
 

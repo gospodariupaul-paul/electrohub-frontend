@@ -1,3 +1,4 @@
+import Link from "next/link";
 "use client";
 
 import { useState } from "react";
@@ -37,7 +38,7 @@ export default function HomePage() {
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           {/* LOGO FUTURIST MĂRIT */}
-          <a href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
             {/* ICONIȚĂ FUTURISTĂ */}
             <div className="relative">
               <div
@@ -64,7 +65,7 @@ export default function HomePage() {
                 Viitorul electronicii, la un click distanță
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* AUTH BUTTONS */}
           <div className="flex items-center gap-3 text-sm">
@@ -73,19 +74,19 @@ export default function HomePage() {
               className="px-4 py-2 rounded-lg border border-white/15 hover:border-cyan-400 hover:text-cyan-300 transition"
             >
               Login
-            </a>
+            </Link>
             <a
               href="/register"
               className="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition"
             >
               Create account
-            </a>
+            </Link>
             <a
               href="/logout"
               className="hidden sm:inline px-4 py-2 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10 text-xs transition"
             >
               Logout
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -140,13 +141,13 @@ export default function HomePage() {
                   className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold"
                 >
                   Adaugă anunț (AI)
-                </a>
+                </Link>
                 <a
                   href="#oferte"
                   className="px-4 py-2.5 rounded-xl border border-white/15 hover:border-cyan-400 text-white/80 hover:text-cyan-300 transition"
                 >
                   Explorează oferte
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -204,7 +205,7 @@ export default function HomePage() {
                   <span className="mt-3 text-[11px] text-cyan-300">
                     Vezi produsele →
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </section>
@@ -301,15 +302,15 @@ export default function HomePage() {
       <footer className="border-t border-white/10 bg-black/60 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-[11px] text-white/50">
           <div className="space-x-3">
-            <a href="/security" className="hover:text-cyan-300">
+            <Link href="/security" className="hover:text-cyan-300">
               Securitate
-            </a>
-            <a href="/warranty" className="hover:text-cyan-300">
+            </Link>
+            <Link href="/warranty" className="hover:text-cyan-300">
               Politica de garanție
-            </a>
-            <a href="/support" className="hover:text-cyan-300">
+            </Link>
+            <Link href="/support" className="hover:text-cyan-300">
               Suport Chatbot AI
-            </a>
+            </Link>
           </div>
           <div className="flex gap-2">
             <button className="px-3 py-1.5 rounded-lg border border-white/15 hover:border-white/40">

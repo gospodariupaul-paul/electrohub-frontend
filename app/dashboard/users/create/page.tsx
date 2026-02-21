@@ -1,3 +1,4 @@
+import Link from "next/link";
 "use client";
 
 export const dynamic = "force-dynamic";

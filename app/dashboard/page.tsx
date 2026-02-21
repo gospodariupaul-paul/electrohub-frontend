@@ -3,25 +3,24 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import Link from "next/link";
-import { useSession } from "next-auth/react"; // 🔥 ADĂUGAT
+import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
-  const { data: session } = useSession(); // 🔥 ADĂUGAT
+  const { data: session } = useSession();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Load products
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 ADMIN → folosește NextAuth (nu are token în localStorage)
+        // 🔥 ADMIN → NextAuth
         if (session?.user?.role === "ADMIN") {
           const res = await axiosInstance.get("/products");
           setProducts(res.data || []);
           return;
         }
 
-        // 🔥 USER → folosește token JWT
+        // 🔥 USER → JWT
         const token = localStorage.getItem("token");
         if (!token) {
           setLoading(false);
@@ -45,7 +44,6 @@ export default function DashboardPage() {
     load();
   }, [session]);
 
-  // 🔥 DELETE PRODUCT
   const deleteProduct = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest produs?")) return;
 
@@ -100,7 +98,6 @@ export default function DashboardPage() {
                 key={p.id}
                 className="bg-[#070a20] border border-white/10 rounded-xl overflow-hidden hover:border-cyan-400 transition"
               >
-                {/* Imagine */}
                 {p.imageUrl && (
                   <img
                     src={p.imageUrl}
@@ -121,7 +118,6 @@ export default function DashboardPage() {
                     {p.description}
                   </p>
 
-                  {/* 🔥 ACTION BUTTONS */}
                   <div className="flex gap-2 pt-2">
                     <Link
                       href={`/dashboard/products/${p.id}`}
@@ -147,7 +143,6 @@ export default function DashboardPage() {
   );
 }
 
-/* COMPONENTĂ CARD STATISTICI */
 function StatCard({ title, value }: { title: string; value: any }) {
   return (
     <div className="bg-[#070a20] border border-white/10 rounded-xl p-4 shadow-sm">

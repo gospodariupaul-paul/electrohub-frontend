@@ -1,3 +1,4 @@
+import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 import { getUserById, updateUser } from "@/lib/user";

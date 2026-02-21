@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import Link from "next/link";
+import { useSession } from "next-auth/react"; // 🔥 ADĂUGAT
 
 export default function DashboardPage() {
+  const { data: session } = useSession(); // 🔥 ADĂUGAT
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -12,7 +14,26 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await axiosInstance.get("/products");
+        // 🔥 ADMIN → folosește NextAuth (nu are token în localStorage)
+        if (session?.user?.role === "ADMIN") {
+          const res = await axiosInstance.get("/products");
+          setProducts(res.data || []);
+          return;
+        }
+
+        // 🔥 USER → folosește token JWT
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const res = await axiosInstance.get("/products", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         setProducts(res.data || []);
       } catch (e) {
         console.error("Eroare:", e);
@@ -22,7 +43,7 @@ export default function DashboardPage() {
     };
 
     load();
-  }, []);
+  }, [session]);
 
   // 🔥 DELETE PRODUCT
   const deleteProduct = async (id: number) => {
@@ -84,7 +105,7 @@ export default function DashboardPage() {
                   <img
                     src={p.imageUrl}
                     alt={p.name}
-                    className="w-full h-36 object-cover" // 🔥 micșorată de la h-48
+                    className="w-full h-36 object-cover"
                   />
                 )}
 

@@ -30,10 +30,15 @@ export default function HomePage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Căutare:", search);
-  };   // ← AICI LIPSEA
+  };
 
   return (
     <div className="min-h-screen bg-[#050712] text-white flex flex-col">
+      {/* restul codului tău */}
+    </div>
+  );
+}
+
       {/* NAVBAR */}
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">

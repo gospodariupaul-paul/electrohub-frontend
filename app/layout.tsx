@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import Navbar from "./components/Navbar";
 
 export const metadata: Metadata = {
   title: "GOSPO Electro Hub",
@@ -23,7 +24,11 @@ export default function RootLayout({
       </head>
 
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Navbar />   {/* 🔥 Navbar-ul este ACUM vizibil */}
+        
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

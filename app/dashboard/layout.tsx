@@ -21,13 +21,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { data: session } = useSession();
   const [collapsed, setCollapsed] = useState(false);
 
-  // 🔥 FIX FINAL: PERMITEM ACCESUL LA DASHBOARD PENTRU:
-  // - ADMIN (NextAuth)
-  // - USER (JWT token)
-  // - NU blocăm login-ul înainte să ruleze!
+  // 🔥 FIX FINAL: NU mai blocăm login-ul înainte să ruleze
   useEffect(() => {
-    // dacă ești pe login/register → nu verificăm nimic
-    if (pathname === "/login" || pathname === "/register") return;
+    // dacă URL-ul conține login sau register → nu verificăm nimic
+    if (pathname.includes("login") || pathname.includes("register")) return;
 
     const token = localStorage.getItem("token");
 

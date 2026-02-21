@@ -32,7 +32,7 @@ export default function LoginForm() {
 
       // salvăm token-ul JWT
       localStorage.setItem("token", data.accessToken);
-
+      document.cookie = `token=${data.accessToken}; path=/;`;
       router.push("/dashboard");
     } catch (err) {
       console.error(err);

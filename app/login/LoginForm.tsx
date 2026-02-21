@@ -30,10 +30,17 @@ export default function LoginForm() {
 
       const data = await res.json();
 
-      // salvăm token-ul JWT
-      localStorage.setItem("token", data.accessToken);
-      document.cookie = `token=${data.accessToken}; path=/;`;
+      // 🔥 Salvăm token-ul JWT
+      if (data.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+
+        // 🔥 Cookie corect pentru Vercel
+        document.cookie = `token=${data.accessToken}; Path=/; Secure; SameSite=Lax`;
+      }
+
+      // 🔥 Redirect corect după login
       router.push("/dashboard");
+
     } catch (err) {
       console.error(err);
       setError("Eroare de server");

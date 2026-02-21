@@ -39,12 +39,13 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Salut, PAUL‑STELIAN!</h1>
-          <p className="opacity-70 text-sm">Bine ai revenit în panoul tău de administrare.</p>
+          <p className="opacity-70 text-sm">
+            Bine ai revenit în panoul tău de administrare.
+          </p>
         </div>
 
         <Link
@@ -83,7 +84,7 @@ export default function DashboardPage() {
                   <img
                     src={p.imageUrl}
                     alt={p.name}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-36 object-cover" // 🔥 micșorată de la h-48
                   />
                 )}
 

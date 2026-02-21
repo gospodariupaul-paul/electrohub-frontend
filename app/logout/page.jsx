@@ -1,17 +1,19 @@
-import Link from "next/link";
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function LogoutPage() {
   useEffect(() => {
-    // Ștergem cookie-urile
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
-    document.cookie = "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
-
-    // Redirect către login
-    window.location.href = "/login";
+    // logica ta
   }, []);
 
-  return <p>Se face logout...</p>;
+  return (
+    <div className="p-10 text-center text-white">
+      <h1 className="text-3xl font-bold mb-4">Te-ai delogat</h1>
+      <Link href="/" className="text-blue-400 underline">
+        Înapoi la Home
+      </Link>
+    </div>
+  );
 }

@@ -15,7 +15,7 @@ export default function LoginPage() {
     setError("");
 
     // 🔥 Dacă este admin → folosește NextAuth (nu schimbăm nimic)
-    if (email === "admin@admin.com") {
+    if (email === "admin@electrohub.com") {
       const result = await signIn("credentials", {
         email,
         password,

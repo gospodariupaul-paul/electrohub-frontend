@@ -22,6 +22,7 @@ export const authOptions: NextAuthOptions = {
         ) {
           return {
             id: "admin-1",
+            name: "Administrator",
             email: "admin@electrohub.com",
             role: "ADMIN",
           };

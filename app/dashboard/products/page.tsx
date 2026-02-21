@@ -1,53 +1,135 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axiosInstance from "@/lib/axios";
-import Link from "next/link";
 
-export default function ProductsPage() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function AddProductPage() {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [images, setImages] = useState<File[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await axiosInstance.get("/products");
-        setProducts(res.data || []);
-      } catch (e) {
-        console.error("Eroare:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
 
-    load();
-  }, []);
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("stock", stock);
+    formData.append("description", description);
+    formData.append("categoryId", categoryId);
+
+    images.forEach((img) => {
+      formData.append("images", img);
+    });
+
+    try {
+      // 🔥 RUTA CORECTĂ
+      await axiosInstance.post("/products", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("Produs creat cu succes!");
+
+      setName("");
+      setPrice("");
+      setStock("");
+      setDescription("");
+      setCategoryId("");
+      setImages([]);
+    } catch (err) {
+      console.error("Eroare la creare produs:", err);
+      alert("Eroare la creare produs!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Produse</h1>
+      <h1 className="text-2xl font-bold">Adaugă produs</h1>
 
-      {loading ? (
-        <p className="opacity-70">Se încarcă...</p>
-      ) : products.length === 0 ? (
-        <p className="opacity-70">Nu există produse.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {products.map((p: any) => (
-            <Link key={p.id} href={`/dashboard/products/${p.id}`}>
-              <div className="bg-[#070a20] border border-white/10 rounded-xl p-4 cursor-pointer hover:border-cyan-400 transition">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-semibold">{p.name}</h4>
-                  <span className="text-sm font-bold text-cyan-300">
-                    {p.price} lei
-                  </span>
-                </div>
-                <p className="text-xs opacity-70">{p.description}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <form onSubmit={handleSubmit} className="space-y-4">
+
+        <input
+          type="text"
+          placeholder="Nume produs"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+          required
+        />
+
+        <input
+          type="number"
+          placeholder="Preț"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+          required
+        />
+
+        <input
+          type="number"
+          placeholder="Stoc"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+          required
+        />
+
+        <textarea
+          placeholder="Descriere produs"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full h-24"
+          required
+        />
+
+        <input
+          type="number"
+          placeholder="ID categorie"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+          required
+        />
+
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => setImages(Array.from(e.target.files || []))}
+          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
+        />
+
+        {images.length > 0 && (
+          <div className="grid grid-cols-3 gap-3 mt-4">
+            {images.map((img, i) => (
+              <img
+                key={i}
+                src={URL.createObjectURL(img)}
+                alt="Preview"
+                className="w-24 h-24 object-cover rounded border border-white/10"
+              />
+            ))}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded disabled:opacity-50"
+        >
+          {loading ? "Se încarcă..." : "Creează"}
+        </button>
+      </form>
     </div>
   );
 }

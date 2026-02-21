@@ -47,7 +47,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       // salvăm token-ul JWT
-      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("token", data.accessToken);
 
       router.push("/");
     } catch (err) {

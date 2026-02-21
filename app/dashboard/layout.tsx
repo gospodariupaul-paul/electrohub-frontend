@@ -18,29 +18,27 @@ import {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [collapsed, setCollapsed] = useState(false);
 
-  // 🔥 FIX FINAL: NU mai blocăm login-ul înainte să ruleze
- useEffect(() => {
-  if (pathname.includes("login") || pathname.includes("register")) return;
+  // 🔥 FIX FINAL — logică 100% corectă
+  useEffect(() => {
+    // nu blocăm login/register
+    if (pathname.includes("login") || pathname.includes("register")) return;
 
-  // Așteptăm încărcarea sesiunii NextAuth
-  if (session === undefined) return;
+    // încă se încarcă sesiunea → nu facem nimic
+    if (status === "loading") return;
 
-  const token = typeof window !== "undefined"
-    ? localStorage.getItem("token")
-    : null;
+    // dacă userul este logat prin NextAuth → acces
+    if (session?.user) return;
 
-  // ADMIN → are session
-  if (session?.user) return;
+    // dacă userul este logat prin JWT → acces
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (token) return;
 
-  // USER → are token
-  if (token) return;
-
-  // altfel → redirect la login
-  router.push("/login");
-}, [session, pathname]);
+    // altfel → redirect
+    router.push("/login");
+  }, [session, status, pathname]);
 
   return (
     <div className="flex min-h-screen bg-[#020312] text-white">

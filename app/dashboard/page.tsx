@@ -13,27 +13,27 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 ADMIN → NextAuth
-        if (session?.user?.role === "ADMIN") {
+        // 🔥 Dacă userul este logat prin NextAuth → acces direct
+        if (session?.user) {
           const res = await axiosInstance.get("/products");
           setProducts(res.data || []);
           return;
         }
 
-        // 🔥 USER → JWT
+        // 🔥 Dacă userul este logat prin JWT → fallback
         const token = localStorage.getItem("token");
-        if (!token) {
-          setLoading(false);
+        if (token) {
+          const res = await axiosInstance.get("/products", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setProducts(res.data || []);
           return;
         }
 
-        const res = await axiosInstance.get("/products", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setProducts(res.data || []);
+        // 🔥 Dacă nu există niciun token → nu încărcăm produse
+        setProducts([]);
       } catch (e) {
         console.error("Eroare:", e);
       } finally {

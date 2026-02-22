@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const products = await prisma.product.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 12,
+    const res = await fetch("https://electrohub-backend-1-10qa.onrender.com/products", {
+      cache: "no-store",
     });
 
-    return NextResponse.json(products);
+    if (!res.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    const data = await res.json();
+    return NextResponse.json(data);
   } catch (error) {
-    console.error("Error loading products:", error);
+    console.error("API /products error:", error);
     return NextResponse.json(
       { error: "Failed to load products" },
       { status: 500 }

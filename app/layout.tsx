@@ -1,13 +1,8 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import "./globals.css";
-import { Providers } from "./providers";
-import Navbar from "./components/Navbar";
+"use client";
 
-export const metadata: Metadata = {
-  title: "GOSPO Electro Hub",
-  description: "Platformă tehnică modernă și enterprise",
-};
+import "./globals.css";
+import Navbar from "./components/Navbar";
+import { Providers } from "./providers";
 
 export default function RootLayout({
   children,
@@ -24,9 +19,8 @@ export default function RootLayout({
       </head>
 
       <body className="antialiased">
-        <Navbar />   {/* 🔥 Navbar-ul este ACUM vizibil */}
-        
         <Providers>
+          <Navbar />
           {children}
         </Providers>
       </body>

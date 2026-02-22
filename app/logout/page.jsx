@@ -1,19 +1,27 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/app/context/UserContext";
 
 export default function LogoutPage() {
+  const router = useRouter();
+  const { setUser } = useUser();
+
   useEffect(() => {
-    // logica ta
+    // Ștergem token-ul
+    localStorage.removeItem("token");
+
+    // Resetăm userul din context
+    setUser(null);
+
+    // Redirecționăm spre homepage
+    router.push("/");
   }, []);
 
   return (
     <div className="p-10 text-center text-white">
-      <h1 className="text-3xl font-bold mb-4">Te-ai delogat</h1>
-      <Link href="/" className="text-blue-400 underline">
-        Înapoi la Home
-      </Link>
+      Se deloghează...
     </div>
   );
 }

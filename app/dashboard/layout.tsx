@@ -56,19 +56,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <FaChevronLeft className={`transition ${collapsed ? "rotate-180" : ""}`} />
         </button>
 
-        <div className="flex flex-col items-center mt-2">
-          <div className="h-10 w-10 rounded-full bg-cyan-500 blur-md" />
-          <div
-            className={`font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mt-2 ${
-              collapsed ? "text-xl" : "text-2xl"
-            }`}
-          >
-            {collapsed ? "GEH" : "GOSPO Electro Hub"}
-          </div>
-        </div>
-
         <div className="mt-10 flex flex-col gap-3">
-          <SidebarLink href="/" icon={<FaHome />} label="Back to Home" collapsed={collapsed} />
           <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" collapsed={collapsed} />
           <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" collapsed={collapsed} />
           <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" collapsed={collapsed} />

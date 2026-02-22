@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useUser } from "@/app/context/UserContext";
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
+  const { user } = useUser();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 Dacă userul este logat prin NextAuth → acces direct
-        if (session?.user) {
+        // 🔥 Dacă userul este logat prin UserContext → acces direct
+        if (user) {
           const res = await axiosInstance.get("/products");
           setProducts(res.data || []);
           return;
@@ -42,7 +42,7 @@ export default function DashboardPage() {
     };
 
     load();
-  }, [session]);
+  }, [user]);
 
   const deleteProduct = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest produs?")) return;
@@ -61,7 +61,9 @@ export default function DashboardPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Salut, PAUL‑STELIAN!</h1>
+          <h1 className="text-3xl font-bold">
+            Salut, {user?.name || "PAUL‑STELIAN"}!
+          </h1>
           <p className="opacity-70 text-sm">
             Bine ai revenit în panoul tău de administrare.
           </p>

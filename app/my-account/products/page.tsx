@@ -1,32 +1,38 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import { useUser } from "@/app/context/UserContext";
 import { useEffect, useState } from "react";
+import axiosInstance from "@/lib/axios";
+import Link from "next/link";
 
 export default function MyProductsPage() {
-  const { data: session } = useSession();
+  const { user } = useUser();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    if (!session) return;
+    if (!user) return;
 
-    fetch(`/api/products/user/${session.user.id}`)
-      .then(res => res.json())
-      .then(data => setProducts(data));
-  }, [session]);
+    axiosInstance
+      .get(`/products/user/${user.id}`)
+      .then((res) => setProducts(res.data))
+      .catch(() => setProducts([]));
+  }, [user]);
 
-  if (!session) {
-    return <div className="text-white p-6">Trebuie să fii logat.</div>;
+  if (!user) {
+    return (
+      <div className="p-6 text-white">
+        <h1 className="text-xl font-bold">Trebuie să fii logat</h1>
+      </div>
+    );
   }
 
   return (
-    <div className="text-white p-6">
-      <h1 className="text-2xl font-bold mb-4">Produsele mele</h1>
+    <div className="p-6 text-white">
+      <h1 className="text-3xl font-bold mb-4">Produsele mele</h1>
 
       <Link
         href="/my-account/products/add"
-        className="px-4 py-2 bg-cyan-500 text-black rounded-lg"
+        className="px-4 py-2 bg-cyan-600 rounded-lg"
       >
         Adaugă produs
       </Link>
@@ -34,9 +40,9 @@ export default function MyProductsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         {products.map((p: any) => (
           <div key={p._id} className="bg-white/5 p-4 rounded-xl border border-white/10">
-            <img src={p.images?.[0]} className="w-full h-32 object-cover rounded-lg" />
-            <p className="mt-2 font-semibold">{p.title}</p>
-            <p className="text-cyan-400">{p.price} RON</p>
+            <img src={p.imageUrl} className="w-full h-32 object-cover rounded-lg" />
+            <p className="mt-2 font-semibold">{p.name}</p>
+            <p className="text-cyan-400">{p.price} lei</p>
           </div>
         ))}
       </div>

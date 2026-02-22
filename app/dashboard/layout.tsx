@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useUser } from "@/app/context/UserContext";
 import {
   FaUser,
   FaBox,
@@ -18,27 +18,24 @@ import {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { user } = useUser();
   const [collapsed, setCollapsed] = useState(false);
 
-  // 🔥 FIX FINAL — logică 100% corectă
+  // 🔥 FIX FINAL — logică 100% corectă pentru JWT
   useEffect(() => {
     // nu blocăm login/register
     if (pathname.includes("login") || pathname.includes("register")) return;
 
-    // încă se încarcă sesiunea → nu facem nimic
-    if (status === "loading") return;
+    // dacă userul există în context → acces
+    if (user) return;
 
-    // dacă userul este logat prin NextAuth → acces
-    if (session?.user) return;
-
-    // dacă userul este logat prin JWT → acces
+    // dacă există token în localStorage → acces
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (token) return;
 
-    // altfel → redirect
+    // altfel → redirect la login
     router.push("/login");
-  }, [session, status, pathname]);
+  }, [user, pathname]);
 
   return (
     <div className="flex min-h-screen bg-[#020312] text-white">

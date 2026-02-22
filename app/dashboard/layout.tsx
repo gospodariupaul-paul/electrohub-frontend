@@ -20,22 +20,44 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const { user } = useUser();
   const [collapsed, setCollapsed] = useState(false);
+  const [checking, setChecking] = useState(true); // 🔥 loading state
 
-  // 🔥 FIX FINAL — logică 100% corectă pentru JWT
   useEffect(() => {
-    // nu blocăm login/register
-    if (pathname.includes("login") || pathname.includes("register")) return;
+    const checkAccess = () => {
+      // nu blocăm login/register
+      if (pathname.includes("login") || pathname.includes("register")) {
+        setChecking(false);
+        return;
+      }
 
-    // dacă userul există în context → acces
-    if (user) return;
+      // dacă userul există în context → acces
+      if (user) {
+        setChecking(false);
+        return;
+      }
 
-    // dacă există token în localStorage → acces
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (token) return;
+      // dacă există token în localStorage → acces
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (token) {
+        setChecking(false);
+        return;
+      }
 
-    // altfel → redirect la login
-    router.push("/login");
+      // altfel → redirect
+      router.push("/login");
+    };
+
+    checkAccess();
   }, [user, pathname]);
+
+  // 🔥 Dacă încă verificăm accesul → nu afișăm nimic
+  if (checking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white">
+        Se verifică accesul...
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-[#020312] text-white">

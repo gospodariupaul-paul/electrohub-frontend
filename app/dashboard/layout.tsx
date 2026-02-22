@@ -63,6 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           padding: "25px 15px",
         }}
       >
+        {/* BUTON COLLAPSE */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center transition"
@@ -70,7 +71,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <FaChevronLeft className={`transition ${collapsed ? "rotate-180" : ""}`} />
         </button>
 
-        <div className="mt-10 flex flex-col gap-3">
+        {/* LOGO */}
+        <div className="flex items-center gap-3 mb-10 mt-6 px-2">
+          {!collapsed && (
+            <span className="text-xl font-bold tracking-wide">
+              GOSPO <span className="text-cyan-400">ElectroHub</span>
+            </span>
+          )}
+          {collapsed && (
+            <span className="text-2xl font-bold text-cyan-400">G</span>
+          )}
+        </div>
+
+        {/* LINK HOME */}
+        <SidebarLink
+          href="/"
+          icon={<FaHome />}
+          label="Home"
+          collapsed={collapsed}
+        />
+
+        {/* MENIU DASHBOARD */}
+        <div className="mt-6 flex flex-col gap-3">
           <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" collapsed={collapsed} />
           <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" collapsed={collapsed} />
           <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" collapsed={collapsed} />
@@ -80,6 +102,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="flex-1" />
 
+        {/* LOGOUT */}
         <SidebarLink href="/logout" icon={<FaSignOutAlt />} label="Logout" collapsed={collapsed} danger={true} />
       </aside>
 

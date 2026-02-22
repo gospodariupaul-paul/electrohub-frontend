@@ -10,7 +10,10 @@ export default function AddProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(1);
-  const [categoryId, setCategoryId] = useState<number | null>(null);
+
+  // 🔥 FIX: categoryId nu mai este null
+  const [categoryId, setCategoryId] = useState<number>(1);
+
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,11 +34,11 @@ export default function AddProductPage() {
     );
 
     const data = await res.json();
-    console.log("CLOUDINARY RESPONSE:", data); // 🔥 VEZI EXACT CE ÎȚI DĂ CLOUDINARY
+    console.log("CLOUDINARY RESPONSE:", data);
     return data.secure_url;
   };
 
-  // 🔥 Upload + PREVIEW + LOG-URI
+  // 🔥 Upload + PREVIEW
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
 
@@ -48,17 +51,13 @@ export default function AddProductPage() {
 
     for (const file of files) {
       const url = await uploadToCloudinary(file);
-
-      console.log("URL CLOUDINARY:", url); // 🔥 AICI VEZI DACĂ URL ESTE UNDEFINED
-
+      console.log("URL CLOUDINARY:", url);
       uploaded.push(url);
     }
 
     setImages((prev) => {
       const finalImages = [...prev, ...uploaded];
-
-      console.log("IMAGINI IN STATE:", finalImages); // 🔥 AICI VEZI CE AJUNGE ÎN STATE
-
+      console.log("IMAGINI IN STATE:", finalImages);
       return finalImages;
     });
   };
@@ -70,6 +69,7 @@ export default function AddProductPage() {
     setCurrentIndex(0);
   };
 
+  // 🔥 SUBMIT FORM
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -84,8 +84,8 @@ export default function AddProductPage() {
           price,
           stock,
           description,
-          images, // 🔥 URL-uri Cloudinary
-          categoryId,
+          images,
+          categoryId, // 🔥 FIX: niciodată null
         },
         {
           headers: {
@@ -95,7 +95,7 @@ export default function AddProductPage() {
       );
 
       alert("Anunț publicat cu succes!");
-      router.push("/my-account/profile");
+      router.push("/"); // 🔥 redirect pe homepage
     } catch (err) {
       console.error(err);
       alert("Eroare la publicarea anunțului");
@@ -164,11 +164,10 @@ export default function AddProductPage() {
           <span className="text-sm opacity-80">Categoria*</span>
           <select
             className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
-            value={categoryId ?? ""}
+            value={categoryId}
             onChange={(e) => setCategoryId(parseInt(e.target.value))}
             required
           >
-            <option value="">Alege categoria</option>
             <option value="1">Telefoane</option>
             <option value="2">Laptopuri</option>
             <option value="3">Componente PC</option>
@@ -176,13 +175,12 @@ export default function AddProductPage() {
           </select>
         </label>
 
-        {/* IMAGINI + CAROUSEL + DOTS + DELETE */}
+        {/* IMAGINI */}
         <div className="mb-6">
           <span className="text-sm opacity-80">Imagini</span>
 
           {images.length > 0 && (
             <div className="mt-3">
-
               {/* CAROUSEL */}
               <div className="relative w-full h-64 overflow-hidden rounded-xl border border-white/20">
                 <img

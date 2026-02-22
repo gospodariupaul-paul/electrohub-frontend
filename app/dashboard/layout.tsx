@@ -27,12 +27,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const token = localStorage.getItem("token");
 
     // dacă nu e logat → login
-    if (!token || !user) {
+    if (!token) {
       router.push("/login");
       return;
     }
 
-    // 🔥 AICI ESTE FIX-UL IMPORTANT
+    // dacă userul nu e încă încărcat → AȘTEAPTĂ, nu redirecționa
+    if (!user) {
+      return;
+    }
+
     // dacă userul NU este admin → trimite-l în contul lui
     if (user.role !== "admin") {
       router.push("/my-account/profile");

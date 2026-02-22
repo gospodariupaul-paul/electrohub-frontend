@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import axiosInstance from "@/lib/axios";
 import { useSession } from "next-auth/react";
 
 export default function ProductsList() {
@@ -10,9 +11,12 @@ export default function ProductsList() {
 
   useEffect(() => {
     async function loadProducts() {
-      const res = await fetch("/api/products");
-      const data = await res.json();
-      setProducts(data);
+      try {
+        const res = await axiosInstance.get("/products");
+        setProducts(res.data);
+      } catch (err) {
+        console.error("Eroare la încărcarea produselor:", err);
+      }
     }
     loadProducts();
   }, []);
@@ -24,15 +28,24 @@ export default function ProductsList() {
           key={p.id}
           className="bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-cyan-400 transition"
         >
-          <img
-            src={p.image}
-            alt={p.title}
-            className="w-full h-48 object-cover"
-          />
+          {p.imageUrl && (
+            <img
+              src={p.imageUrl}
+              alt={p.name}
+              className="w-full h-48 object-cover"
+            />
+          )}
 
           <div className="p-4">
-            <h3 className="font-semibold text-lg">{p.title}</h3>
-            <p className="text-green-400 font-bold text-xl">{p.price} RON</p>
+            <h3 className="font-semibold text-lg">{p.name}</h3>
+
+            <p className="text-green-400 font-bold text-xl">
+              {p.price} lei
+            </p>
+
+            <p className="text-white/60 text-sm mt-1 line-clamp-2">
+              {p.description}
+            </p>
 
             {session ? (
               <Link

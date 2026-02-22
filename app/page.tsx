@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import ProductsList from "@/components/ProductsList";
 
 const mockCategories = [
@@ -27,6 +28,15 @@ const mockAiRecs = [
 
 export default function HomePage() {
   const [search, setSearch] = useState("");
+  const [products, setProducts] = useState([]);
+
+  // 🔥 FETCH REAL LA BACKEND
+  useEffect(() => {
+    axios
+      .get("https://electrohub-backend-1-10qa.onrender.com/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Eroare la încărcarea produselor:", err));
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,13 +172,7 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* 🔥 PRODUSE LISTATE PE HOMEPAGE */}
-          <section className="space-y-4">
-            <h2 className="text-lg font-semibold">Produse disponibile</h2>
-            <ProductsList />
-          </section>
-
-          {/* BENTO GRID CATEGORII */}
+          {/* CATEGORII */}
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Categorii principale</h2>
@@ -256,39 +260,15 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* TRUST / SECURITY / CHAT / REPUTATION */}
-          <section className="grid md:grid-cols-3 gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <p className="text-sm font-semibold mb-1">
-                Verificare de securitate & Scam Prevention
-              </p>
-              <p className="text-[12px] text-white/60 mb-2">
-                Utilizatori verificați, 2FA, badge-uri de încredere și monitorizare anti-fraudă.
-              </p>
-              <p className="text-[11px] text-emerald-300">
-                Trust Badge • Secure Payments • Verified Sellers
-              </p>
-            </div>
+          {/* PRODUSE REALE */}
+          <section className="mt-10">
+            <h2 className="text-lg font-semibold mb-4">Produse recente</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <p className="text-sm font-semibold mb-1">Chat în timp real</p>
-              <p className="text-[12px] text-white/60 mb-2">
-                Negociază prețul, trimite poze, discută detalii tehnice în timp real cu vânzătorii.
-              </p>
-              <p className="text-[11px] text-cyan-300">
-                Chat live • Ofertă rapidă • Partajare media
-              </p>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <p className="text-sm font-semibold mb-1">Profil cu reputație</p>
-              <p className="text-[12px] text-white/60 mb-2">
-                Badge-uri, niveluri și rating pentru cei mai buni vânzători tech.
-              </p>
-              <p className="text-[11px] text-purple-300">
-                Level 5 Tech Seller • Trusted • High Rating
-              </p>
-            </div>
+            {products.length === 0 ? (
+              <p className="text-white/50 text-sm">Nu există produse încă.</p>
+            ) : (
+              <ProductsList products={products} />
+            )}
           </section>
 
         </div>

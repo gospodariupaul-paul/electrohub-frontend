@@ -1,6 +1,6 @@
-import Link from "next/link";
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    // 🔥 Dacă este admin → folosește NextAuth (nu schimbăm nimic)
+    // 🔥 ADMIN LOGIN (NextAuth)
     if (email === "admin@electrohub.com") {
       const result = await signIn("credentials", {
         email,
@@ -32,7 +32,7 @@ export default function LoginPage() {
       return;
     }
 
-    // 🔥 Dacă este user normal → login prin backend
+    // 🔥 USER NORMAL LOGIN (Backend)
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
@@ -47,10 +47,12 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      // salvăm token-ul JWT
+      // Salvăm token-ul JWT
       localStorage.setItem("token", data.accessToken);
 
-      router.push("/");
+      // 🔥 REDIRECT USER NORMAL PE PAGINA LUI
+      router.push(`/user/${data.user.id}`);
+
     } catch (err) {
       console.error(err);
       setError("Eroare de server");
@@ -99,6 +101,13 @@ export default function LoginPage() {
         >
           Login
         </button>
+
+        <p className="text-center mt-4 text-white/60">
+          Nu ai cont?{" "}
+          <Link href="/register" className="text-cyan-400 underline">
+            Creează cont
+          </Link>
+        </p>
       </form>
     </div>
   );

@@ -19,13 +19,13 @@ export default function UserProfilePage() {
       return;
     }
 
-    // dacă încă se încarcă userul → așteptăm
+    // dacă încă se încarcă userul → AȘTEAPTĂ
     if (loading) return;
 
-    // dacă userul nu e încă încărcat → așteptăm
+    // dacă userul nu e încă încărcat → AȘTEAPTĂ
     if (!user) return;
 
-    // dacă este admin → NU are voie aici
+    // dacă este admin → redirect în dashboard
     if (user.role === "admin") {
       router.push("/dashboard");
       return;

@@ -118,8 +118,8 @@ export default function HomePage() {
 
               {/* CTA BUTTONS */}
               <div className="flex flex-wrap gap-3 text-sm">
-                <a href="/dashboard/products/add" className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold">
-                  Adaugă anunț (AI)
+                <a href="/add-product" className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold">
+                  Adaugă anunț
                 </a>
                 <a href="#oferte" className="px-4 py-2.5 rounded-xl border border-white/15 hover:border-cyan-400 text-white/80 hover:text-cyan-300 transition">
                   Explorează oferte

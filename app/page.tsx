@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import ProductsList from "@/components/ProductsList";
 
 const mockCategories = [
   { id: 1, name: "Telefoane", slug: "telefoane" },
@@ -23,6 +24,7 @@ const mockAiRecs = [
   { id: 2, name: "Kit Smart Home", desc: "Control complet al casei tale" },
   { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio experience" },
 ];
+
 export default function HomePage() {
   const [search, setSearch] = useState("");
 
@@ -158,6 +160,12 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* 🔥 PRODUSE LISTATE PE HOMEPAGE */}
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold">Produse disponibile</h2>
+            <ProductsList />
           </section>
 
           {/* BENTO GRID CATEGORII */}

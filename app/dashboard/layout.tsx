@@ -18,56 +18,29 @@ import {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const [collapsed, setCollapsed] = useState(false);
-  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const check = () => {
-      // nu blocăm login/register
-      if (pathname.includes("login") || pathname.includes("register")) {
-        setChecking(false);
-        return;
-      }
+    if (loading) return;
 
-      // dacă userul există → acces
-      if (user) {
-        setChecking(false);
-        return;
-      }
+    const token = localStorage.getItem("token");
 
-      // dacă există token → așteptăm UserContext să încarce userul
-      const token = localStorage.getItem("token");
-      if (token) {
-        // nu redirectăm încă
-        return;
-      }
-
-      // dacă nu există token → redirect
+    if (!token || !user) {
       router.push("/login");
-    };
+    }
+  }, [loading, user]);
 
-    check();
-  }, [user, pathname]);
-
-  // 🔥 Dacă încă verificăm → loading
-  if (checking && !user) {
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen text-white">
-        Se încarcă datele utilizatorului...
+        Se încarcă...
       </div>
     );
   }
 
-  // 🔥 Dacă userul nu există după încărcare → redirect
-  if (!user) {
-    router.push("/login");
-    return null;
-  }
-
   return (
     <div className="flex min-h-screen bg-[#020312] text-white">
-
       {/* SIDEBAR */}
       <aside
         className={`relative flex flex-col transition-all duration-300 border-r border-cyan-500/30 bg-[#05071a]/80 backdrop-blur-xl`}
@@ -92,20 +65,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             {collapsed ? "GEH" : "GOSPO Electro Hub"}
           </div>
-          {!collapsed && (
-            <p className="text-xs text-white/60 mt-1 tracking-wide">
-              AI Control Center
-            </p>
-          )}
         </div>
 
         <div className="mt-10 flex flex-col gap-3">
-          <SidebarLink href="/" icon={<FaHome />} label="Back to Home" active={false} collapsed={collapsed} />
-          <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" active={pathname === "/dashboard"} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" active={pathname.startsWith("/dashboard/products")} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" active={pathname.startsWith("/dashboard/categories")} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" active={pathname.startsWith("/dashboard/users")} collapsed={collapsed} />
-          <SidebarLink href="/dashboard/settings" icon={<FaCog />} label="Settings" active={pathname.startsWith("/dashboard/settings")} collapsed={collapsed} />
+          <SidebarLink href="/" icon={<FaHome />} label="Back to Home" collapsed={collapsed} />
+          <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" collapsed={collapsed} />
+          <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" collapsed={collapsed} />
+          <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" collapsed={collapsed} />
+          <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" collapsed={collapsed} />
+          <SidebarLink href="/dashboard/settings" icon={<FaCog />} label="Settings" collapsed={collapsed} />
         </div>
 
         <div className="flex-1" />
@@ -118,26 +86,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 }
 
-function SidebarLink({
-  href,
-  icon,
-  label,
-  active = false,
-  collapsed,
-  danger = false,
-}: {
-  href: string;
-  icon: any;
-  label: string;
-  active?: boolean;
-  collapsed: boolean;
-  danger?: boolean;
-}) {
+function SidebarLink({ href, icon, label, collapsed, danger = false }: any) {
   return (
     <Link
       href={href}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
-        ${active ? "bg-cyan-600/30 border border-cyan-400/40" : "hover:bg-white/10"}
+        hover:bg-white/10
         ${danger ? "text-red-400 hover:bg-red-500/20" : "text-white"}
       `}
       style={{ justifyContent: collapsed ? "center" : "flex-start" }}

@@ -11,15 +11,19 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
 
   useEffect(() => {
-    if (loading) return;
-
     const token = localStorage.getItem("token");
 
-    // dacă nu e logat → login
-    if (!token || !user) {
+    // dacă nu există token → login
+    if (!token) {
       router.push("/login");
       return;
     }
+
+    // dacă încă se încarcă userul → așteptăm
+    if (loading) return;
+
+    // dacă userul nu e încă încărcat → așteptăm
+    if (!user) return;
 
     // dacă este admin → NU are voie aici
     if (user.role === "admin") {
@@ -28,6 +32,7 @@ export default function UserProfilePage() {
     }
   }, [loading, user]);
 
+  // loader cât timp se încarcă userul
   if (loading || !user) {
     return <div className="text-white p-10">Se încarcă...</div>;
   }

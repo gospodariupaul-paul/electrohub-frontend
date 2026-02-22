@@ -12,6 +12,9 @@ export default function LogoutPage() {
     // Ștergem token-ul
     localStorage.removeItem("token");
 
+    // Ștergem userData vechi
+    localStorage.removeItem("userData");
+
     // Resetăm userul din context
     setUser(null);
 
@@ -20,7 +23,7 @@ export default function LogoutPage() {
   }, []);
 
   return (
-    <div className="p-10 text-center text-white">
+    <div className="text-white p-10 text-center">
       Se deloghează...
     </div>
   );

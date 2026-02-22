@@ -7,37 +7,48 @@ export default function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <nav className="w-full bg-[#070a20] text-white px-6 py-4 flex justify-between items-center border-b border-white/10">
-      <Link href="/" className="text-2xl font-bold">
+    <nav className="w-full bg-[#0f131b] border-b border-white/10 p-4 flex items-center justify-between text-white">
+      <Link href="/" className="text-xl font-bold">
         ElectroHub
       </Link>
 
-      <div className="flex items-center gap-6">
+      {/* 🔥 Dacă userul este logat */}
+      {session ? (
+        <div className="flex items-center gap-6">
 
-        <Link href="/services" className="hover:text-cyan-400">Servicii</Link>
-        <Link href="/portfolio" className="hover:text-cyan-400">Portofoliu</Link>
-        <Link href="/about" className="hover:text-cyan-400">Despre Noi</Link>
-        <Link href="/contact" className="hover:text-cyan-400">Contact</Link>
-
-        {session ? (
-          <>
-            <Link href="/my-account" className="hover:text-cyan-400">
-              Contul meu
-            </Link>
-
-            <button
-              onClick={() => signOut()}
-              className="hover:text-red-400"
-            >
-              Delogare
-            </button>
-          </>
-        ) : (
-          <Link href="/login" className="hover:text-cyan-400">
-            Autentificare
+          <Link href="/chat" className="hover:text-cyan-400">
+            Chat
           </Link>
-        )}
-      </div>
+
+          <Link href="/notifications" className="hover:text-cyan-400">
+            Notificări
+          </Link>
+
+          <Link href={`/user/${session.user.id}`} className="hover:text-cyan-400">
+            Contul tău
+          </Link>
+
+          <Link
+            href="/dashboard/products/add"
+            className="px-4 py-2 bg-emerald-500 text-black rounded-lg font-semibold"
+          >
+            Adaugă anunț nou
+          </Link>
+
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
+          >
+            Logout
+          </button>
+
+        </div>
+      ) : (
+        /* 🔥 Dacă userul NU este logat */
+        <Link href="/login" className="hover:text-cyan-400">
+          Autentificare
+        </Link>
+      )}
     </nav>
   );
 }

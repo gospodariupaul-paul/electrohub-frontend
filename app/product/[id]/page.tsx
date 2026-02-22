@@ -52,7 +52,6 @@ export default function PublicProductPage() {
   return (
     <div className="p-6 text-white max-w-3xl mx-auto space-y-6">
 
-      {/* Imagine */}
       {product.imageUrl && (
         <img
           src={product.imageUrl}
@@ -61,7 +60,6 @@ export default function PublicProductPage() {
         />
       )}
 
-      {/* Titlu + Preț */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">{product.name}</h1>
         <span className="text-2xl font-bold text-cyan-400">
@@ -69,16 +67,13 @@ export default function PublicProductPage() {
         </span>
       </div>
 
-      {/* Descriere */}
       <p className="opacity-80">{product.description}</p>
 
-      {/* Vânzător */}
       <div className="p-4 bg-[#070a20] border border-white/10 rounded-xl">
         <p className="opacity-70 text-sm">Vândut de:</p>
         <p className="text-lg font-semibold">{product.userName}</p>
       </div>
 
-      {/* Buton chat */}
       <button
         onClick={startChat}
         className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"

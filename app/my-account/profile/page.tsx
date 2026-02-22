@@ -19,10 +19,10 @@ export default function UserProfilePage() {
       return;
     }
 
-    // dacă încă se încarcă userul → AȘTEAPTĂ
+    // dacă încă se încarcă userul → așteptăm
     if (loading) return;
 
-    // dacă userul nu e încă încărcat → AȘTEAPTĂ
+    // dacă userul nu e încă încărcat → așteptăm
     if (!user) return;
 
     // dacă este admin → redirect în dashboard
@@ -32,9 +32,13 @@ export default function UserProfilePage() {
     }
   }, [loading, user]);
 
-  // loader cât timp se încarcă userul
+  // dacă încă se încarcă userul → loader
   if (loading || !user) {
-    return <div className="text-white p-10">Se încarcă...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Se încarcă...
+      </div>
+    );
   }
 
   return (
@@ -49,6 +53,7 @@ export default function UserProfilePage() {
         <nav className="space-y-3">
           <SidebarItem label="Anunțuri" />
           <SidebarItem label="Chat" />
+          <SidebarItem label="Notificări" />
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
@@ -104,7 +109,7 @@ export default function UserProfilePage() {
 
         {/* LISTA ANUNȚURI */}
         <div className="text-center opacity-70 py-20">
-          <p>Nu ai anunțuri în această categorie.</p>
+          <p>Se afișează 0 anunțuri</p>
           <p className="text-sm mt-2">
             Anunțurile active rămân aici până expiră.
           </p>

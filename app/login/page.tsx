@@ -3,14 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
+import { useUser } from "@/app/context/UserContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser } = useUser();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: any) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -20,17 +23,23 @@ export default function LoginPage() {
         password,
       });
 
-      // 🔥 Salvăm token + user în localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const user = res.data.user;
+      const token = res.data.token;
+
+      // 🔥 Salvăm token + userData EXACT cum vrea UserContext
+      localStorage.setItem("token", token);
+      localStorage.setItem("userData", JSON.stringify(user));
+
+      // 🔥 Actualizăm UserContext
+      setUser(user);
 
       // 🔥 Dacă este ADMIN → dashboard
-      if (res.data.user.role === "admin") {
+      if (user.role === "admin") {
         router.push("/dashboard");
         return;
       }
 
-      // 🔥 Dacă este USER NORMAL → my-account
+      // 🔥 Dacă este USER NORMAL → pagina lui
       router.push("/my-account/profile");
 
     } catch (err) {

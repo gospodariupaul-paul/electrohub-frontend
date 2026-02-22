@@ -20,43 +20,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const { user } = useUser();
   const [collapsed, setCollapsed] = useState(false);
-  const [checking, setChecking] = useState(true); // 🔥 loading state
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const checkAccess = () => {
+    const check = () => {
       // nu blocăm login/register
       if (pathname.includes("login") || pathname.includes("register")) {
         setChecking(false);
         return;
       }
 
-      // dacă userul există în context → acces
+      // dacă userul există → acces
       if (user) {
         setChecking(false);
         return;
       }
 
-      // dacă există token în localStorage → acces
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      // dacă există token → așteptăm UserContext să încarce userul
+      const token = localStorage.getItem("token");
       if (token) {
-        setChecking(false);
+        // nu redirectăm încă
         return;
       }
 
-      // altfel → redirect
+      // dacă nu există token → redirect
       router.push("/login");
     };
 
-    checkAccess();
+    check();
   }, [user, pathname]);
 
-  // 🔥 Dacă încă verificăm accesul → nu afișăm nimic
-  if (checking) {
+  // 🔥 Dacă încă verificăm → loading
+  if (checking && !user) {
     return (
       <div className="flex items-center justify-center min-h-screen text-white">
-        Se verifică accesul...
+        Se încarcă datele utilizatorului...
       </div>
     );
+  }
+
+  // 🔥 Dacă userul nu există după încărcare → redirect
+  if (!user) {
+    router.push("/login");
+    return null;
   }
 
   return (
@@ -70,7 +76,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           padding: "25px 15px",
         }}
       >
-        {/* Collapse button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="absolute top-4 right-[-15px] bg-cyan-600 hover:bg-cyan-500 text-white w-8 h-8 rounded-full flex items-center justify-center transition"
@@ -78,7 +83,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <FaChevronLeft className={`transition ${collapsed ? "rotate-180" : ""}`} />
         </button>
 
-        {/* Logo */}
         <div className="flex flex-col items-center mt-2">
           <div className="h-10 w-10 rounded-full bg-cyan-500 blur-md" />
           <div
@@ -95,7 +99,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
         </div>
 
-        {/* Navigation */}
         <div className="mt-10 flex flex-col gap-3">
           <SidebarLink href="/" icon={<FaHome />} label="Back to Home" active={false} collapsed={collapsed} />
           <SidebarLink href="/dashboard" icon={<FaChartLine />} label="Dashboard" active={pathname === "/dashboard"} collapsed={collapsed} />
@@ -107,17 +110,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="flex-1" />
 
-        {/* Logout */}
         <SidebarLink href="/logout" icon={<FaSignOutAlt />} label="Logout" collapsed={collapsed} danger={true} />
       </aside>
 
-      {/* CONTENT */}
       <main className="flex-1 p-6 md:p-10">{children}</main>
     </div>
   );
 }
 
-/* SIDEBAR LINK COMPONENT */
 function SidebarLink({
   href,
   icon,

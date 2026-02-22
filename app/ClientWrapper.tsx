@@ -1,20 +1,21 @@
-﻿"use client";
+"use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
+import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 
 export default function AddProductPage() {
   const router = useRouter();
+  const { user } = useUser();
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(1);
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState<string>("");
   const [images, setImages] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // 🔥 Upload în Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string> => {
@@ -31,11 +32,9 @@ export default function AddProductPage() {
     );
 
     const data = await res.json();
-    console.log("CLOUDINARY RESPONSE:", data);
     return data.secure_url;
   };
 
-  // 🔥 Upload + PREVIEW
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
 
@@ -54,13 +53,6 @@ export default function AddProductPage() {
     setImages((prev) => [...prev, ...uploaded]);
   };
 
-  // 🔥 ȘTERGERE IMAGINE
-  const removeImage = (index: number) => {
-    const updated = images.filter((_, i) => i !== index);
-    setImages(updated);
-    setCurrentIndex(0);
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -69,13 +61,13 @@ export default function AddProductPage() {
       const token = localStorage.getItem("token");
 
       await axiosInstance.post(
-        "/products/create",
+        "/products",
         {
           name,
           price,
           stock,
           description,
-          images, // 🔥 URL-uri Cloudinary
+          images,
           categoryId,
         },
         {
@@ -101,7 +93,7 @@ export default function AddProductPage() {
         onSubmit={handleSubmit}
         className="bg-[#0a0f2d] p-8 rounded-xl border border-white/10 w-full max-w-3xl"
       >
-        {/* 🔙 BUTON ÎNAPOI */}
+        {/* BUTON ÎNAPOI */}
         <button
           type="button"
           onClick={() => router.push("/my-account/profile")}
@@ -162,87 +154,24 @@ export default function AddProductPage() {
             <option value="">Alege categoria</option>
             <option value="1">Telefoane</option>
             <option value="2">Laptopuri</option>
-            <option value="3">Componente PC</option>
-            <option value="4">Audio-Video</option>
+            <option value="3">Electrocasnice</option>
+            <option value="4">Gaming</option>
           </select>
         </label>
 
-        {/* IMAGINI + CAROUSEL + DOTS + DELETE */}
+        {/* IMAGINI */}
         <div className="mb-6">
           <span className="text-sm opacity-80">Imagini</span>
 
           {images.length > 0 && (
-            <div className="mt-3">
-
-              {/* CAROUSEL */}
-              <div className="relative w-full h-64 overflow-hidden rounded-xl border border-white/20">
+            <div className="grid grid-cols-4 gap-3 mt-3">
+              {images.map((img, i) => (
                 <img
-                  src={images[currentIndex]}
-                  className="w-full h-full object-cover"
+                  key={i}
+                  src={img}
+                  className="w-full h-28 object-cover rounded-lg border border-white/20"
                 />
-
-                {/* SĂGEATA STÂNGA */}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setCurrentIndex((prev) =>
-                      prev === 0 ? images.length - 1 : prev - 1
-                    )
-                  }
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white px-3 py-2 rounded-full"
-                >
-                  ‹
-                </button>
-
-                {/* SĂGEATA DREAPTA */}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setCurrentIndex((prev) =>
-                      prev === images.length - 1 ? 0 : prev + 1
-                    )
-                  }
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white px-3 py-2 rounded-full"
-                >
-                  ›
-                </button>
-
-                {/* BUTON ȘTERGERE */}
-                <button
-                  type="button"
-                  onClick={() => removeImage(currentIndex)}
-                  className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded"
-                >
-                  Șterge
-                </button>
-              </div>
-
-              {/* DOTS */}
-              <div className="flex justify-center gap-2 mt-3">
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentIndex(i)}
-                    className={`w-3 h-3 rounded-full ${
-                      i === currentIndex ? "bg-cyan-400" : "bg-white/30"
-                    }`}
-                  />
-                ))}
-              </div>
-
-              {/* THUMBNAILS */}
-              <div className="grid grid-cols-4 gap-3 mt-4">
-                {images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    onClick={() => setCurrentIndex(i)}
-                    className={`w-full h-20 object-cover rounded-lg border cursor-pointer ${
-                      i === currentIndex ? "border-cyan-400" : "border-white/20"
-                    }`}
-                  />
-                ))}
-              </div>
+              ))}
             </div>
           )}
 

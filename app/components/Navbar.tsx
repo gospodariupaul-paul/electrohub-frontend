@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
+import { signOut as nextAuthSignOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
+  const { data: session } = useSession(); // admin login
+  const [user, setUser] = useState<any>(null); // normal user login
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) return;
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
@@ -20,13 +20,20 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
+  const loggedUser = user || session?.user;
+
   return (
     <nav className="w-full bg-[#0f131b] border-b border-white/10 p-4 flex items-center justify-between text-white">
       <Link href="/" className="text-xl font-bold">
         ElectroHub
       </Link>
 
-      {user ? (
+      {loggedUser ? (
         <div className="flex items-center gap-6">
 
           <Link href="/chat" className="hover:text-cyan-400">
@@ -37,7 +44,7 @@ export default function Navbar() {
             Notificări
           </Link>
 
-          <Link href={`/user/${user.id}`} className="hover:text-cyan-400">
+          <Link href={`/user/${loggedUser.id}`} className="hover:text-cyan-400">
             Contul tău
           </Link>
 
@@ -48,15 +55,21 @@ export default function Navbar() {
             Adaugă anunț nou
           </Link>
 
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              window.location.href = "/";
-            }}
-            className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
-          >
-            Logout
-          </button>
+          {session ? (
+            <button
+              onClick={() => nextAuthSignOut({ callbackUrl: "/" })}
+              className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
+            >
+              Logout
+            </button>
+          )}
 
         </div>
       ) : (

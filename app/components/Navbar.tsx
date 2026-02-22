@@ -1,29 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { signOut as nextAuthSignOut, useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { useUser } from "../context/UserContext";
 
 export default function Navbar() {
-  const { data: session } = useSession(); // admin login
-  const [user, setUser] = useState<any>(null); // normal user login
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setUser(data))
-      .catch(() => {});
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
-  };
+  const { data: session } = useSession(); // admin
+  const { user } = useUser(); // user normal
 
   const loggedUser = user || session?.user;
 
@@ -55,21 +38,16 @@ export default function Navbar() {
             Adaugă anunț nou
           </Link>
 
-          {session ? (
-            <button
-              onClick={() => nextAuthSignOut({ callbackUrl: "/" })}
-              className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
-            >
-              Logout
-            </button>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
-            >
-              Logout
-            </button>
-          )}
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              signOut({ callbackUrl: "/" });
+              window.location.href = "/";
+            }}
+            className="px-4 py-2 bg-red-500 text-black rounded-lg font-semibold"
+          >
+            Logout
+          </button>
 
         </div>
       ) : (

@@ -30,10 +30,7 @@ export default function UserPublicPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 text-white space-y-6">
 
-      <h1 className="text-3xl font-bold">
-        Profilul lui {user.name}
-      </h1>
-
+      <h1 className="text-3xl font-bold">Profilul lui {user.name}</h1>
       <p className="opacity-70">{user.email}</p>
 
       <Link
@@ -52,16 +49,9 @@ export default function UserPublicPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((p: any) => (
           <div key={p.id} className="bg-white/5 border border-white/10 p-4 rounded-xl">
-            {p.imageUrl && (
-              <img
-                src={p.imageUrl}
-                className="w-full h-40 object-cover rounded-lg"
-              />
-            )}
-
+            <img src={p.imageUrl} className="w-full h-40 object-cover rounded-lg" />
             <h3 className="font-bold mt-2">{p.name}</h3>
             <p className="text-cyan-400 font-semibold">{p.price} lei</p>
-
             <Link
               href={`/product/${p.id}`}
               className="block mt-3 bg-cyan-500 text-black text-center py-2 rounded-lg"

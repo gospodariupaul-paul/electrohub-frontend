@@ -1,27 +1,25 @@
 ﻿"use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
-import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 
 export default function AddProductPage() {
   const router = useRouter();
-  const { user } = useUser();
 
-  const [title, setTitle] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [location, setLocation] = useState<string>("Iași");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState<number>(0);
+  const [stock, setStock] = useState<number>(1);
+  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  // 🔥 Upload în Cloudinary (unsigned preset)
+  // 🔥 Upload în Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
-
-    // ⚠️ Înlocuiește cu upload preset-ul tău UNSIGNED din Cloudinary
     formData.append("upload_preset", "electrohub_uploads");
 
     const res = await fetch(
@@ -33,12 +31,10 @@ export default function AddProductPage() {
     );
 
     const data = await res.json();
-    if (!data.secure_url) {
-      throw new Error("Cloudinary upload failed");
-    }
-    return data.secure_url as string;
+    return data.secure_url;
   };
 
+  // 🔥 Upload + PREVIEW
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
 
@@ -57,13 +53,15 @@ export default function AddProductPage() {
     setImages((prev) => [...prev, ...uploaded]);
   };
 
+  // 🔥 ȘTERGERE IMAGINE
+  const removeImage = (index: number) => {
+    const updated = images.filter((_, i) => i !== index);
+    setImages(updated);
+    setCurrentIndex(0);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      alert("Trebuie să fii autentificat pentru a publica un anunț.");
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -72,12 +70,12 @@ export default function AddProductPage() {
       await axiosInstance.post(
         "/products",
         {
-          title,
-          category,
+          name,
+          price,
+          stock,
           description,
-          location,
           images,
-          userId: user.id,
+          categoryId,
         },
         {
           headers: {
@@ -102,22 +100,53 @@ export default function AddProductPage() {
         onSubmit={handleSubmit}
         className="bg-[#0a0f2d] p-8 rounded-xl border border-white/10 w-full max-w-3xl"
       >
+        {/* 🔙 BUTON ÎNAPOI */}
+        <button
+          type="button"
+          onClick={() => router.push("/my-account/profile")}
+          className="mb-6 text-cyan-400 hover:text-cyan-300"
+        >
+          ← Înapoi la cont
+        </button>
+
         <h1 className="text-3xl font-bold mb-6">Publică un anunț</h1>
 
-        {/* TITLU */}
+        {/* NUME PRODUS */}
         <label className="block mb-4">
-          <span className="text-sm opacity-80">Adaugă titlul</span>
+          <span className="text-sm opacity-80">Titlu anunț</span>
           <input
             type="text"
             maxLength={70}
             className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
-          <div className="text-xs opacity-60 mt-1">
-            {title.length}/70 caractere
-          </div>
+        </label>
+
+        {/* PREȚ */}
+        <label className="block mb-4">
+          <span className="text-sm opacity-80">Preț (€)</span>
+          <input
+            type="number"
+            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
+            value={price}
+            onChange={(e) => setPrice(parseFloat(e.target.value))}
+            required
+          />
+        </label>
+
+        {/* STOC */}
+        <label className="block mb-4">
+          <span className="text-sm opacity-80">Stoc</span>
+          <input
+            type="number"
+            min={1}
+            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
+            value={stock}
+            onChange={(e) => setStock(parseInt(e.target.value))}
+            required
+          />
         </label>
 
         {/* CATEGORIE */}
@@ -125,32 +154,94 @@ export default function AddProductPage() {
           <span className="text-sm opacity-80">Categoria*</span>
           <select
             className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={categoryId ?? ""}
+            onChange={(e) => setCategoryId(parseInt(e.target.value))}
             required
           >
             <option value="">Alege categoria</option>
-            <option value="telefoane">Telefoane</option>
-            <option value="laptopuri">Laptopuri</option>
-            <option value="electrocasnice">Electrocasnice</option>
-            <option value="gaming">Gaming</option>
+            <option value="1">Telefoane</option>
+            <option value="2">Laptopuri</option>
+            <option value="3">Componente PC</option>
+            <option value="4">Audio-Video</option>
           </select>
         </label>
 
-        {/* IMAGINI */}
+        {/* IMAGINI + CAROUSEL + DOTS + DELETE */}
         <div className="mb-6">
           <span className="text-sm opacity-80">Imagini</span>
 
           {images.length > 0 && (
-            <div className="grid grid-cols-4 gap-3 mt-3">
-              {images.map((img, i) => (
+            <div className="mt-3">
+
+              {/* CAROUSEL */}
+              <div className="relative w-full h-64 overflow-hidden rounded-xl border border-white/20">
                 <img
-                  key={i}
-                  src={img}
-                  className="w-full h-28 object-cover rounded-lg border border-white/20"
-                  alt={`Imagine ${i + 1}`}
+                  src={images[currentIndex]}
+                  className="w-full h-full object-cover"
                 />
-              ))}
+
+                {/* SĂGEATA STÂNGA */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentIndex((prev) =>
+                      prev === 0 ? images.length - 1 : prev - 1
+                    )
+                  }
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white px-3 py-2 rounded-full"
+                >
+                  ‹
+                </button>
+
+                {/* SĂGEATA DREAPTA */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentIndex((prev) =>
+                      prev === images.length - 1 ? 0 : prev + 1
+                    )
+                  }
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white px-3 py-2 rounded-full"
+                >
+                  ›
+                </button>
+
+                {/* BUTON ȘTERGERE */}
+                <button
+                  type="button"
+                  onClick={() => removeImage(currentIndex)}
+                  className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded"
+                >
+                  Șterge
+                </button>
+              </div>
+
+              {/* DOTS */}
+              <div className="flex justify-center gap-2 mt-3">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentIndex(i)}
+                    className={`w-3 h-3 rounded-full ${
+                      i === currentIndex ? "bg-cyan-400" : "bg-white/30"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* THUMBNAILS */}
+              <div className="grid grid-cols-4 gap-3 mt-4">
+                {images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img}
+                    onClick={() => setCurrentIndex(i)}
+                    className={`w-full h-20 object-cover rounded-lg border cursor-pointer ${
+                      i === currentIndex ? "border-cyan-400" : "border-white/20"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
@@ -161,9 +252,6 @@ export default function AddProductPage() {
             onChange={handleImageUpload}
             className="mt-3"
           />
-          <div className="text-xs opacity-60 mt-1">
-            Poți încărca până la 8 imagini.
-          </div>
         </div>
 
         {/* DESCRIERE */}
@@ -174,41 +262,10 @@ export default function AddProductPage() {
             value={description}
             maxLength={9000}
             onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-          <div className="text-xs opacity-60 mt-1">
-            {description.length}/9000 caractere
-          </div>
-        </label>
-
-        {/* LOCALITATE */}
-        <label className="block mb-4">
-          <span className="text-sm opacity-80">Localitate*</span>
-          <input
-            type="text"
-            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
           />
         </label>
 
-        {/* DATE CONTACT */}
-        {user && (
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">
-              Informații de contact
-            </h2>
-
-            <p className="opacity-80">Persoană de contact: {user.name}</p>
-            <p className="opacity-80">Email: {user.email}</p>
-            <p className="opacity-80">
-              Telefon: {user.phone || "Nespecificat"}
-            </p>
-          </div>
-        )}
-
-        {/* BUTON */}
+        {/* BUTON PUBLICARE */}
         <button
           type="submit"
           disabled={loading}

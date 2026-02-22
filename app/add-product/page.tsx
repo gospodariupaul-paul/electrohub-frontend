@@ -31,11 +31,11 @@ export default function AddProductPage() {
     );
 
     const data = await res.json();
-    console.log("CLOUDINARY RESPONSE:", data);
+    console.log("CLOUDINARY RESPONSE:", data); // 🔥 VEZI EXACT CE ÎȚI DĂ CLOUDINARY
     return data.secure_url;
   };
 
-  // 🔥 Upload + PREVIEW
+  // 🔥 Upload + PREVIEW + LOG-URI
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
 
@@ -48,10 +48,19 @@ export default function AddProductPage() {
 
     for (const file of files) {
       const url = await uploadToCloudinary(file);
+
+      console.log("URL CLOUDINARY:", url); // 🔥 AICI VEZI DACĂ URL ESTE UNDEFINED
+
       uploaded.push(url);
     }
 
-    setImages((prev) => [...prev, ...uploaded]);
+    setImages((prev) => {
+      const finalImages = [...prev, ...uploaded];
+
+      console.log("IMAGINI IN STATE:", finalImages); // 🔥 AICI VEZI CE AJUNGE ÎN STATE
+
+      return finalImages;
+    });
   };
 
   // 🔥 ȘTERGERE IMAGINE

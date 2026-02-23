@@ -8,31 +8,55 @@ import Link from "next/link";
 export default function UserProfilePage() {
   const { user, loading } = useUser();
   const router = useRouter();
-  const [tab, setTab] = useState("active");
 
+  const [tab, setTab] = useState("active");
+  const [products, setProducts] = useState([]);
+
+  // 🔥 Fetch produse user
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchProducts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/user/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Eroare la fetch produse:", err);
+      }
+    };
+
+    fetchProducts();
+  }, [user]);
+
+  // 🔥 Redirect dacă nu e logat
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // dacă nu există token → login
     if (!token) {
       router.push("/login");
       return;
     }
 
-    // dacă încă se încarcă userul → așteptăm
     if (loading) return;
-
-    // dacă userul nu e încă încărcat → așteptăm
     if (!user) return;
 
-    // dacă este admin → redirect în dashboard
     if (user.role === "admin") {
       router.push("/dashboard");
       return;
     }
   }, [loading, user]);
 
-  // dacă încă se încarcă userul → loader
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
@@ -43,7 +67,7 @@ export default function UserProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#020312] text-white flex">
-      {/* SIDEBAR USER */}
+      {/* SIDEBAR */}
       <aside className="w-72 bg-[#05071a] border-r border-white/10 p-6 space-y-6">
         <div>
           <h2 className="text-xl font-bold">Contul tău</h2>
@@ -51,16 +75,14 @@ export default function UserProfilePage() {
         </div>
 
         <nav className="space-y-3">
-          <SidebarItem label="Anunțuri" />
+          <SidebarItem label="Anunțuri" active />
           <SidebarItem label="Chat" />
           <SidebarItem label="Notificări" />
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
-          <SidebarItem label="Profil" active />
+          <SidebarItem label="Profil" />
           <SidebarItem label="Setări" />
-          <SidebarItem label="Livrare prin ElectroHub" />
-          <SidebarItem label="Pachetele" />
         </nav>
 
         <div className="pt-6 border-t border-white/10">
@@ -85,13 +107,6 @@ export default function UserProfilePage() {
           </Link>
         </div>
 
-        {/* SOLD + CREDITE */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <InfoCard title="Sold cont" value="0 €" />
-          <InfoCard title="Credite disponibile" value="0 cr" />
-          <InfoCard title="Pachete active" value="0" />
-        </div>
-
         {/* TAB-URI */}
         <div className="flex gap-4 mb-6 border-b border-white/10 pb-2">
           {["active", "pending", "topay", "disabled", "moderated"].map((t) => (
@@ -107,20 +122,38 @@ export default function UserProfilePage() {
           ))}
         </div>
 
-        {/* LISTA ANUNȚURI */}
-        <div className="text-center opacity-70 py-20">
-          <p>Se afișează 0 anunțuri</p>
-          <p className="text-sm mt-2">
-            Anunțurile active rămân aici până expiră.
-          </p>
-
-          <Link
-            href="/add-product"
-            className="mt-4 inline-block px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg"
-          >
-            Publică un anunț
-          </Link>
-        </div>
+        {/* LISTA PRODUSE ACTIVE */}
+        {tab === "active" && (
+          <div>
+            {products.length === 0 ? (
+              <div className="text-center opacity-70 py-20">
+                <p>Nu ai anunțuri active</p>
+                <Link
+                  href="/add-product"
+                  className="mt-4 inline-block px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg"
+                >
+                  Publică un anunț
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {products.map((p: any) => (
+                  <div
+                    key={p.id}
+                    className="bg-[#070a20] border border-white/10 rounded-xl p-4"
+                  >
+                    <img
+                      src={p.images[0]}
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                    <h3 className="text-lg font-bold mt-3">{p.name}</h3>
+                    <p className="opacity-70">{p.price} €</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
@@ -134,15 +167,6 @@ function SidebarItem({ label, active }: { label: string; active?: boolean }) {
       }`}
     >
       {label}
-    </div>
-  );
-}
-
-function InfoCard({ title, value }: { title: string; value: string }) {
-  return (
-    <div className="bg-[#070a20] border border-white/10 rounded-xl p-4">
-      <p className="opacity-70 text-sm">{title}</p>
-      <h3 className="text-2xl font-bold mt-1">{value}</h3>
     </div>
   );
 }

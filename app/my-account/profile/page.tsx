@@ -12,7 +12,7 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
-  // 🔥 Fetch produse user
+  // Fetch produse user
   useEffect(() => {
     if (!user) return;
 
@@ -39,7 +39,7 @@ export default function UserProfilePage() {
     fetchProducts();
   }, [user]);
 
-  // 🔥 Redirect dacă nu e logat
+  // Redirect dacă nu e logat
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -143,7 +143,7 @@ export default function UserProfilePage() {
                     className="bg-[#070a20] border border-white/10 rounded-xl p-4"
                   >
                     <img
-                      src={p.images[0]}
+                      src={p.images?.[0] || "/placeholder.png"}
                       className="w-full h-40 object-cover rounded-lg"
                     />
                     <h3 className="text-lg font-bold mt-3">{p.name}</h3>

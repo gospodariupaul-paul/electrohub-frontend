@@ -77,6 +77,16 @@ export default function AddProductPage() {
     try {
       const token = localStorage.getItem("token");
 
+      // 🔥 FIX CRITIC: luăm userId din localStorage
+      const userData = localStorage.getItem("user");
+      const user = userData ? JSON.parse(userData) : null;
+
+      if (!user?.id) {
+        alert("Eroare: utilizatorul nu este autentificat.");
+        setLoading(false);
+        return;
+      }
+
       await axiosInstance.post(
         "/products/create",
         {
@@ -85,7 +95,8 @@ export default function AddProductPage() {
           stock,
           description,
           images,
-          categoryId, // 🔥 FIX: niciodată null
+          categoryId,
+          userId: user.id, // 🔥 FIX CRITIC
         },
         {
           headers: {

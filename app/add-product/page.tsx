@@ -87,6 +87,17 @@ export default function AddProductPage() {
         return;
       }
 
+      // 🔥 AICI AM ADAUGAT DOAR ACEST console.log
+      console.log("DATA TRIMISA CATRE BACKEND:", {
+        name,
+        price,
+        stock,
+        description,
+        images,
+        categoryId,
+        userId: user.id,
+      });
+
       await axiosInstance.post(
         "/products/create",
         {
@@ -192,14 +203,12 @@ export default function AddProductPage() {
 
           {images.length > 0 && (
             <div className="mt-3">
-              {/* CAROUSEL */}
               <div className="relative w-full h-64 overflow-hidden rounded-xl border border-white/20">
                 <img
                   src={images[currentIndex]}
                   className="w-full h-full object-cover"
                 />
 
-                {/* SĂGEATA STÂNGA */}
                 <button
                   type="button"
                   onClick={() =>
@@ -212,7 +221,6 @@ export default function AddProductPage() {
                   ‹
                 </button>
 
-                {/* SĂGEATA DREAPTA */}
                 <button
                   type="button"
                   onClick={() =>
@@ -225,7 +233,6 @@ export default function AddProductPage() {
                   ›
                 </button>
 
-                {/* BUTON ȘTERGERE */}
                 <button
                   type="button"
                   onClick={() => removeImage(currentIndex)}
@@ -235,7 +242,6 @@ export default function AddProductPage() {
                 </button>
               </div>
 
-              {/* DOTS */}
               <div className="flex justify-center gap-2 mt-3">
                 {images.map((_, i) => (
                   <button
@@ -248,7 +254,6 @@ export default function AddProductPage() {
                 ))}
               </div>
 
-              {/* THUMBNAILS */}
               <div className="grid grid-cols-4 gap-3 mt-4">
                 {images.map((img, i) => (
                   <img

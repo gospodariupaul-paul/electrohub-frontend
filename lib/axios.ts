@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "/api", // FOARTE IMPORTANT — folosește API-ul Next.js
+  baseURL: "",
   withCredentials: true,
 });
 

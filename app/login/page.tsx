@@ -24,22 +24,25 @@ export default function LoginPage() {
       });
 
       const user = res.data.user;
-      const token = res.data.token;
+      const accessToken = res.data.accessToken;
+      const refreshToken = res.data.refreshToken;
 
-      // 🔥 Salvăm token + userData EXACT cum vrea UserContext
-      localStorage.setItem("token", token);
+      // 🔥 Salvăm token-urile corect
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      // 🔥 Salvăm user-ul
       localStorage.setItem("userData", JSON.stringify(user));
 
       // 🔥 Actualizăm UserContext
       setUser(user);
 
-      // 🔥 Dacă este ADMIN → dashboard
+      // 🔥 Redirect în funcție de rol
       if (user.role === "admin") {
         router.push("/dashboard");
         return;
       }
 
-      // 🔥 Dacă este USER NORMAL → pagina lui
       router.push("/my-account/profile");
 
     } catch (err) {

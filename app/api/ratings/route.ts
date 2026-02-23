@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { connectDB } from "@/lib/mongodb";
+import mongoose, { ObjectId } from "mongoose";
 
 export async function POST(req: Request) {
   try {
@@ -10,27 +10,22 @@ export async function POST(req: Request) {
     const user = session?.user;
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Neautorizat" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Neautorizat" }, { status: 401 });
     }
 
     const body = await req.json();
     const { orderId, stars, comment } = body;
 
     if (!orderId || !stars) {
-      return NextResponse.json(
-        { error: "Date incomplete" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Date incomplete" }, { status: 400 });
     }
 
-    const client = await clientPromise;
-    const db = client.db("electrohub");
+    // Conectăm Mongoose
+    await connectDB();
 
-    // Convertim orderId în ObjectId
-    const orderObjectId = new ObjectId(orderId);
+    const db = mongoose.connection.db;
+
+    const orderObjectId = new mongoose.Types.ObjectId(orderId);
 
     // 1. Verificăm dacă userul are voie să lase rating
     const order = await db.collection("orders").findOne({
@@ -91,9 +86,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("RATING API ERROR:", err);
-    return NextResponse.json(
-      { error: "Eroare server" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Eroare server" }, { status: 500 });
   }
 }

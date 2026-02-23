@@ -106,7 +106,7 @@ export default function AddProductPage() {
       );
 
       alert("Anunț publicat cu succes!");
-      router.push("/"); // 🔥 redirect pe homepage
+      router.push("/my-account/profile"); // 🔥 FIX: rămâi în pagina ta de user
     } catch (err) {
       console.error(err);
       alert("Eroare la publicarea anunțului");

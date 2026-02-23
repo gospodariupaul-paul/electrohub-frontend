@@ -77,8 +77,8 @@ export default function AddProductPage() {
     try {
       const token = localStorage.getItem("token");
 
-      // 🔥 FIX CRITIC: luăm userId din localStorage
-      const userData = localStorage.getItem("user");
+      // 🔥 FIX CRITIC: luăm userId din localStorage (userData, nu user)
+      const userData = localStorage.getItem("userData");
       const user = userData ? JSON.parse(userData) : null;
 
       if (!user?.id) {

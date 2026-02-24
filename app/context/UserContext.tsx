@@ -9,15 +9,19 @@ export function UserProvider({ children }: any) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("userData"); // FIX: cheia corectă
+    try {
+      const token = localStorage.getItem("token");
+      const userData = localStorage.getItem("userData");
 
-    if (token && userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch {
+      if (token && userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+      } else {
         setUser(null);
       }
+    } catch (err) {
+      console.error("Failed to load user from localStorage:", err);
+      setUser(null);
     }
 
     setLoading(false);

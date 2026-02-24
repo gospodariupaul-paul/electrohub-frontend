@@ -5,33 +5,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
 
-const mockCategories = [
-  { id: 1, name: "Telefoane", slug: "telefoane" },
-  { id: 2, name: "Laptopuri", slug: "laptopuri" },
-  { id: 3, name: "Componente PC", slug: "componente-pc" },
-  { id: 4, name: "Drones", slug: "drones" },
-  { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
-  { id: 6, name: "Audio-Video", slug: "audio-video" },
-];
-
-const mockDeals = [
-  { id: 1, name: "Laptop UltraTech 15", price: "4999 lei", tag: "Hot Deal" },
-  { id: 2, name: "Telefon X Pro 2026", price: "2999 lei", tag: "Nou" },
-  { id: 3, name: "Căști Wireless Pro", price: "499 lei", tag: "Best Seller" },
-];
-
-const mockAiRecs = [
-  { id: 1, name: "Monitor 4K 144Hz", desc: "Perfect pentru setup de gaming" },
-  { id: 2, name: "Kit Smart Home", desc: "Control complet al casei tale" },
-  { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio experience" },
-];
-
 export default function HomePage() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
+  const [isLogged, setIsLogged] = useState(false);
 
-  // 🔥 FETCH REAL LA BACKEND
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      setIsLogged(!!token);
+    }
+
     axios
       .get("https://electrohub-backend-1-10qa.onrender.com/products")
       .then((res) => setProducts(res.data))
@@ -46,7 +30,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#050712] text-white flex flex-col">
 
-      {/* NAVBAR */}
+      {/* NAVBAR REPARAT */}
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
 
@@ -57,7 +41,6 @@ export default function HomePage() {
                   G
                 </span>
               </div>
-
               <div className="absolute inset-0 rounded-2xl border border-cyan-400/50 animate-pulse blur-[1px]" />
             </div>
 
@@ -73,15 +56,34 @@ export default function HomePage() {
 
           {/* AUTH BUTTONS */}
           <div className="flex items-center gap-3 text-sm">
-            <a href="/login" className="px-4 py-2 rounded-lg border border-white/15 hover:border-cyan-400 hover:text-cyan-300 transition">
-              Login
-            </a>
-            <a href="/register" className="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition">
-              Create account
-            </a>
-            <a href="/logout" className="hidden sm:inline px-4 py-2 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10 text-xs transition">
-              Logout
-            </a>
+
+            {!isLogged && (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 rounded-lg border border-white/15 hover:border-cyan-400 hover:text-cyan-300 transition"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/register"
+                  className="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition"
+                >
+                  Create account
+                </Link>
+              </>
+            )}
+
+            {isLogged && (
+              <Link
+                href="/logout"
+                prefetch={false}
+                className="px-4 py-2 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10 text-xs transition"
+              >
+                Logout
+              </Link>
+            )}
           </div>
 
         </div>
@@ -128,9 +130,9 @@ export default function HomePage() {
 
               {/* CTA BUTTONS */}
               <div className="flex flex-wrap gap-3 text-sm">
-                <a href="/add-product" className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold">
+                <Link href="/add-product" className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold">
                   Adaugă anunț
-                </a>
+                </Link>
                 <a href="#oferte" className="px-4 py-2.5 rounded-xl border border-white/15 hover:border-cyan-400 text-white/80 hover:text-cyan-300 transition">
                   Explorează oferte
                 </a>
@@ -182,7 +184,14 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-4 gap-4">
-              {mockCategories.map((cat) => (
+              {[
+                { id: 1, name: "Telefoane", slug: "telefoane" },
+                { id: 2, name: "Laptopuri", slug: "laptopuri" },
+                { id: 3, name: "Componente PC", slug: "componente-pc" },
+                { id: 4, name: "Drones", slug: "drones" },
+                { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
+                { id: 6, name: "Audio-Video", slug: "audio-video" },
+              ].map((cat) => (
                 <a
                   key={cat.id}
                   href={`/categorie/${cat.slug}`}
@@ -213,7 +222,11 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-4">
-              {mockDeals.map((deal) => (
+              {[
+                { id: 1, name: "Laptop UltraTech 15", price: "4999 lei", tag: "Hot Deal" },
+                { id: 2, name: "Telefon X Pro 2026", price: "2999 lei", tag: "Nou" },
+                { id: 3, name: "Căști Wireless Pro", price: "499 lei", tag: "Best Seller" },
+              ].map((deal) => (
                 <div
                   key={deal.id}
                   className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col justify-between"
@@ -244,7 +257,11 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-4">
-              {mockAiRecs.map((rec) => (
+              {[
+                { id: 1, name: "Monitor 4K 144Hz", desc: "Perfect pentru setup de gaming" },
+                { id: 2, name: "Kit Smart Home", desc: "Control complet al casei tale" },
+                { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio experience" },
+              ].map((rec) => (
                 <div
                   key={rec.id}
                   className="bg-gradient-to-br from-white/5 to-cyan-500/5 border border-white/10 rounded-xl p-4"

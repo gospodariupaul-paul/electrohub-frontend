@@ -15,6 +15,10 @@ export function UserProvider({ children }: any) {
 
       if (token && userData) {
         const parsedUser = JSON.parse(userData);
+
+        // 🔥 AICI — LOG IMPORTANT
+        console.log("USER LOGAT:", parsedUser);
+
         setUser(parsedUser);
       } else {
         setUser(null);

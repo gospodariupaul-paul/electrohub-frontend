@@ -1,23 +1,34 @@
 "use client";
 
-import { useUser } from "@/app/context/UserContext";
 import { useEffect, useState } from "react";
-import axiosInstance from "@/lib/axios";
-import Link from "next/link";
+import { useUser } from "@/app/context/UserContext";
 
 export default function MyProductsPage() {
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // 🔥 FIX CRITIC — așteptăm până există user.id
-    if (!user?.id) return;
+    if (!user) return;
 
-    axiosInstance
-      .get(`/products/user/${user.id}`)
-      .then((res) => setProducts(res.data))
-      .catch(() => setProducts([]));
-  }, [user?.id]); // 🔥 declanșăm doar când user.id există
+    async function fetchProducts() {
+      try {
+        const res = await fetch(
+          `https://electrohub-backend.vercel.app/products/user/${user.id}`
+        );
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Eroare la fetch produse:", err);
+      }
+    }
+
+    fetchProducts();
+  }, [user]);
+
+  if (loading) {
+    return <div className="p-6 text-white">Se încarcă...</div>;
+  }
 
   if (!user) {
     return (
@@ -29,35 +40,21 @@ export default function MyProductsPage() {
 
   return (
     <div className="p-6 text-white">
-      <h1 className="text-3xl font-bold mb-4">Produsele mele</h1>
+      <h1 className="text-3xl font-bold mb-4">Anunțurile mele</h1>
 
-      <Link
-        href="/my-account/products/add"
-        className="px-4 py-2 bg-cyan-600 rounded-lg"
-      >
-        Adaugă produs
-      </Link>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-        {products.map((p: any) => (
-          <div
-            key={p.id}
-            className="bg-white/5 p-4 rounded-xl border border-white/10"
-          >
-            <img
-              src={p.images?.[0] || "/placeholder.png"}
-              className="w-full h-32 object-cover rounded-lg"
-            />
-
-            <p className="mt-2 font-semibold">{p.name}</p>
-            <p className="text-cyan-400">{p.price} lei</p>
-
-            <p className="text-xs mt-1 opacity-70">
-              Status: <span className="capitalize">{p.status}</span>
-            </p>
-          </div>
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <p className="text-gray-300">Nu ai anunțuri active.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {products.map((product: any) => (
+            <div key={product.id} className="bg-gray-800 p-4 rounded-lg">
+              <h2 className="text-xl font-bold">{product.name}</h2>
+              <p className="text-gray-300">{product.description}</p>
+              <p className="text-green-400 font-bold mt-2">{product.price} RON</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

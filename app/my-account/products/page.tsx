@@ -39,10 +39,21 @@ export default function MyProductsPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         {products.map((p: any) => (
-          <div key={p._id} className="bg-white/5 p-4 rounded-xl border border-white/10">
-            <img src={p.imageUrl} className="w-full h-32 object-cover rounded-lg" />
+          <div
+            key={p.id}
+            className="bg-white/5 p-4 rounded-xl border border-white/10"
+          >
+            <img
+              src={p.images?.[0] || "/placeholder.png"}
+              className="w-full h-32 object-cover rounded-lg"
+            />
+
             <p className="mt-2 font-semibold">{p.name}</p>
             <p className="text-cyan-400">{p.price} lei</p>
+
+            <p className="text-xs mt-1 opacity-70">
+              Status: <span className="capitalize">{p.status}</span>
+            </p>
           </div>
         ))}
       </div>

@@ -10,13 +10,14 @@ export default function MyProductsPage() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    // 🔥 FIX CRITIC — așteptăm până există user.id
     if (!user?.id) return;
 
     axiosInstance
       .get(`/products/user/${user.id}`)
       .then((res) => setProducts(res.data))
       .catch(() => setProducts([]));
-  }, [user?.id]);
+  }, [user?.id]); // 🔥 declanșăm doar când user.id există
 
   if (!user) {
     return (

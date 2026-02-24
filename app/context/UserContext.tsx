@@ -10,7 +10,7 @@ export function UserProvider({ children }: any) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("userData"); // 🔥 FIX CRITIC
+    const userData = localStorage.getItem("userData"); // FIX: cheia corectă
 
     if (token && userData) {
       try {

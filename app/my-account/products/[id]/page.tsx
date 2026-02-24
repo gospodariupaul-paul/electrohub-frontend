@@ -12,11 +12,11 @@ export default function EditProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // 🔥 Încărcăm produsul userului
+  // Încărcăm produsul
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -26,7 +26,7 @@ export default function EditProductPage() {
         setName(p.name);
         setPrice(p.price);
         setDescription(p.description);
-        setImageUrl(p.imageUrl);
+        setImages(p.images || []);
       } catch (error) {
         console.error("Eroare la încărcarea produsului:", error);
         alert("Produsul nu a putut fi încărcat.");
@@ -47,7 +47,7 @@ export default function EditProductPage() {
         name,
         price: Number(price),
         description,
-        imageUrl,
+        images,
       });
 
       alert("Produs actualizat cu succes!");
@@ -66,7 +66,6 @@ export default function EditProductPage() {
 
   return (
     <div className="p-6 text-white max-w-xl mx-auto space-y-6">
-
       <h1 className="text-3xl font-bold">Editează produsul</h1>
 
       <form onSubmit={handleSave} className="space-y-4">
@@ -95,14 +94,13 @@ export default function EditProductPage() {
           />
         </div>
 
-        {/* IMAGINE */}
+        {/* IMAGINI */}
         <div>
-          <label className="block mb-1 opacity-70">URL imagine</label>
+          <label className="block mb-1 opacity-70">Imagini (URL-uri separate prin virgulă)</label>
           <input
             type="text"
-            required
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
+            value={images.join(",")}
+            onChange={(e) => setImages(e.target.value.split(","))}
             className="w-full p-3 rounded bg-[#070a20] border border-white/10"
           />
         </div>

@@ -10,13 +10,18 @@ export default function EditProductPage() {
   const params = useParams();
   const productId = params?.id;
 
+  const CLOUD_NAME = "ds7eqokum";
+  const UPLOAD_PRESET = "electrohub_uploads";
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
+  // 🔥 Load product
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -38,6 +43,45 @@ export default function EditProductPage() {
     loadProduct();
   }, [productId]);
 
+  // 🔥 Upload imagine în Cloudinary
+  const handleImageUpload = async (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.secure_url) {
+        setImages((prev) => [...prev, data.secure_url]);
+      }
+    } catch (err) {
+      console.error("Eroare upload:", err);
+      alert("Nu s-a putut încărca imaginea.");
+    }
+
+    setUploading(false);
+  };
+
+  // 🔥 Ștergere imagine
+  const deleteImage = (url: string) => {
+    setImages(images.filter((img) => img !== url));
+  };
+
+  // 🔥 Salvare modificări
   const handleSave = async (e: any) => {
     e.preventDefault();
     setSaving(true);
@@ -52,7 +96,6 @@ export default function EditProductPage() {
 
       alert("Produs actualizat cu succes!");
       router.push("/my-account/profile");
-
     } catch (error) {
       console.error("Eroare la salvare:", error);
       alert("Nu s-a putut salva produsul.");
@@ -114,24 +157,36 @@ export default function EditProductPage() {
 
         {/* IMAGINI */}
         <div>
-          <label className="block mb-1 opacity-70">
-            Imagini (URL-uri separate prin virgulă)
-          </label>
+          <label className="block mb-1 opacity-70">Imagini</label>
+
+          {/* Upload nou */}
           <input
-            type="text"
-            value={images.join(",")}
-            onChange={(e) => setImages(e.target.value.split(","))}
-            className="w-full p-3 rounded bg-[#070a20] border border-white/10"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="mb-3"
           />
+
+          {uploading && (
+            <p className="text-yellow-400 text-sm">Se încarcă imaginea...</p>
+          )}
 
           {/* PREVIEW IMAGINI */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             {images.map((img, i) => (
-              <div key={i} className="relative">
+              <div key={i} className="relative group">
                 <img
                   src={img}
                   className="w-full h-32 object-cover rounded-lg border border-white/10"
                 />
+
+                <button
+                  type="button"
+                  onClick={() => deleteImage(img)}
+                  className="absolute top-2 right-2 bg-red-600 hover:bg-red-500 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
+                >
+                  Șterge
+                </button>
               </div>
             ))}
           </div>

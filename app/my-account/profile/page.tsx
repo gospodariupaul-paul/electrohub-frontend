@@ -94,6 +94,9 @@ export default function UserProfilePage() {
     );
   }
 
+  // ⭐ NUMĂRĂM ANUNȚURILE ACTIVE
+  const activeCount = products.filter((p: any) => p.status === "active").length;
+
   return (
     <div className="min-h-screen bg-[#020312] text-white flex">
       {/* SIDEBAR */}
@@ -146,7 +149,7 @@ export default function UserProfilePage() {
                 tab === t ? "bg-cyan-600" : "bg-white/10"
               }`}
             >
-              {tabLabel(t)}
+              {tabLabel(t, activeCount)}
             </button>
           ))}
         </div>
@@ -218,10 +221,10 @@ function SidebarItem({ label, active }: { label: string; active?: boolean }) {
   );
 }
 
-function tabLabel(key: string) {
+function tabLabel(key: string, activeCount: number) {
   switch (key) {
     case "active":
-      return "Active";
+      return `Active (${activeCount})`;
     case "pending":
       return "În așteptare";
     case "topay":

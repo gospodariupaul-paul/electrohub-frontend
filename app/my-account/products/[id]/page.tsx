@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -16,7 +17,6 @@ export default function EditProductPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Încărcăm produsul
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -62,15 +62,32 @@ export default function EditProductPage() {
   };
 
   if (loading) {
-    return <p className="p-6 text-white opacity-70">Se încarcă produsul...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Se încarcă produsul...
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 text-white max-w-xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold">Editează produsul</h1>
+    <div className="min-h-screen bg-[#020312] text-white p-10">
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-10">
+        <h1 className="text-3xl font-bold">Editează produsul</h1>
 
-      <form onSubmit={handleSave} className="space-y-4">
+        <Link
+          href="/my-account/profile"
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg"
+        >
+          ← Înapoi la profil
+        </Link>
+      </div>
 
+      {/* FORM */}
+      <form
+        onSubmit={handleSave}
+        className="max-w-2xl mx-auto bg-[#05071a] p-8 rounded-xl border border-white/10 space-y-6"
+      >
         {/* NUME */}
         <div>
           <label className="block mb-1 opacity-70">Nume produs</label>
@@ -83,7 +100,7 @@ export default function EditProductPage() {
           />
         </div>
 
-        {/* PREȚ */}
+        {/* PRET */}
         <div>
           <label className="block mb-1 opacity-70">Preț (lei)</label>
           <input
@@ -97,13 +114,27 @@ export default function EditProductPage() {
 
         {/* IMAGINI */}
         <div>
-          <label className="block mb-1 opacity-70">Imagini (URL-uri separate prin virgulă)</label>
+          <label className="block mb-1 opacity-70">
+            Imagini (URL-uri separate prin virgulă)
+          </label>
           <input
             type="text"
             value={images.join(",")}
             onChange={(e) => setImages(e.target.value.split(","))}
             className="w-full p-3 rounded bg-[#070a20] border border-white/10"
           />
+
+          {/* PREVIEW IMAGINI */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+            {images.map((img, i) => (
+              <div key={i} className="relative">
+                <img
+                  src={img}
+                  className="w-full h-32 object-cover rounded-lg border border-white/10"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* DESCRIERE */}
@@ -117,7 +148,7 @@ export default function EditProductPage() {
           />
         </div>
 
-        {/* BUTON */}
+        {/* SAVE BUTTON */}
         <button
           type="submit"
           disabled={saving}

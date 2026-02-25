@@ -51,8 +51,6 @@ export default function EditProductPage() {
       });
 
       alert("Produs actualizat cu succes!");
-
-      // 🔥 Redirect corect către pagina cu anunțurile userului
       router.push("/my-account/profile");
 
     } catch (error) {

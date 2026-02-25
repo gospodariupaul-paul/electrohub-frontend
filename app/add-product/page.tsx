@@ -87,7 +87,6 @@ export default function AddProductPage() {
         return;
       }
 
-      // 🔥 AICI AM ADAUGAT DOAR ACEST console.log
       console.log("DATA TRIMISA CATRE BACKEND:", {
         name,
         price,
@@ -98,8 +97,9 @@ export default function AddProductPage() {
         userId: user.id,
       });
 
+      // 🔥 AICI AM FĂCUT SINGURA MODIFICARE
       await axiosInstance.post(
-        "/products/create",
+        "/products",
         {
           name,
           price,

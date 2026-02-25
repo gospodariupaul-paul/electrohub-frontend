@@ -94,8 +94,12 @@ export default function UserProfilePage() {
     );
   }
 
-  // ⭐ NUMĂRĂM ANUNȚURILE ACTIVE
+  // ⭐ NUMĂRĂM ANUNȚURILE PE STATUS
   const activeCount = products.filter((p: any) => p.status === "active").length;
+  const pendingCount = products.filter((p: any) => p.status === "pending").length;
+  const toPayCount = products.filter((p: any) => p.status === "topay").length;
+  const disabledCount = products.filter((p: any) => p.status === "disabled").length;
+  const moderatedCount = products.filter((p: any) => p.status === "moderated").length;
 
   return (
     <div className="min-h-screen bg-[#020312] text-white flex">
@@ -149,7 +153,13 @@ export default function UserProfilePage() {
                 tab === t ? "bg-cyan-600" : "bg-white/10"
               }`}
             >
-              {tabLabel(t, activeCount)}
+              {tabLabel(t, {
+                activeCount,
+                pendingCount,
+                toPayCount,
+                disabledCount,
+                moderatedCount,
+              })}
             </button>
           ))}
         </div>
@@ -157,7 +167,7 @@ export default function UserProfilePage() {
         {/* LISTA PRODUSE ACTIVE */}
         {tab === "active" && (
           <div>
-            {products.length === 0 ? (
+            {activeCount === 0 ? (
               <div className="text-center opacity-70 py-20">
                 <p>Nu ai anunțuri active</p>
                 <Link
@@ -169,37 +179,39 @@ export default function UserProfilePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {products.map((p: any) => (
-                  <div
-                    key={p.id}
-                    className="bg-[#070a20] border border-white/10 rounded-xl p-4"
-                  >
-                    <img
-                      src={p.images?.[0] || "/placeholder.png"}
-                      className="w-full h-40 object-cover rounded-lg"
-                    />
-                    <h3 className="text-lg font-bold mt-3">{p.name}</h3>
-                    <p className="opacity-70">{p.price} €</p>
+                {products
+                  .filter((p: any) => p.status === "active")
+                  .map((p: any) => (
+                    <div
+                      key={p.id}
+                      className="bg-[#070a20] border border-white/10 rounded-xl p-4"
+                    >
+                      <img
+                        src={p.images?.[0] || "/placeholder.png"}
+                        className="w-full h-40 object-cover rounded-lg"
+                      />
+                      <h3 className="text-lg font-bold mt-3">{p.name}</h3>
+                      <p className="opacity-70">{p.price} €</p>
 
-                    {/* 🔥 BUTOANE ACTIUNI */}
-                    <div className="flex gap-2 mt-3">
-                      <button
-                        onClick={() => handleDelete(p.id)}
-                        className="px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm"
-                      >
-                        Șterge
-                      </button>
+                      {/* 🔥 BUTOANE ACTIUNI */}
+                      <div className="flex gap-2 mt-3">
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm"
+                        >
+                          Șterge
+                        </button>
 
-                      {/* 🔥 FIX RUTA EDITARE */}
-                      <Link
-                        href={`/my-account/products/${p.id}`}
-                        className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 rounded text-sm"
-                      >
-                        Editează
-                      </Link>
+                        {/* 🔥 FIX RUTA EDITARE */}
+                        <Link
+                          href={`/my-account/products/${p.id}`}
+                          className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 rounded text-sm"
+                        >
+                          Editează
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
@@ -221,18 +233,27 @@ function SidebarItem({ label, active }: { label: string; active?: boolean }) {
   );
 }
 
-function tabLabel(key: string, activeCount: number) {
+function tabLabel(
+  key: string,
+  counts: {
+    activeCount: number;
+    pendingCount: number;
+    toPayCount: number;
+    disabledCount: number;
+    moderatedCount: number;
+  }
+) {
   switch (key) {
     case "active":
-      return `Active (${activeCount})`;
+      return `Active (${counts.activeCount})`;
     case "pending":
-      return "În așteptare";
+      return `În așteptare (${counts.pendingCount})`;
     case "topay":
-      return "De plătit";
+      return `De plătit (${counts.toPayCount})`;
     case "disabled":
-      return "Dezactivate";
+      return `Dezactivate (${counts.disabledCount})`;
     case "moderated":
-      return "Moderate";
+      return `Moderate (${counts.moderatedCount})`;
     default:
       return key;
   }

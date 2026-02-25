@@ -12,6 +12,35 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
+  // 🔥 FUNCTIE STERGERE PRODUS
+  const handleDelete = async (id: number) => {
+    if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Eroare la ștergere");
+        return;
+      }
+
+      // 🔥 Scoatem produsul din listă instant
+      setProducts(products.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("Eroare la ștergere:", err);
+    }
+  };
+
   // 🔥 FETCH PRODUSE USER — FIXAT
   useEffect(() => {
     if (!user || !user.id) return; // FIX CRITIC
@@ -148,6 +177,23 @@ export default function UserProfilePage() {
                     />
                     <h3 className="text-lg font-bold mt-3">{p.name}</h3>
                     <p className="opacity-70">{p.price} €</p>
+
+                    {/* 🔥 BUTOANE ACTIUNI */}
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={() => handleDelete(p.id)}
+                        className="px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm"
+                      >
+                        Șterge
+                      </button>
+
+                      <Link
+                        href={`/my-account/products/edit/${p.id}`}
+                        className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 rounded text-sm"
+                      >
+                        Editează
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>

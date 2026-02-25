@@ -24,8 +24,10 @@ export default function AddProductPage() {
         name,
         price: Number(price),
         description,
-        images: [imageUrl], // backend-ul tău folosește array
-        userId: user.id,    // 🔥 AICI ERA BUG-UL
+        categoryId: 1,        // 🔥 backend-ul cere obligatoriu
+        stock: 1,             // 🔥 backend-ul cere obligatoriu
+        images: [imageUrl],   // 🔥 backend-ul cere array
+        userId: user.id,      // 🔥 obligatoriu pentru pagina userului
       });
 
       alert("Produs adăugat cu succes!");

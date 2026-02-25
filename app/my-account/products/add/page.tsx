@@ -3,9 +3,11 @@
 import { useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/app/context/UserContext";
 
 export default function AddProductPage() {
   const router = useRouter();
+  const { user } = useUser();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -22,7 +24,8 @@ export default function AddProductPage() {
         name,
         price: Number(price),
         description,
-        imageUrl,
+        images: [imageUrl], // backend-ul tău folosește array
+        userId: user.id,    // 🔥 AICI ERA BUG-UL
       });
 
       alert("Produs adăugat cu succes!");
@@ -35,14 +38,19 @@ export default function AddProductPage() {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="p-6 text-white">
+        <h1 className="text-xl font-bold">Trebuie să fii logat</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 text-white max-w-xl mx-auto space-y-6">
-
       <h1 className="text-3xl font-bold">Adaugă un produs</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
-        {/* NUME */}
         <div>
           <label className="block mb-1 opacity-70">Nume produs</label>
           <input
@@ -51,11 +59,9 @@ export default function AddProductPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full p-3 rounded bg-[#070a20] border border-white/10"
-            placeholder="Ex: iPhone 13 Pro"
           />
         </div>
 
-        {/* PREȚ */}
         <div>
           <label className="block mb-1 opacity-70">Preț (lei)</label>
           <input
@@ -64,11 +70,9 @@ export default function AddProductPage() {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             className="w-full p-3 rounded bg-[#070a20] border border-white/10"
-            placeholder="Ex: 2500"
           />
         </div>
 
-        {/* IMAGINE */}
         <div>
           <label className="block mb-1 opacity-70">URL imagine</label>
           <input
@@ -77,11 +81,9 @@ export default function AddProductPage() {
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             className="w-full p-3 rounded bg-[#070a20] border border-white/10"
-            placeholder="Ex: https://poza-mea.jpg"
           />
         </div>
 
-        {/* DESCRIERE */}
         <div>
           <label className="block mb-1 opacity-70">Descriere</label>
           <textarea
@@ -89,11 +91,9 @@ export default function AddProductPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full p-3 rounded bg-[#070a20] border border-white/10 h-32"
-            placeholder="Detalii despre produs..."
           />
         </div>
 
-        {/* BUTON */}
         <button
           type="submit"
           disabled={loading}

@@ -15,17 +15,11 @@ export default function ChatPage() {
   const [showEmoji, setShowEmoji] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // DEBUG
-  console.log("Pusher KEY:", process.env.NEXT_PUBLIC_PUSHER_KEY);
-  console.log("Pusher CLUSTER:", process.env.NEXT_PUBLIC_PUSHER_CLUSTER);
-
-  // user logat
   useEffect(() => {
     const u = localStorage.getItem("user");
     if (u) setUser(JSON.parse(u));
   }, []);
 
-  // ia conversația + mesajele
   useEffect(() => {
     if (!conversationId) return;
 
@@ -43,7 +37,6 @@ export default function ChatPage() {
       .catch((err) => console.error("Error loading chat:", err));
   }, [conversationId]);
 
-  // realtime Pusher
   useEffect(() => {
     if (!conversationId) return;
 
@@ -69,13 +62,13 @@ export default function ChatPage() {
     };
   }, [conversationId]);
 
-  // scroll jos
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 🔥 FIX CRITIC — butonul Trimite funcționează chiar dacă conversation = null
   const sendMessage = async () => {
+    console.log("APASAT TRIMITE");
+
     if (!text.trim() || !user) return;
 
     const payload = {
@@ -98,7 +91,6 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col">
-      {/* Header WhatsApp */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3">
         <div className="w-10 h-10 rounded-full bg-gray-500" />
         <div>
@@ -107,7 +99,6 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Mesaje */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
@@ -133,8 +124,8 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input bar */}
-      <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2">
+      {/* 🔥 FIX PUS DE MINE — z-index corect */}
+      <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
         <button
           onClick={() => setShowEmoji((v) => !v)}
           className="text-2xl text-gray-300"
@@ -157,7 +148,7 @@ export default function ChatPage() {
         </button>
 
         {showEmoji && (
-          <div className="absolute bottom-14 left-2 z-20">
+          <div className="absolute bottom-14 left-2 z-10">
             <EmojiPicker
               onEmojiClick={(emoji) => setText((prev) => prev + emoji.emoji)}
               theme="dark"

@@ -23,7 +23,7 @@ export default function LoginPage() {
         password,
       });
 
-      const user = res.data.user;
+      const user = res.data.user; // user complet, cu id
       const accessToken = res.data.accessToken;
       const refreshToken = res.data.refreshToken;
 
@@ -31,7 +31,7 @@ export default function LoginPage() {
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // 🔥 Salvăm user-ul
+      // 🔥 Salvăm user-ul complet (cu id)
       localStorage.setItem("userData", JSON.stringify(user));
 
       // 🔥 Actualizăm UserContext

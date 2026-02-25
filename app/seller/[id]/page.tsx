@@ -2,105 +2,173 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface SellerPageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
-// Simulare produs (până conectăm baza de date)
-const fakeProduct = {
-  title: "iPhone 14 Pro Max",
-  price: "4.200 RON",
-  description:
-    "Telefon în stare excelentă, fără zgârieturi. Baterie 92%. Cutie + accesorii.",
-  image:
-    "https://images.unsplash.com/photo-1678685888221-4c2aaca5f05d?auto=format&fit=crop&w=800&q=80",
-  sellerPhone: "0745 123 456",
-};
-
 export default function SellerPage({ params }: SellerPageProps) {
-  const { id } = params;
+  const product = {
+    id: params.id,
+    title: "iPhone 14 Pro Max",
+    price: "4.200 lei",
+    description:
+      "Telefon în stare excelentă, fără zgârieturi. Baterie 92%. Cutie + accesorii.",
+    image:
+      "https://images.unsplash.com/photo-1678685888221-4c2aaca5f05d?auto=format&fit=crop&w=800&q=80",
+    seller: {
+      name: "Paul Stelian",
+      rating: 4.9,
+      ads: 23,
+      phone: "0745 123 456",
+    },
+  };
 
   return (
-    <div style={{ padding: "30px", maxWidth: "900px", margin: "0 auto" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "30px",
+        background: "linear-gradient(135deg, #4f46e5, #9333ea)",
+        color: "white",
+      }}
+    >
       {/* Înapoi */}
       <Link
         href="/"
         style={{
           display: "inline-block",
-          marginBottom: "20px",
-          fontSize: "18px",
-          color: "#555",
+          marginBottom: "25px",
+          fontSize: "20px",
+          color: "white",
+          textDecoration: "none",
+          fontWeight: "bold",
         }}
       >
-        ← Înapoi la pagina principală
+        ← Înapoi în homepage
       </Link>
 
-      {/* Imagine produs */}
       <div
         style={{
-          width: "100%",
-          height: "400px",
-          position: "relative",
-          borderRadius: "12px",
-          overflow: "hidden",
-          marginBottom: "25px",
+          maxWidth: "900px",
+          margin: "0 auto",
+          background: "rgba(255,255,255,0.15)",
+          padding: "25px",
+          borderRadius: "20px",
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
         }}
       >
-        <Image
-          src={fakeProduct.image}
-          alt={fakeProduct.title}
-          fill
-          style={{ objectFit: "cover" }}
-        />
-      </div>
-
-      {/* Titlu + preț */}
-      <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>
-        {fakeProduct.title}
-      </h1>
-      <h2 style={{ fontSize: "28px", color: "#008000", marginBottom: "20px" }}>
-        {fakeProduct.price}
-      </h2>
-
-      {/* Descriere */}
-      <p style={{ fontSize: "18px", lineHeight: "1.6", marginBottom: "30px" }}>
-        {fakeProduct.description}
-      </p>
-
-      {/* Butoane */}
-      <div style={{ display: "flex", gap: "15px" }}>
-        <Link
-          href={`/chat/${id}`}
+        {/* Imagine produs */}
+        <div
           style={{
-            padding: "12px 20px",
-            background: "#0070f3",
-            color: "white",
-            borderRadius: "8px",
-            fontSize: "18px",
+            width: "100%",
+            height: "400px",
+            position: "relative",
+            borderRadius: "15px",
+            overflow: "hidden",
+            marginBottom: "25px",
           }}
         >
-          Trimite mesaj
-        </Link>
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </div>
 
-        <a
-          href={`tel:${fakeProduct.sellerPhone}`}
+        {/* Titlu + preț */}
+        <h1 style={{ fontSize: "40px", marginBottom: "10px" }}>
+          {product.title}
+        </h1>
+        <h2
           style={{
-            padding: "12px 20px",
-            background: "#28a745",
-            color: "white",
-            borderRadius: "8px",
-            fontSize: "18px",
+            fontSize: "32px",
+            color: "#00ff9d",
+            marginBottom: "20px",
+            fontWeight: "bold",
           }}
         >
-          Sună vânzătorul
-        </a>
-      </div>
+          {product.price}
+        </h2>
 
-      {/* ID produs */}
-      <p style={{ marginTop: "40px", color: "#777" }}>
-        ID produs: <strong>{id}</strong>
-      </p>
+        {/* Descriere */}
+        <p
+          style={{
+            fontSize: "20px",
+            lineHeight: "1.6",
+            marginBottom: "30px",
+            color: "#f0eaff",
+          }}
+        >
+          {product.description}
+        </p>
+
+        {/* Card vânzător */}
+        <div
+          style={{
+            background: "rgba(0,0,0,0.25)",
+            padding: "20px",
+            borderRadius: "15px",
+            marginBottom: "30px",
+          }}
+        >
+          <h3 style={{ fontSize: "26px", marginBottom: "10px" }}>
+            Vândut de: {product.seller.name}
+          </h3>
+
+          <p style={{ fontSize: "18px", marginBottom: "5px" }}>
+            ⭐ {product.seller.rating} / 5
+          </p>
+
+          <p style={{ fontSize: "18px", marginBottom: "15px" }}>
+            {product.seller.ads} anunțuri publicate
+          </p>
+
+          <Link
+            href={`/user/${product.seller.name}`}
+            style={{
+              color: "#00eaff",
+              fontSize: "18px",
+              textDecoration: "underline",
+            }}
+          >
+            Vezi profilul vânzătorului →
+          </Link>
+        </div>
+
+        {/* Butoane */}
+        <div style={{ display: "flex", gap: "15px" }}>
+          <Link
+            href={`/chat/${product.id}`}
+            style={{
+              padding: "14px 22px",
+              background: "#00b4ff",
+              color: "white",
+              borderRadius: "10px",
+              fontSize: "18px",
+              fontWeight: "bold",
+              textDecoration: "none",
+            }}
+          >
+            Trimite mesaj
+          </Link>
+
+          <a
+            href={`tel:${product.seller.phone}`}
+            style={{
+              padding: "14px 22px",
+              background: "#00ff9d",
+              color: "#222",
+              borderRadius: "10px",
+              fontSize: "18px",
+              fontWeight: "bold",
+              textDecoration: "none",
+            }}
+          >
+            Sună vânzătorul
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

@@ -101,6 +101,21 @@ export default function UserProfilePage() {
   const disabledCount = products.filter((p: any) => p.status === "disabled").length;
   const moderatedCount = products.filter((p: any) => p.status === "moderated").length;
 
+  // ⭐ CALCUL EXPIRARE
+  const now = new Date();
+
+  const productsWithExpiry = products.map((p: any) => {
+    const created = new Date(p.createdAt);
+    const diffDays =
+      (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
+
+    return {
+      ...p,
+      expiresSoon: diffDays >= 29 && diffDays < 30, // în ultimele 24h
+      expired: diffDays >= 30,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-[#020312] text-white flex">
       {/* SIDEBAR */}
@@ -132,7 +147,7 @@ export default function UserProfilePage() {
 
       {/* CONTENT */}
       <main className="flex-1 p-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-2">
           <h1 className="text-3xl font-bold">Anunțurile tale</h1>
 
           <Link
@@ -142,6 +157,12 @@ export default function UserProfilePage() {
             Adaugă anunț nou
           </Link>
         </div>
+
+        {/* ⭐ TEXT DESPRE EXPIRARE */}
+        <p className="opacity-70 mb-8 text-sm">
+          Anunțurile active rămân aici până când expiră.  
+          Aceste anunțuri pot fi văzute de oricine și expiră la 30 de zile după ce au fost activate.
+        </p>
 
         {/* TAB-URI */}
         <div className="flex gap-4 mb-6 border-b border-white/10 pb-2">
@@ -179,7 +200,7 @@ export default function UserProfilePage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {products
+                {productsWithExpiry
                   .filter((p: any) => p.status === "active")
                   .map((p: any) => (
                     <div
@@ -192,6 +213,19 @@ export default function UserProfilePage() {
                       />
                       <h3 className="text-lg font-bold mt-3">{p.name}</h3>
                       <p className="opacity-70">{p.price} €</p>
+
+                      {/* ⭐ NOTIFICĂRI EXPIRARE */}
+                      {p.expiresSoon && (
+                        <p className="text-yellow-400 text-sm mt-1">
+                          ⚠ Anunțul tău expiră în mai puțin de 24 de ore!
+                        </p>
+                      )}
+
+                      {p.expired && (
+                        <p className="text-red-400 text-sm mt-1">
+                          ❌ Anunț expirat. Reînnoiește-l pentru a fi vizibil din nou.
+                        </p>
+                      )}
 
                       {/* 🔥 BUTOANE ACTIUNI */}
                       <div className="flex gap-2 mt-3">

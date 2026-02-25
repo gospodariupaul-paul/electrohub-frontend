@@ -187,8 +187,9 @@ export default function UserProfilePage() {
                         Șterge
                       </button>
 
+                      {/* 🔥 FIX RUTA EDITARE */}
                       <Link
-                        href={`/my-account/products/edit/${p.id}`}
+                        href={`/my-account/products/${p.id}`}
                         className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 rounded text-sm"
                       >
                         Editează

@@ -27,7 +27,7 @@ export default function SellerPage({ params }: SellerPageProps) {
       style={{
         minHeight: "100vh",
         padding: "30px",
-        background: "linear-gradient(135deg, #4f46e5, #9333ea)",
+        background: "linear-gradient(135deg, #1e1b4b, #4c1d95)",
         color: "white",
       }}
     >
@@ -38,7 +38,7 @@ export default function SellerPage({ params }: SellerPageProps) {
           display: "inline-block",
           marginBottom: "25px",
           fontSize: "20px",
-          color: "white",
+          color: "#a5b4fc",
           textDecoration: "none",
           fontWeight: "bold",
         }}
@@ -50,11 +50,11 @@ export default function SellerPage({ params }: SellerPageProps) {
         style={{
           maxWidth: "900px",
           margin: "0 auto",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.1)",
           padding: "25px",
           borderRadius: "20px",
           backdropFilter: "blur(10px)",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
         }}
       >
         {/* Imagine produs */}
@@ -97,7 +97,7 @@ export default function SellerPage({ params }: SellerPageProps) {
             fontSize: "20px",
             lineHeight: "1.6",
             marginBottom: "30px",
-            color: "#f0eaff",
+            color: "#e0e7ff",
           }}
         >
           {product.description}
@@ -106,7 +106,7 @@ export default function SellerPage({ params }: SellerPageProps) {
         {/* Card vânzător */}
         <div
           style={{
-            background: "rgba(0,0,0,0.25)",
+            background: "rgba(0,0,0,0.3)",
             padding: "20px",
             borderRadius: "15px",
             marginBottom: "30px",
@@ -127,7 +127,7 @@ export default function SellerPage({ params }: SellerPageProps) {
           <Link
             href={`/user/${product.seller.name}`}
             style={{
-              color: "#00eaff",
+              color: "#7dd3fc",
               fontSize: "18px",
               textDecoration: "underline",
             }}
@@ -142,7 +142,7 @@ export default function SellerPage({ params }: SellerPageProps) {
             href={`/chat/${product.id}`}
             style={{
               padding: "14px 22px",
-              background: "#00b4ff",
+              background: "#3b82f6",
               color: "white",
               borderRadius: "10px",
               fontSize: "18px",
@@ -157,8 +157,8 @@ export default function SellerPage({ params }: SellerPageProps) {
             href={`tel:${product.seller.phone}`}
             style={{
               padding: "14px 22px",
-              background: "#00ff9d",
-              color: "#222",
+              background: "#22c55e",
+              color: "white",
               borderRadius: "10px",
               fontSize: "18px",
               fontWeight: "bold",

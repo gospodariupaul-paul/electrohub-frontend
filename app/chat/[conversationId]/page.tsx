@@ -34,7 +34,6 @@ export default function ChatPage() {
       .then((data) => {
         setConversation(data);
 
-        // ia mesajele
         return fetch(
           `https://electrohub-backend-1-10qa.onrender.com/messages?conversationId=${conversationId}`
         );
@@ -106,7 +105,7 @@ export default function ChatPage() {
       </div>
 
       {/* Mesaje */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[url('https://i.imgur.com/0Zf7ZqV.png')] bg-cover">
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
           return (

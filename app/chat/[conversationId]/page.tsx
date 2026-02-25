@@ -74,19 +74,22 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 🔥 FIX CRITIC — butonul Trimite funcționează chiar dacă conversation = null
   const sendMessage = async () => {
-    if (!text.trim() || !user || !conversation) return;
+    if (!text.trim() || !user) return;
+
+    const payload = {
+      buyerId: conversation?.buyerId || user.id,
+      sellerId: conversation?.sellerId || 0,
+      productId: conversation?.productId || 0,
+      senderId: user.id,
+      text,
+    };
 
     await fetch("https://electrohub-backend-1-10qa.onrender.com/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        buyerId: conversation.buyerId,
-        sellerId: conversation.sellerId,
-        productId: conversation.productId,
-        senderId: user.id,
-        text,
-      }),
+      body: JSON.stringify(payload),
     });
 
     setText("");

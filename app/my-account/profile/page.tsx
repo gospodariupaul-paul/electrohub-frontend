@@ -14,7 +14,7 @@ export default function UserProfilePage() {
 
   // Fetch produse user
   useEffect(() => {
-    if (!user) return;
+    if (!user || !user.id) return; // 🔥 FIX CRITIC
 
     const fetchProducts = async () => {
       try {
@@ -99,8 +99,9 @@ export default function UserProfilePage() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Anunțurile tale</h1>
 
+          {/* 🔥 FIX: link corect către pagina de adăugare produs */}
           <Link
-            href="/add-product"
+            href="/my-account/products/add"
             className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
           >
             Adaugă anunț nou
@@ -129,7 +130,7 @@ export default function UserProfilePage() {
               <div className="text-center opacity-70 py-20">
                 <p>Nu ai anunțuri active</p>
                 <Link
-                  href="/add-product"
+                  href="/my-account/products/add"
                   className="mt-4 inline-block px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg"
                 >
                   Publică un anunț

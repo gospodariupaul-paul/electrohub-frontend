@@ -19,6 +19,10 @@ export default function ChatPage() {
   const [showEmoji, setShowEmoji] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
+  // DEBUG — vezi dacă variabilele există
+  console.log("Pusher KEY:", process.env.NEXT_PUBLIC_PUSHER_KEY);
+  console.log("Pusher CLUSTER:", process.env.NEXT_PUBLIC_PUSHER_CLUSTER);
+
   // user logat
   useEffect(() => {
     const u = localStorage.getItem("user");
@@ -40,12 +44,17 @@ export default function ChatPage() {
   useEffect(() => {
     if (!conversationId) return;
 
-    const pusher = new Pusher(
-      process.env.NEXT_PUBLIC_PUSHER_KEY as string,
-      {
-        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-      }
-    );
+    const key = process.env.NEXT_PUBLIC_PUSHER_KEY;
+    const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
+
+    if (!key) {
+      console.error("❌ Pusher KEY is missing!");
+      return;
+    }
+
+    const pusher = new Pusher(key, {
+      cluster,
+    });
 
     const channel = pusher.subscribe(`conversation-${conversationId}`);
 

@@ -1,25 +1,21 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
 
 export default function ChatPage() {
   const { conversationId } = useParams();
-  const searchParams = useSearchParams();
-
-  const buyerId = Number(searchParams.get("buyerId"));
-  const sellerId = Number(searchParams.get("sellerId"));
-  const productId = Number(searchParams.get("productId"));
 
   const [messages, setMessages] = useState<any[]>([]);
+  const [conversation, setConversation] = useState<any>(null);
   const [text, setText] = useState("");
   const [user, setUser] = useState<any>(null);
   const [showEmoji, setShowEmoji] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // DEBUG — vezi dacă variabilele există
+  // DEBUG
   console.log("Pusher KEY:", process.env.NEXT_PUBLIC_PUSHER_KEY);
   console.log("Pusher CLUSTER:", process.env.NEXT_PUBLIC_PUSHER_CLUSTER);
 
@@ -29,15 +25,23 @@ export default function ChatPage() {
     if (u) setUser(JSON.parse(u));
   }, []);
 
-  // ia mesajele existente
+  // ia conversația + mesajele
   useEffect(() => {
     if (!conversationId) return;
 
-    fetch(
-      `https://electrohub-backend-1-10qa.onrender.com/messages?conversationId=${conversationId}`
-    )
+    fetch(`https://electrohub-backend-1-10qa.onrender.com/conversations/${conversationId}`)
       .then((res) => res.json())
-      .then((data) => setMessages(data));
+      .then((data) => {
+        setConversation(data);
+
+        // ia mesajele
+        return fetch(
+          `https://electrohub-backend-1-10qa.onrender.com/messages?conversationId=${conversationId}`
+        );
+      })
+      .then((res) => res.json())
+      .then((msgs) => setMessages(msgs))
+      .catch((err) => console.error("Error loading chat:", err));
   }, [conversationId]);
 
   // realtime Pusher
@@ -52,9 +56,7 @@ export default function ChatPage() {
       return;
     }
 
-    const pusher = new Pusher(key, {
-      cluster,
-    });
+    const pusher = new Pusher(key, { cluster });
 
     const channel = pusher.subscribe(`conversation-${conversationId}`);
 
@@ -74,15 +76,15 @@ export default function ChatPage() {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!text.trim() || !user) return;
+    if (!text.trim() || !user || !conversation) return;
 
     await fetch("https://electrohub-backend-1-10qa.onrender.com/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        buyerId,
-        sellerId,
-        productId,
+        buyerId: conversation.buyerId,
+        sellerId: conversation.sellerId,
+        productId: conversation.productId,
         senderId: user.id,
         text,
       }),

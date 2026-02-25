@@ -51,7 +51,10 @@ export default function EditProductPage() {
       });
 
       alert("Produs actualizat cu succes!");
-      router.push("/my-account/products");
+
+      // 🔥 Redirect corect către pagina cu anunțurile userului
+      router.push("/my-account/profile");
+
     } catch (error) {
       console.error("Eroare la salvare:", error);
       alert("Nu s-a putut salva produsul.");

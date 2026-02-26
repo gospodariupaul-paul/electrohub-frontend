@@ -28,8 +28,9 @@ export default function ChatPage() {
       .then((data) => {
         setConversation(data);
 
+        // 🔥 FIX: ruta corectă pentru mesaje
         return fetch(
-          `https://electrohub-backend-1-10qa.onrender.com/messages?conversationId=${conversationId}`
+          `https://electrohub-backend-1-10qa.onrender.com/messages/${conversationId}`
         );
       })
       .then((res) => res.json())

@@ -1,5 +1,3 @@
-"use client";
-
 import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,7 +10,6 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
-  // 🔥 FUNCTIE STERGERE PRODUS
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
 
@@ -34,16 +31,14 @@ export default function UserProfilePage() {
         return;
       }
 
-      // 🔥 Scoatem produsul din listă instant
       setProducts(products.filter((p) => p.id !== id));
     } catch (err) {
       console.error("Eroare la ștergere:", err);
     }
   };
 
-  // 🔥 FETCH PRODUSE USER — FIXAT
   useEffect(() => {
-    if (!user || !user.id) return; // FIX CRITIC
+    if (!user || !user.id) return;
 
     const fetchProducts = async () => {
       try {
@@ -68,7 +63,6 @@ export default function UserProfilePage() {
     fetchProducts();
   }, [user]);
 
-  // Redirect dacă nu e logat
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -94,14 +88,12 @@ export default function UserProfilePage() {
     );
   }
 
-  // ⭐ NUMĂRĂM ANUNȚURILE PE STATUS
   const activeCount = products.filter((p: any) => p.status === "active").length;
   const pendingCount = products.filter((p: any) => p.status === "pending").length;
   const toPayCount = products.filter((p: any) => p.status === "topay").length;
   const disabledCount = products.filter((p: any) => p.status === "disabled").length;
   const moderatedCount = products.filter((p: any) => p.status === "moderated").length;
 
-  // ⭐ CALCUL EXPIRARE
   const now = new Date();
 
   const productsWithExpiry = products.map((p: any) => {
@@ -111,7 +103,7 @@ export default function UserProfilePage() {
 
     return {
       ...p,
-      expiresSoon: diffDays >= 29 && diffDays < 30, // în ultimele 24h
+      expiresSoon: diffDays >= 29 && diffDays < 30,
       expired: diffDays >= 30,
     };
   });
@@ -127,7 +119,12 @@ export default function UserProfilePage() {
 
         <nav className="space-y-3">
           <SidebarItem label="Anunțuri" active />
-          <SidebarItem label="Chat" />
+
+          {/* 🔥 AICI AM FĂCUT SINGURA MODIFICARE */}
+          <Link href="/my-account/messages">
+            <SidebarItem label="Chat" />
+          </Link>
+
           <SidebarItem label="Notificări" />
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
@@ -158,13 +155,10 @@ export default function UserProfilePage() {
           </Link>
         </div>
 
-        {/* ⭐ TEXT DESPRE EXPIRARE */}
         <p className="opacity-70 mb-8 text-sm">
-          Anunțurile active rămân aici până când expiră.  
-          Aceste anunțuri pot fi văzute de oricine și expiră la 30 de zile după ce au fost activate.
+          Anunțurile active rămân aici până când expiră. Aceste anunțuri pot fi văzute de oricine și expiră la 30 de zile după ce au fost activate.
         </p>
 
-        {/* TAB-URI */}
         <div className="flex gap-4 mb-6 border-b border-white/10 pb-2">
           {["active", "pending", "topay", "disabled", "moderated"].map((t) => (
             <button
@@ -185,7 +179,6 @@ export default function UserProfilePage() {
           ))}
         </div>
 
-        {/* LISTA PRODUSE ACTIVE */}
         {tab === "active" && (
           <div>
             {activeCount === 0 ? (
@@ -214,7 +207,6 @@ export default function UserProfilePage() {
                       <h3 className="text-lg font-bold mt-3">{p.name}</h3>
                       <p className="opacity-70">{p.price} €</p>
 
-                      {/* ⭐ NOTIFICĂRI EXPIRARE */}
                       {p.expiresSoon && (
                         <p className="text-yellow-400 text-sm mt-1">
                           ⚠ Anunțul tău expiră în mai puțin de 24 de ore!
@@ -227,7 +219,6 @@ export default function UserProfilePage() {
                         </p>
                       )}
 
-                      {/* 🔥 BUTOANE ACTIUNI */}
                       <div className="flex gap-2 mt-3">
                         <button
                           onClick={() => handleDelete(p.id)}
@@ -236,7 +227,6 @@ export default function UserProfilePage() {
                           Șterge
                         </button>
 
-                        {/* 🔥 FIX RUTA EDITARE */}
                         <Link
                           href={`/my-account/products/${p.id}`}
                           className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 rounded text-sm"

@@ -15,8 +15,8 @@ export default function MessagesPage() {
       try {
         if (!user) return;
 
-        // 🔥 Luăm conversațiile unde userul este VÂNZĂTOR
-        const res = await axiosInstance.get(`/conversations?sellerId=${user.id}`);
+        // 🔥 FIX: ruta corectă pentru conversațiile userului
+        const res = await axiosInstance.get(`/conversations/user/${user.id}`);
         setConversations(res.data || []);
       } catch (e) {
         console.error("Eroare la încărcarea conversațiilor:", e);

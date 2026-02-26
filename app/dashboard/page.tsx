@@ -13,14 +13,12 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 Dacă userul este logat prin UserContext → acces direct
         if (user) {
           const res = await axiosInstance.get("/products");
           setProducts(res.data || []);
           return;
         }
 
-        // 🔥 Dacă userul este logat prin JWT → fallback
         const token = localStorage.getItem("token");
         if (token) {
           const res = await axiosInstance.get("/products", {
@@ -32,7 +30,6 @@ export default function DashboardPage() {
           return;
         }
 
-        // 🔥 Dacă nu există niciun token → nu încărcăm produse
         setProducts([]);
       } catch (e) {
         console.error("Eroare:", e);
@@ -69,12 +66,22 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <Link
-          href="/dashboard/products/add"
-          className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
-        >
-          ➕ Adaugă produs
-        </Link>
+        {/* 🔥 AICI AM ADAUGAT BUTONUL MESAJE */}
+        <div className="flex gap-3">
+          <Link
+            href="/dashboard/products/add"
+            className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
+          >
+            ➕ Adaugă produs
+          </Link>
+
+          <Link
+            href="/dashboard/messages"
+            className="px-5 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg font-semibold"
+          >
+            💬 Mesaje
+          </Link>
+        </div>
       </div>
 
       {/* STATISTICI */}

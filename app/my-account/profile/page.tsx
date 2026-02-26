@@ -1,3 +1,5 @@
+"use client";
+
 import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -120,7 +122,7 @@ export default function UserProfilePage() {
         <nav className="space-y-3">
           <SidebarItem label="Anunțuri" active />
 
-          {/* 🔥 AICI AM FĂCUT SINGURA MODIFICARE */}
+          {/* CHAT — acum este link corect */}
           <Link href="/my-account/messages">
             <SidebarItem label="Chat" />
           </Link>

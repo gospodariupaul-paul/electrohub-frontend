@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import Link from "next/link";
 import { useUser } from "@/app/context/UserContext";
+import SellerChatButton from "@/components/SellerChatButton";
 
 export default function DashboardPage() {
   const { user } = useUser();
@@ -66,7 +67,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* 🔥 AICI AM ADAUGAT BUTONUL MESAJE */}
+        {/* 🔥 AICI ESTE BUTONUL DE CHAT */}
         <div className="flex gap-3">
           <Link
             href="/dashboard/products/add"
@@ -75,12 +76,7 @@ export default function DashboardPage() {
             ➕ Adaugă produs
           </Link>
 
-          <Link
-            href="/dashboard/messages"
-            className="px-5 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg font-semibold"
-          >
-            💬 Mesaje
-          </Link>
+          <SellerChatButton userId={user?.id} />
         </div>
       </div>
 

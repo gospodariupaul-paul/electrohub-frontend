@@ -27,14 +27,17 @@ export default function LoginPage() {
       const accessToken = res.data.accessToken;
       const refreshToken = res.data.refreshToken;
 
+      // 🔥 Salvăm token-urile
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // 🔥 FIX: salvăm user-ul în cheia CORECTĂ
+      // 🔥 Salvăm user-ul în cheia CORECTĂ
       localStorage.setItem("user", JSON.stringify(user));
 
+      // 🔥 Actualizăm contextul
       setUser(user);
 
+      // 🔥 Redirect în funcție de rol
       if (user.role === "admin") {
         router.push("/dashboard");
         return;

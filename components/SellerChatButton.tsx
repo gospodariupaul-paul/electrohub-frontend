@@ -3,8 +3,13 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-export default function SellerChatButton({ userId }: { userId: number }) {
+export default function SellerChatButton({ userId }: { userId?: number }) {
   const router = useRouter();
+
+  // Dacă userId NU există → nu afișăm butonul
+  if (!userId) {
+    return null;
+  }
 
   const handleOpenChat = async () => {
     try {

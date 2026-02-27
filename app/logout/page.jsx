@@ -9,16 +9,17 @@ export default function LogoutPage() {
   const { setUser } = useUser();
 
   useEffect(() => {
-    // Ștergem token-ul
+    // Ștergem token-urile
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
 
-    // Ștergem userData vechi
-    localStorage.removeItem("userData");
+    // Ștergem user-ul corect
+    localStorage.removeItem("user");
 
-    // Resetăm userul din context
+    // Resetăm contextul
     setUser(null);
 
-    // Redirecționăm spre homepage
+    // Redirecționăm
     router.push("/");
   }, []);
 

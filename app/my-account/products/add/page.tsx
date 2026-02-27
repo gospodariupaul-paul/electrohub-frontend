@@ -27,7 +27,6 @@ export default function AddProductPage() {
         categoryId: 1,
         stock: 1,
         images: [imageUrl],
-        // ❗ userId NU se trimite — backend-ul îl ia din token
       });
 
       alert("Produs adăugat cu succes!");

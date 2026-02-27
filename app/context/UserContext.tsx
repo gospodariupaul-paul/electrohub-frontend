@@ -21,26 +21,24 @@ export function UserProvider({ children }: any) {
         setUser(null);
       }
     } catch (err) {
-      console.error("Failed to load user:", err);
+      console.error("Failed to load user from localStorage:", err);
       setUser(null);
     }
   };
 
-  // rulează o singură dată la pornire
   useEffect(() => {
     loadUser();
-    setLoading(false);
-  }, []);
 
-  // ASCULTĂ schimbările din localStorage (login/logout)
-  useEffect(() => {
-    const handler = () => loadUser();
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    // ASCULTĂ SCHIMBĂRILE DIN LOCALSTORAGE ÎN ACELAȘI TAB
+    const interval = setInterval(() => {
+      loadUser();
+    }, 300);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading, reloadUser: loadUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

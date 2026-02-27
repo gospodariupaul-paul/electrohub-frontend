@@ -37,15 +37,17 @@ export default function SellerProductPage() {
 
   const startConversation = async () => {
     try {
-      const res = await fetch("http://localhost:1000/conversations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id }),
-      });
+      const res = await fetch(
+        "https://electrohub-backend-1-10qa.onrender.com/conversations",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: product.id }),
+        }
+      );
 
       const data = await res.json();
 
-      // Navighează către chat cu conversationId VALID
       router.push(`/chat/${data.id}`);
     } catch (err) {
       console.error("Eroare creare conversație:", err);
@@ -70,13 +72,11 @@ export default function SellerProductPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1e1b4b] to-[#4c1d95] text-white p-6">
-      {/* Înapoi */}
       <Link href="/" className="text-cyan-300 text-lg font-semibold">
         ← Înapoi în homepage
       </Link>
 
       <div className="max-w-4xl mx-auto mt-6 bg-white/10 p-6 rounded-2xl backdrop-blur-lg shadow-xl space-y-8">
-        {/* SLIDER PROFESIONAL CU SWIPER */}
         {product.images && product.images.length > 0 && (
           <div className="w-full max-w-3xl mx-auto">
             <Swiper
@@ -96,7 +96,6 @@ export default function SellerProductPage() {
               ))}
             </Swiper>
 
-            {/* Thumbnails */}
             <div className="mt-4">
               <Swiper
                 modules={[Thumbs]}
@@ -118,28 +117,20 @@ export default function SellerProductPage() {
           </div>
         )}
 
-        {/* Titlu + preț */}
         <div>
           <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
           <p className="text-3xl text-green-400 font-semibold mb-4">
             {product.price} lei
           </p>
-
-          {/* Descriere */}
           <p className="text-white/80 text-lg mb-6">{product.description}</p>
         </div>
 
-        {/* Vânzător */}
         <div className="bg-black/30 p-4 rounded-xl mb-6">
           <h2 className="text-2xl font-semibold mb-2">
             Vândut de: {product.user?.name}
           </h2>
-
           <p className="text-white/70 mb-1">Email: {product.user?.email}</p>
-
-          <p className="text-white/70 mb-3">
-            ID vânzător: {product.user?.id}
-          </p>
+          <p className="text-white/70 mb-3">ID vânzător: {product.user?.id}</p>
 
           <Link
             href={`/user/${product.user?.id}`}
@@ -149,7 +140,6 @@ export default function SellerProductPage() {
           </Link>
         </div>
 
-        {/* Butoane */}
         <div className="flex gap-4">
           <button
             onClick={startConversation}

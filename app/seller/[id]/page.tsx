@@ -35,19 +35,38 @@ export default function SellerProductPage() {
       });
   }, [id]);
 
+  // 🔥 EXACT CA PE OLX
   const startConversation = async () => {
+    const token = localStorage.getItem("token");
+
+    // 1️⃣ Dacă nu e logat → trimite-l la login
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
     try {
+      // 2️⃣ Creează conversația în backend
       const res = await fetch(
         "https://electrohub-backend-1-10qa.onrender.com/conversations",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // 🔥 token trimis corect
+          },
           body: JSON.stringify({ productId: product.id }),
         }
       );
 
+      if (!res.ok) {
+        console.error("Eroare backend:", await res.text());
+        return;
+      }
+
       const data = await res.json();
 
+      // 3️⃣ Trimite-l în chat cu conversationId VALID
       router.push(`/chat/${data.id}`);
     } catch (err) {
       console.error("Eroare creare conversație:", err);

@@ -15,7 +15,6 @@ export default function MessagesPage() {
       try {
         if (!user) return;
 
-        // 🔥 Conversațiile userului logat (buyer sau seller)
         const res = await axiosInstance.get(`/conversations/user/${user.id}`);
         setConversations(res.data || []);
       } catch (e) {
@@ -28,47 +27,49 @@ export default function MessagesPage() {
     load();
   }, [user]);
 
-  if (loading) return <p>Se încarcă...</p>;
+  if (loading) return <p className="text-white">Se încarcă...</p>;
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Mesajele tale</h1>
+    <div className="p-4 space-y-6 bg-[#0b141a] min-h-screen">
+      <h1 className="text-3xl font-bold text-white">Mesajele tale</h1>
 
       {conversations.length === 0 ? (
-        <p className="opacity-70">Nu ai conversații încă.</p>
+        <p className="text-gray-400">Nu ai conversații încă.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {conversations.map((c) => {
-            // 🔥 Determinăm cu cine vorbește userul logat
             const isBuyer = c.buyerId === user.id;
             const otherUser = isBuyer ? c.seller : c.buyer;
+            const lastMessage = c.messages?.[0]?.text || "—";
 
             return (
               <Link
                 key={c.id}
                 href={`/chat/${c.id}`}
-                className="block bg-[#070a20] border border-white/10 p-4 rounded-xl hover:border-cyan-400 transition"
+                className="flex items-center gap-4 p-3 rounded-xl bg-[#111b21] hover:bg-[#202c33] transition border border-transparent hover:border-[#00a884]"
               >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-cyan-300">
-                      {isBuyer
-                        ? `Vânzător: ${otherUser?.name || "Anonim"}`
-                        : `Client: ${otherUser?.name || "Anonim"}`}
-                    </p>
+                {/* Avatar */}
+                <div className="w-12 h-12 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg shadow-md">
+                  {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}
+                </div>
 
-                    <p className="text-sm opacity-70">
-                      Produs: {c.product?.name}
-                    </p>
-                  </div>
+                {/* Text */}
+                <div className="flex-1">
+                  <p className="text-white font-semibold text-lg">
+                    {otherUser?.name || "Utilizator"}
+                  </p>
 
-                  <p className="text-xs opacity-50">
-                    {new Date(c.updatedAt).toLocaleString()}
+                  <p className="text-sm text-gray-400">
+                    {lastMessage}
                   </p>
                 </div>
 
-                <p className="mt-2 text-sm opacity-80 line-clamp-1">
-                  Ultimul mesaj: {c.lastMessage?.content || "—"}
+                {/* Ora */}
+                <p className="text-xs text-gray-500 whitespace-nowrap">
+                  {new Date(c.updatedAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
               </Link>
             );

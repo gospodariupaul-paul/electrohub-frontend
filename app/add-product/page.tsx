@@ -72,7 +72,6 @@ export default function AddProductPage() {
     setLoading(true);
 
     try {
-      // 🔥 FIX: user este salvat în localStorage ca "user"
       const userData = localStorage.getItem("user");
       const user = userData ? JSON.parse(userData) : null;
 
@@ -82,7 +81,7 @@ export default function AddProductPage() {
         return;
       }
 
-      console.log("DATA TRIMISA CATRE BACKEND:", {
+      const payload = {
         name,
         price,
         stock,
@@ -90,25 +89,23 @@ export default function AddProductPage() {
         images,
         categoryId,
         userId: user.id,
-      });
+      };
 
-      // 🔥 FIX: axiosInstance trimite token-ul automat, nu mai punem headers manual
-      await axiosInstance.post("/products", {
-        name,
-        price,
-        stock,
-        description,
-        images,
-        categoryId,
-        userId: user.id,
-      });
+      console.log("DATA TRIMISA CATRE BACKEND:", payload);
+
+      await axiosInstance.post("/products", payload);
 
       alert("Anunț publicat cu succes!");
       router.push("/my-account/profile");
 
-    } catch (err) {
-      console.error(err);
-      alert("Eroare la publicarea anunțului");
+    } catch (err: any) {
+      if (err.response) {
+        console.error("BACKEND ERROR:", err.response.data);
+        alert("Eroare backend: " + JSON.stringify(err.response.data));
+      } else {
+        console.error("UNKNOWN ERROR:", err);
+        alert("Eroare necunoscută");
+      }
     } finally {
       setLoading(false);
     }

@@ -10,16 +10,13 @@ export default function AddProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(1);
-
-  // 🔥 FIX: categoryId nu mai este null
   const [categoryId, setCategoryId] = useState<number>(1);
-
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Upload în Cloudinary
+  // Upload în Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
@@ -38,7 +35,7 @@ export default function AddProductPage() {
     return data.secure_url;
   };
 
-  // 🔥 Upload + PREVIEW
+  // Upload + PREVIEW
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
 
@@ -62,23 +59,21 @@ export default function AddProductPage() {
     });
   };
 
-  // 🔥 ȘTERGERE IMAGINE
+  // ȘTERGERE IMAGINE
   const removeImage = (index: number) => {
     const updated = images.filter((_, i) => i !== index);
     setImages(updated);
     setCurrentIndex(0);
   };
 
-  // 🔥 SUBMIT FORM
+  // SUBMIT FORM
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-
-      // 🔥 FIX CRITIC: luăm userId din localStorage (userData, nu user)
-      const userData = localStorage.getItem("userData");
+      // 🔥 FIX: user este salvat în localStorage ca "user"
+      const userData = localStorage.getItem("user");
       const user = userData ? JSON.parse(userData) : null;
 
       if (!user?.id) {
@@ -97,27 +92,20 @@ export default function AddProductPage() {
         userId: user.id,
       });
 
-      // 🔥 AICI AM FĂCUT SINGURA MODIFICARE
-      await axiosInstance.post(
-        "/products",
-        {
-          name,
-          price,
-          stock,
-          description,
-          images,
-          categoryId,
-          userId: user.id, // 🔥 FIX CRITIC
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // 🔥 FIX: axiosInstance trimite token-ul automat, nu mai punem headers manual
+      await axiosInstance.post("/products", {
+        name,
+        price,
+        stock,
+        description,
+        images,
+        categoryId,
+        userId: user.id,
+      });
 
       alert("Anunț publicat cu succes!");
-      router.push("/my-account/profile"); // 🔥 FIX: rămâi în pagina ta de user
+      router.push("/my-account/profile");
+
     } catch (err) {
       console.error(err);
       alert("Eroare la publicarea anunțului");
@@ -132,7 +120,6 @@ export default function AddProductPage() {
         onSubmit={handleSubmit}
         className="bg-[#0a0f2d] p-8 rounded-xl border border-white/10 w-full max-w-3xl"
       >
-        {/* 🔙 BUTON ÎNAPOI */}
         <button
           type="button"
           onClick={() => router.push("/my-account/profile")}

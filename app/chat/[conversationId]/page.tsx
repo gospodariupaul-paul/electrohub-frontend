@@ -67,14 +67,14 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 🔥 5. Trimite mesaj (CU senderId + token)
+  // 🔥 5. Trimite mesaj
   const sendMessage = async () => {
     if (!text.trim() || !user) return;
 
     try {
       await axiosInstance.post("/messages", {
         conversationId: Number(conversationId),
-        senderId: user.id, // 🔥 FIX CRITIC
+        senderId: user.id,
         text: text,
       });
 
@@ -85,16 +85,34 @@ export default function ChatPage() {
     }
   };
 
+  // 🔥 Determinăm cu cine vorbește userul
+  const otherUser =
+    conversation?.buyerId === user?.id
+      ? conversation?.seller
+      : conversation?.buyer;
+
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col">
-      <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3">
-        <div className="w-10 h-10 rounded-full bg-gray-500" />
-        <div>
-          <p className="font-semibold text-sm">Chat</p>
-          <p className="text-xs text-gray-300">online</p>
+
+      {/* 🔥 HEADER WHATSAPP STYLE */}
+      <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md">
+        {/* Avatar */}
+        <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
+          {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}
+        </div>
+
+        {/* Nume + produs */}
+        <div className="flex flex-col">
+          <p className="font-semibold text-base">
+            {otherUser?.name || "Utilizator"}
+          </p>
+          <p className="text-xs text-gray-300">
+            {conversation?.product?.name || ""}
+          </p>
         </div>
       </div>
 
+      {/* 🔥 Mesaje */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
@@ -120,6 +138,7 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
+      {/* 🔥 Input */}
       <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
         <button
           onClick={() => setShowEmoji((v) => !v)}

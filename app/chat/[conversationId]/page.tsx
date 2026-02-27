@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import axiosInstance from "@/lib/axios";
 import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
 
 export default function ChatPage() {
   const { conversationId } = useParams();
+  const router = useRouter();
 
   const [messages, setMessages] = useState<any[]>([]);
   const [conversation, setConversation] = useState<any>(null);
@@ -20,22 +22,26 @@ export default function ChatPage() {
     if (u) setUser(JSON.parse(u));
   }, []);
 
+  // 🔥 dacă user-ul nu e logat → redirect la login
   useEffect(() => {
-    if (!conversationId) return;
+    if (user === null) return;
+    if (!user?.id) {
+      router.push("/login");
+    }
+  }, [user]);
 
-    fetch(`https://electrohub-backend-1-10qa.onrender.com/conversations/${conversationId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setConversation(data);
+  useEffect(() => {
+    if (!conversationId || !user?.id) return;
 
-        return fetch(
-          `https://electrohub-backend-1-10qa.onrender.com/messages/${conversationId}`
-        );
+    axiosInstance
+      .get(`/conversations/${conversationId}`)
+      .then((res) => {
+        setConversation(res.data);
+        return axiosInstance.get(`/messages/${conversationId}`);
       })
-      .then((res) => res.json())
-      .then((msgs) => setMessages(msgs))
+      .then((res) => setMessages(res.data))
       .catch((err) => console.error("Error loading chat:", err));
-  }, [conversationId]);
+  }, [conversationId, user]);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -49,7 +55,6 @@ export default function ChatPage() {
     }
 
     const pusher = new Pusher(key, { cluster });
-
     const channel = pusher.subscribe(`conversation-${conversationId}`);
 
     channel.bind("new-message", (msg: any) => {
@@ -66,22 +71,12 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 🔥 AICI ESTE SINGURA MODIFICARE
   const sendMessage = async () => {
-    console.log("APASAT TRIMITE");
-
     if (!text.trim() || !user) return;
 
-    const payload = {
+    await axiosInstance.post("/messages", {
       conversationId: Number(conversationId),
-      senderId: user.id,
       content: text,
-    };
-
-    await fetch("https://electrohub-backend-1-10qa.onrender.com/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
     });
 
     setText("");
@@ -115,7 +110,7 @@ export default function ChatPage() {
                     : "bg-[#202c33] text-white rounded-bl-none"
                 }`}
               >
-                {msg.text}
+                {msg.content}
               </div>
             </div>
           );

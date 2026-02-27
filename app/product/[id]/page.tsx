@@ -37,7 +37,6 @@ export default function ProductPage() {
     }
 
     try {
-      // 1️⃣ Verificăm dacă există deja conversație
       const existing = await axiosInstance.get(
         `/conversations?buyerId=${user.id}&productId=${productId}`
       );
@@ -47,7 +46,6 @@ export default function ProductPage() {
         return;
       }
 
-      // 2️⃣ Creăm conversație nouă
       const res = await axiosInstance.post("/conversations", {
         buyerId: user.id,
         sellerId: product.userId,
@@ -66,7 +64,6 @@ export default function ProductPage() {
 
   return (
     <div className="p-6 text-white max-w-3xl mx-auto space-y-6">
-      {/* TITLU + PREȚ */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">{product.name}</h1>
         <span className="text-2xl font-bold text-cyan-400">
@@ -74,10 +71,8 @@ export default function ProductPage() {
         </span>
       </div>
 
-      {/* DESCRIERE */}
       <p className="opacity-80">{product.description}</p>
 
-      {/* VÂNZĂTOR */}
       <div className="p-4 bg-[#070a20] border border-white/10 rounded-xl space-y-4">
         <div className="flex items-center gap-4">
           <img
@@ -105,7 +100,6 @@ export default function ProductPage() {
         </Link>
       </div>
 
-      {/* BUTON CHAT */}
       <button
         onClick={startChat}
         className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
@@ -113,7 +107,6 @@ export default function ProductPage() {
         Trimite mesaj
       </button>
 
-      {/* BUTON SUNĂ */}
       {product.userPhone && (
         <a
           href={`tel:${product.userPhone}`}

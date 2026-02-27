@@ -56,10 +56,14 @@ export default function MessagesPage() {
                 {/* Text */}
                 <div className="flex-1">
                   <p className="text-white font-semibold text-lg">
-                    {otherUser?.name || "Utilizator"}
+                    Ai un mesaj
                   </p>
 
                   <p className="text-sm text-gray-400">
+                    {c.product?.name || "Produs necunoscut"}
+                  </p>
+
+                  <p className="mt-1 text-sm text-gray-500 line-clamp-1">
                     {lastMessage}
                   </p>
                 </div>

@@ -28,7 +28,6 @@ export default function ChatPage() {
       .then((data) => {
         setConversation(data);
 
-        // 🔥 FIX: ruta corectă pentru mesaje
         return fetch(
           `https://electrohub-backend-1-10qa.onrender.com/messages/${conversationId}`
         );
@@ -67,17 +66,16 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 🔥 AICI ESTE SINGURA MODIFICARE
   const sendMessage = async () => {
     console.log("APASAT TRIMITE");
 
     if (!text.trim() || !user) return;
 
     const payload = {
-      buyerId: conversation?.buyerId || user.id,
-      sellerId: conversation?.sellerId || 0,
-      productId: conversation?.productId || 0,
+      conversationId: Number(conversationId),
       senderId: user.id,
-      text,
+      content: text,
     };
 
     await fetch("https://electrohub-backend-1-10qa.onrender.com/messages", {
@@ -125,7 +123,6 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* 🔥 FIX PUS DE MINE — z-index corect */}
       <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
         <button
           onClick={() => setShowEmoji((v) => !v)}

@@ -1,16 +1,21 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "https://electrohub-backend-1-10qa.onrender.com",
   withCredentials: true,
 });
 
-// 🔥 Interceptor pentru a trimite token-ul la backend
-axiosInstance.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
   const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+
+  if (!config.headers) {
+    config.headers = {};
   }
+
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+
   return config;
 });
 

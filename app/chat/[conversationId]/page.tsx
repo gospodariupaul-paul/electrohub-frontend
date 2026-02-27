@@ -71,17 +71,21 @@ export default function ChatPage() {
   }, [messages]);
 
   const sendMessage = async () => {
-    console.log("APASAT TRIMITE"); // 🔥 TREBUIE SĂ VEZI ASTA
+    console.log("APASAT TRIMITE");
 
     if (!text.trim() || !user) return;
 
-    await axiosInstance.post("/messages", {
-      conversationId: Number(conversationId),
-      text: text, // 🔥 FIX
-    });
+    try {
+      await axiosInstance.post("/messages", {
+        conversationId: Number(conversationId),
+        text: text, // 🔥 FIX FINAL
+      });
 
-    setText("");
-    setShowEmoji(false);
+      setText(""); // 🔥 acum se golește inputul
+      setShowEmoji(false);
+    } catch (err) {
+      console.error("Eroare la trimitere mesaj:", err);
+    }
   };
 
   return (
@@ -111,7 +115,7 @@ export default function ChatPage() {
                     : "bg-[#202c33] text-white rounded-bl-none"
                 }`}
               >
-                {msg.text} {/* 🔥 FIX */}
+                {msg.text} {/* 🔥 FIX FINAL */}
               </div>
             </div>
           );

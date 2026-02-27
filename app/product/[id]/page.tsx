@@ -31,14 +31,16 @@ export default function ProductPage() {
   const startChat = async () => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+    // 🔥 Dacă nu e logat → redirect la login (ca pe OLX)
     if (!user?.id) {
       router.push("/login");
       return;
     }
 
     try {
+      // 🔥 Verificăm conversația EXISTENTĂ (corect)
       const existing = await axiosInstance.get(
-        `/conversations?buyerId=${user.id}&productId=${productId}`
+        `/conversations?productId=${productId}`
       );
 
       if (existing.data) {
@@ -46,9 +48,8 @@ export default function ProductPage() {
         return;
       }
 
+      // 🔥 Creăm conversația (backend-ul ia buyerId din token și sellerId din produs)
       const res = await axiosInstance.post("/conversations", {
-        buyerId: user.id,
-        sellerId: product.userId,
         productId,
       });
 

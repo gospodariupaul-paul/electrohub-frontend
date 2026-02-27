@@ -11,8 +11,17 @@ export default function MessagesPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 FIX: ruta corectă pentru conversațiile userului
-        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const stored = localStorage.getItem("user");
+        if (!stored) {
+          setLoading(false);
+          return;
+        }
+
+        const user = JSON.parse(stored);
+        if (!user?.id) {
+          setLoading(false);
+          return;
+        }
 
         const res = await axiosInstance.get(`/conversations/user/${user.id}`);
         setConversations(res.data || []);
@@ -28,7 +37,6 @@ export default function MessagesPage() {
 
   return (
     <div className="p-6 text-white space-y-6">
-
       <h1 className="text-3xl font-bold">Mesajele mele</h1>
 
       {loading ? (

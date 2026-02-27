@@ -22,7 +22,6 @@ export default function ChatPage() {
     if (u) setUser(JSON.parse(u));
   }, []);
 
-  // 🔥 dacă user-ul nu e logat → redirect la login
   useEffect(() => {
     if (user === null) return;
     if (!user?.id) {
@@ -76,7 +75,7 @@ export default function ChatPage() {
 
     await axiosInstance.post("/messages", {
       conversationId: Number(conversationId),
-      content: text,
+      text: text, // 🔥 AICI ESTE FIXUL
     });
 
     setText("");
@@ -110,7 +109,7 @@ export default function ChatPage() {
                     : "bg-[#202c33] text-white rounded-bl-none"
                 }`}
               >
-                {msg.content}
+                {msg.text} {/* 🔥 AICI ESTE FIXUL */}
               </div>
             </div>
           );

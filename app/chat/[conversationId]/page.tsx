@@ -17,6 +17,7 @@ export default function ChatPage() {
   const [showEmoji, setShowEmoji] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
+  // 🔥 1. Luăm userul logat
   useEffect(() => {
     const u = localStorage.getItem("user");
     if (u) setUser(JSON.parse(u));
@@ -24,11 +25,10 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (user === null) return;
-    if (!user?.id) {
-      router.push("/login");
-    }
+    if (!user?.id) router.push("/login");
   }, [user]);
 
+  // 🔥 2. Încărcăm conversația + mesajele
   useEffect(() => {
     if (!conversationId || !user?.id) return;
 
@@ -42,18 +42,14 @@ export default function ChatPage() {
       .catch((err) => console.error("Error loading chat:", err));
   }, [conversationId, user]);
 
+  // 🔥 3. Pusher pentru mesaje noi
   useEffect(() => {
     if (!conversationId) return;
 
     const key = process.env.NEXT_PUBLIC_PUSHER_KEY;
     const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 
-    if (!key) {
-      console.error("❌ Pusher KEY is missing!");
-      return;
-    }
-
-    const pusher = new Pusher(key, { cluster });
+    const pusher = new Pusher(key!, { cluster });
     const channel = pusher.subscribe(`conversation-${conversationId}`);
 
     channel.bind("new-message", (msg: any) => {
@@ -66,22 +62,23 @@ export default function ChatPage() {
     };
   }, [conversationId]);
 
+  // 🔥 4. Scroll automat
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 🔥 5. Trimite mesaj (CU senderId + token)
   const sendMessage = async () => {
-    console.log("APASAT TRIMITE");
-
     if (!text.trim() || !user) return;
 
     try {
       await axiosInstance.post("/messages", {
         conversationId: Number(conversationId),
-        text: text, // 🔥 FIX FINAL
+        senderId: user.id, // 🔥 FIX CRITIC
+        text: text,
       });
 
-      setText(""); // 🔥 acum se golește inputul
+      setText("");
       setShowEmoji(false);
     } catch (err) {
       console.error("Eroare la trimitere mesaj:", err);
@@ -115,7 +112,7 @@ export default function ChatPage() {
                     : "bg-[#202c33] text-white rounded-bl-none"
                 }`}
               >
-                {msg.text} {/* 🔥 FIX FINAL */}
+                {msg.text}
               </div>
             </div>
           );

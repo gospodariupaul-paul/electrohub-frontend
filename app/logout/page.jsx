@@ -12,16 +12,17 @@ export default function LogoutPage() {
     // Ștergem token-urile
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-
-    // Ștergem user-ul
     localStorage.removeItem("user");
 
     // Resetăm contextul
     setUser(null);
-    reloadUser(); // 🔥 OBLIGATORIU
 
-    // Redirecționăm
-    router.push("/");
+    // 🔥 IMPORTANT: așteptăm ca React să proceseze setUser(null)
+    setTimeout(() => {
+      reloadUser(); // acum se execută SIGUR
+      console.log("USER LOGAT după logout:", null);
+      router.push("/");
+    }, 50);
   }, []);
 
   return (

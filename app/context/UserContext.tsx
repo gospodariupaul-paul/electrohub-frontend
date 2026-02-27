@@ -11,14 +11,11 @@ export function UserProvider({ children }: any) {
   useEffect(() => {
     try {
       const token = localStorage.getItem("token");
-      const userData = localStorage.getItem("userData");
+      const userData = localStorage.getItem("user"); // 🔥 FIX AICI
 
       if (token && userData) {
         const parsedUser = JSON.parse(userData);
-
-        // 🔥 AICI — LOG IMPORTANT
         console.log("USER LOGAT:", parsedUser);
-
         setUser(parsedUser);
       } else {
         setUser(null);

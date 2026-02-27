@@ -9,23 +9,33 @@ export function UserProvider({ children }: any) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const token = localStorage.getItem("token");
-      const userData = localStorage.getItem("user"); // 🔥 FIX AICI
+    function loadUser() {
+      try {
+        const token = localStorage.getItem("token");
+        const userData = localStorage.getItem("user");
 
-      if (token && userData) {
-        const parsedUser = JSON.parse(userData);
-        console.log("USER LOGAT:", parsedUser);
-        setUser(parsedUser);
-      } else {
+        if (token && userData) {
+          const parsedUser = JSON.parse(userData);
+          console.log("USER LOGAT:", parsedUser);
+          setUser(parsedUser);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Failed to load user from localStorage:", err);
         setUser(null);
       }
-    } catch (err) {
-      console.error("Failed to load user from localStorage:", err);
-      setUser(null);
+
+      setLoading(false);
     }
 
-    setLoading(false);
+    // încărcăm userul la pornire
+    loadUser();
+
+    // ascultăm schimbările din localStorage (login/logout în alte tab-uri)
+    window.addEventListener("storage", loadUser);
+
+    return () => window.removeEventListener("storage", loadUser);
   }, []);
 
   return (

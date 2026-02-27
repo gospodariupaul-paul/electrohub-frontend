@@ -15,7 +15,7 @@ export default function MessagesPage() {
       try {
         if (!user) return;
 
-        // 🔥 FIX: ruta corectă pentru conversațiile userului
+        // 🔥 Conversațiile userului logat (buyer sau seller)
         const res = await axiosInstance.get(`/conversations/user/${user.id}`);
         setConversations(res.data || []);
       } catch (e) {
@@ -38,32 +38,41 @@ export default function MessagesPage() {
         <p className="opacity-70">Nu ai conversații încă.</p>
       ) : (
         <div className="space-y-4">
-          {conversations.map((c) => (
-            <Link
-              key={c.id}
-              href={`/chat/${c.id}`}
-              className="block bg-[#070a20] border border-white/10 p-4 rounded-xl hover:border-cyan-400 transition"
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="font-semibold text-cyan-300">
-                    Client: {c.buyer?.name || "Anonim"}
-                  </p>
-                  <p className="text-sm opacity-70">
-                    Produs: {c.product?.name}
+          {conversations.map((c) => {
+            // 🔥 Determinăm cu cine vorbește userul logat
+            const isBuyer = c.buyerId === user.id;
+            const otherUser = isBuyer ? c.seller : c.buyer;
+
+            return (
+              <Link
+                key={c.id}
+                href={`/chat/${c.id}`}
+                className="block bg-[#070a20] border border-white/10 p-4 rounded-xl hover:border-cyan-400 transition"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-cyan-300">
+                      {isBuyer
+                        ? `Vânzător: ${otherUser?.name || "Anonim"}`
+                        : `Client: ${otherUser?.name || "Anonim"}`}
+                    </p>
+
+                    <p className="text-sm opacity-70">
+                      Produs: {c.product?.name}
+                    </p>
+                  </div>
+
+                  <p className="text-xs opacity-50">
+                    {new Date(c.updatedAt).toLocaleString()}
                   </p>
                 </div>
 
-                <p className="text-xs opacity-50">
-                  {new Date(c.updatedAt).toLocaleString()}
+                <p className="mt-2 text-sm opacity-80 line-clamp-1">
+                  Ultimul mesaj: {c.lastMessage?.content || "—"}
                 </p>
-              </div>
-
-              <p className="mt-2 text-sm opacity-80 line-clamp-1">
-                Ultimul mesaj: {c.lastMessage?.content || "—"}
-              </p>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

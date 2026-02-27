@@ -7,13 +7,16 @@ export default function ChatBox({ conversationId, userId }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
-  // 1️⃣ Încarcă mesajele existente
+  // 1️⃣ Încarcă mesajele existente din backend-ul Render
   useEffect(() => {
     if (!conversationId) return;
 
-    fetch(`http://localhost:1000/messages/${conversationId}`)
+    fetch(
+      `https://electrohub-backend-1-10qa.onrender.com/messages/${conversationId}`
+    )
       .then((res) => res.json())
-      .then((data) => setMessages(data));
+      .then((data) => setMessages(data))
+      .catch((err) => console.error("Eroare la încărcarea mesajelor:", err));
   }, [conversationId]);
 
   // 2️⃣ Ascultă mesajele noi prin Pusher
@@ -31,13 +34,23 @@ export default function ChatBox({ conversationId, userId }) {
     };
   }, [conversationId]);
 
-  // 3️⃣ Trimite mesaj
+  // 3️⃣ Trimite mesaj (cu token JWT)
   const sendMessage = async () => {
     if (!text.trim()) return;
 
-    await fetch("http://localhost:1000/messages", {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Trebuie să fii logat ca să trimiți mesaje.");
+      return;
+    }
+
+    await fetch("https://electrohub-backend-1-10qa.onrender.com/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // 🔥 token trimis corect
+      },
       body: JSON.stringify({
         conversationId,
         senderId: userId,
@@ -49,11 +62,18 @@ export default function ChatBox({ conversationId, userId }) {
   };
 
   return (
-    <div className="border rounded p-4 bg-[#0f0f1a] text-white shadow">
+    <div className="border rounded p-4 bg-[#0f0f1a] text-white shadow max-w-xl mx-auto mt-6">
       <div className="h-64 overflow-y-auto border-b mb-3 pb-3">
+        {messages.length === 0 && (
+          <p className="text-gray-400 text-sm">Nu există mesaje încă...</p>
+        )}
+
         {messages.map((m) => (
           <div key={m.id} className="mb-2">
-            <b>{m.senderId === userId ? "Tu" : "Vânzător"}:</b> {m.text}
+            <b className={m.senderId === userId ? "text-green-400" : "text-cyan-300"}>
+              {m.senderId === userId ? "Tu" : "Vânzător"}:
+            </b>{" "}
+            {m.text}
           </div>
         ))}
       </div>

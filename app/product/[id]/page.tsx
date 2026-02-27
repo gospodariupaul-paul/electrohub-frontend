@@ -1,152 +1,127 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useParams } from "next/navigation";
-import Pusher from "pusher-js";
-import EmojiPicker from "emoji-picker-react";
+import { useEffect, useState } from "react";
+import axiosInstance from "@/lib/axios";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function ChatPage() {
-  const { conversationId } = useParams();
+export default function ProductPage() {
+  const params = useParams();
+  const router = useRouter();
+  const productId = params?.id;
 
-  const [messages, setMessages] = useState<any[]>([]);
-  const [conversation, setConversation] = useState<any>(null);
-  const [text, setText] = useState("");
-  const [user, setUser] = useState<any>(null);
-  const [showEmoji, setShowEmoji] = useState(false);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const u = localStorage.getItem("user");
-    if (u) setUser(JSON.parse(u));
-  }, []);
-
-  useEffect(() => {
-    if (!conversationId) return;
-
-    fetch(`https://electrohub-backend-1-10qa.onrender.com/conversations/${conversationId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setConversation(data);
-
-        return fetch(
-          `https://electrohub-backend-1-10qa.onrender.com/messages?conversationId=${conversationId}`
-        );
-      })
-      .then((res) => res.json())
-      .then((msgs) => setMessages(msgs))
-      .catch((err) => console.error("Error loading chat:", err));
-  }, [conversationId]);
-
-  useEffect(() => {
-    if (!conversationId) return;
-
-    const key = process.env.NEXT_PUBLIC_PUSHER_KEY;
-    const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
-
-    const pusher = new Pusher(key, { cluster });
-    const channel = pusher.subscribe(`conversation-${conversationId}`);
-
-    channel.bind("new-message", (msg: any) => {
-      setMessages((prev) => [...prev, msg]);
-    });
-
-    return () => {
-      pusher.unsubscribe(`conversation-${conversationId}`);
-      pusher.disconnect();
-    };
-  }, [conversationId]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const sendMessage = async () => {
-    if (!text.trim() || !user) return;
-
-    const payload = {
-      buyerId: conversation?.buyerId || user.id,
-      sellerId: conversation?.sellerId || 0,
-      productId: conversation?.productId || 0,
-      senderId: user.id,
-      text,
+    const load = async () => {
+      try {
+        const res = await axiosInstance.get(`/products/${productId}`);
+        setProduct(res.data);
+      } catch (error) {
+        console.error("Eroare la încărcarea produsului:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    await fetch("https://electrohub-backend-1-10qa.onrender.com/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    load();
+  }, [productId]);
 
-    setText("");
-    setShowEmoji(false);
+  const startChat = async () => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!user?.id) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      // 1️⃣ Verificăm dacă există deja conversație
+      const existing = await axiosInstance.get(
+        `/conversations?buyerId=${user.id}&productId=${productId}`
+      );
+
+      if (existing.data) {
+        router.push(`/chat/${existing.data.id}`);
+        return;
+      }
+
+      // 2️⃣ Creăm conversație nouă
+      const res = await axiosInstance.post("/conversations", {
+        buyerId: user.id,
+        sellerId: product.userId,
+        productId,
+      });
+
+      router.push(`/chat/${res.data.id}`);
+    } catch (error) {
+      console.error("Eroare la inițierea conversației:", error);
+      alert("Nu s-a putut deschide chatul.");
+    }
   };
 
+  if (loading) return <p className="p-6 text-white">Se încarcă...</p>;
+  if (!product) return <p className="p-6 text-white">Produsul nu există.</p>;
+
   return (
-    <div className="min-h-screen bg-[#0b141a] flex flex-col">
-      <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3">
-        <div className="w-10 h-10 rounded-full bg-gray-500" />
-        <div>
-          <p className="font-semibold text-sm">Chat</p>
-          <p className="text-xs text-gray-300">online</p>
-        </div>
+    <div className="p-6 text-white max-w-3xl mx-auto space-y-6">
+      {/* TITLU + PREȚ */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">{product.name}</h1>
+        <span className="text-2xl font-bold text-cyan-400">
+          {product.price} lei
+        </span>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
-        {messages.map((msg, i) => {
-          const isMe = user && msg.senderId === user.id;
-          return (
-            <div
-              key={i}
-              className={`flex w-full ${
-                isMe ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`max-w-xs px-3 py-2 rounded-lg text-sm shadow-sm ${
-                  isMe
-                    ? "bg-[#005c4b] text-white rounded-br-none"
-                    : "bg-[#202c33] text-white rounded-bl-none"
-                }`}
-              >
-                {msg.text}
-              </div>
-            </div>
-          );
-        })}
-        <div ref={bottomRef} />
-      </div>
+      {/* DESCRIERE */}
+      <p className="opacity-80">{product.description}</p>
 
-      <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
-        <button
-          onClick={() => setShowEmoji((v) => !v)}
-          className="text-2xl text-gray-300"
-        >
-          😊
-        </button>
-
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Scrie un mesaj"
-          className="flex-1 bg-[#2a3942] text-white text-sm px-3 py-2 rounded-lg outline-none"
-        />
-
-        <button
-          onClick={sendMessage}
-          className="text-sm font-semibold text-[#00a884]"
-        >
-          Trimite
-        </button>
-
-        {showEmoji && (
-          <div className="absolute bottom-14 left-2 z-10">
-            <EmojiPicker
-              onEmojiClick={(emoji) => setText((prev) => prev + emoji.emoji)}
-              theme="dark"
-            />
+      {/* VÂNZĂTOR */}
+      <div className="p-4 bg-[#070a20] border border-white/10 rounded-xl space-y-4">
+        <div className="flex items-center gap-4">
+          <img
+            src={product.userAvatar || "/default-avatar.png"}
+            className="w-16 h-16 rounded-full object-cover border border-white/10"
+          />
+          <div>
+            <p className="opacity-70 text-sm">Vândut de:</p>
+            <p className="text-lg font-semibold">{product.userName}</p>
+            <p className="text-yellow-400 text-sm">
+              ⭐ {product.userRating || 0} / 5
+            </p>
           </div>
-        )}
+        </div>
+
+        <p className="opacity-70 text-sm">
+          {product.userTotalProducts} anunțuri publicate
+        </p>
+
+        <Link
+          href={`/seller/${product.userId}`}
+          className="text-cyan-400 hover:underline text-sm"
+        >
+          Vezi profilul vânzătorului →
+        </Link>
       </div>
+
+      {/* BUTON CHAT */}
+      <button
+        onClick={startChat}
+        className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
+      >
+        Trimite mesaj
+      </button>
+
+      {/* BUTON SUNĂ */}
+      {product.userPhone && (
+        <a
+          href={`tel:${product.userPhone}`}
+          className="w-full block text-center py-3 bg-green-600 hover:bg-green-500 rounded-lg font-semibold"
+        >
+          Sună vânzătorul
+        </a>
+      )}
     </div>
   );
 }

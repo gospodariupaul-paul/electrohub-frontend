@@ -27,7 +27,7 @@ export default function AddProductPage() {
         categoryId: 1,        // 🔥 backend-ul cere obligatoriu
         stock: 1,             // 🔥 backend-ul cere obligatoriu
         images: [imageUrl],   // 🔥 backend-ul cere array
-        userId: user.id,      // 🔥 obligatoriu pentru pagina userului
+        // ❌ userId: user.id — SCOS, backend-ul îl ia din token
       });
 
       alert("Produs adăugat cu succes!");

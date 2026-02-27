@@ -8,7 +8,7 @@ export function UserProvider({ children }: any) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadUser = () => {
     try {
       const token = localStorage.getItem("token");
       const userData = localStorage.getItem("user");
@@ -23,13 +23,24 @@ export function UserProvider({ children }: any) {
     } catch (err) {
       console.error("Failed to load user:", err);
       setUser(null);
-    } finally {
-      setLoading(false);
     }
-  }, []); // rulează O SINGURĂ DATĂ
+  };
+
+  // rulează o singură dată la pornire
+  useEffect(() => {
+    loadUser();
+    setLoading(false);
+  }, []);
+
+  // ASCULTĂ schimbările din localStorage (login/logout)
+  useEffect(() => {
+    const handler = () => loadUser();
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, loading, reloadUser: loadUser }}>
       {children}
     </UserContext.Provider>
   );

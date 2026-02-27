@@ -6,18 +6,19 @@ import { useUser } from "@/app/context/UserContext";
 
 export default function LogoutPage() {
   const router = useRouter();
-  const { setUser } = useUser();
+  const { setUser, reloadUser } = useUser();
 
   useEffect(() => {
     // Ștergem token-urile
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
 
-    // Ștergem user-ul corect
+    // Ștergem user-ul
     localStorage.removeItem("user");
 
     // Resetăm contextul
     setUser(null);
+    reloadUser(); // 🔥 OBLIGATORIU
 
     // Redirecționăm
     router.push("/");

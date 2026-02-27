@@ -26,17 +26,9 @@ export function UserProvider({ children }: any) {
     }
   };
 
-  // rulează o singură dată la pornire
   useEffect(() => {
     loadUser();
     setLoading(false);
-  }, []);
-
-  // ASCULTĂ schimbările din localStorage (login/logout)
-  useEffect(() => {
-    const handler = () => loadUser();
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
   }, []);
 
   return (

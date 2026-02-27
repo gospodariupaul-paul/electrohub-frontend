@@ -7,7 +7,7 @@ import { useUser } from "@/app/context/UserContext";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser } = useUser();
+  const { setUser, reloadUser } = useUser();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,17 +27,18 @@ export default function LoginPage() {
       const accessToken = res.data.accessToken;
       const refreshToken = res.data.refreshToken;
 
-      // 🔥 Salvăm token-urile
+      // Salvăm token-urile
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // 🔥 Salvăm user-ul în cheia CORECTĂ
+      // Salvăm user-ul
       localStorage.setItem("user", JSON.stringify(user));
 
-      // 🔥 Actualizăm contextul
+      // Actualizăm contextul
       setUser(user);
+      reloadUser(); // 🔥 OBLIGATORIU
 
-      // 🔥 Redirect în funcție de rol
+      // Redirect în funcție de rol
       if (user.role === "admin") {
         router.push("/dashboard");
         return;

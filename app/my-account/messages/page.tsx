@@ -36,7 +36,7 @@ export default function MessagesPage() {
   }, []);
 
   return (
-    <div className="p-6 text-white space-y-6">
+    <div className="p-6 text-white space-y-6 bg-[#0b141a] min-h-screen">
       <h1 className="text-3xl font-bold">Mesajele mele</h1>
 
       {loading ? (
@@ -49,26 +49,35 @@ export default function MessagesPage() {
             <Link
               key={conv.id}
               href={`/chat/${conv.id}`}
-              className="block bg-[#070a20] border border-white/10 p-4 rounded-xl hover:border-cyan-400 transition"
+              className="flex items-center gap-4 p-4 rounded-xl bg-[#111b21] hover:bg-[#202c33] transition border border-transparent hover:border-[#00a884]"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold">
-                    Conversație cu: {conv.otherUserName}
-                  </h3>
-                  <p className="text-sm opacity-70">
-                    Produs: {conv.productName}
-                  </p>
-                </div>
-
-                <span className="text-xs opacity-50">
-                  {new Date(conv.updatedAt).toLocaleString()}
-                </span>
+              {/* Avatar */}
+              <div className="w-12 h-12 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg shadow-md">
+                {conv.otherUserName?.charAt(0)?.toUpperCase() || "?"}
               </div>
 
-              <p className="text-sm mt-2 opacity-80 line-clamp-1">
-                Ultimul mesaj: {conv.lastMessage}
-              </p>
+              {/* Text */}
+              <div className="flex-1">
+                <p className="text-white font-semibold text-lg">
+                  Ai un mesaj
+                </p>
+
+                <p className="text-sm text-gray-400">
+                  {conv.productName || "Produs necunoscut"}
+                </p>
+
+                <p className="mt-1 text-sm text-gray-500 line-clamp-1">
+                  {conv.lastMessage || "—"}
+                </p>
+              </div>
+
+              {/* Ora */}
+              <span className="text-xs text-gray-500 whitespace-nowrap">
+                {new Date(conv.updatedAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </Link>
           ))}
         </div>

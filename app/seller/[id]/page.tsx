@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 // SWIPER
@@ -15,6 +15,8 @@ import "swiper/css/thumbs";
 
 export default function SellerProductPage() {
   const { id } = useParams();
+  const router = useRouter();
+
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +34,23 @@ export default function SellerProductPage() {
         setLoading(false);
       });
   }, [id]);
+
+  const startConversation = async () => {
+    try {
+      const res = await fetch("http://localhost:1000/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      const data = await res.json();
+
+      // Navighează către chat cu conversationId VALID
+      router.push(`/chat/${data.id}`);
+    } catch (err) {
+      console.error("Eroare creare conversație:", err);
+    }
+  };
 
   if (loading) {
     return (
@@ -132,12 +151,12 @@ export default function SellerProductPage() {
 
         {/* Butoane */}
         <div className="flex gap-4">
-          <Link
-            href={`/chat/${product.id}`}
+          <button
+            onClick={startConversation}
             className="px-5 py-3 bg-blue-500 rounded-xl font-semibold"
           >
             Trimite mesaj
-          </Link>
+          </button>
 
           <a
             href={`mailto:${product.user?.email}`}

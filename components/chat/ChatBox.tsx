@@ -7,12 +7,22 @@ export default function ChatBox({ conversationId, userId }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
+  // 1️⃣ Încarcă mesajele existente
+  useEffect(() => {
+    if (!conversationId) return;
+
+    fetch(`http://localhost:1000/messages/${conversationId}`)
+      .then((res) => res.json())
+      .then((data) => setMessages(data));
+  }, [conversationId]);
+
+  // 2️⃣ Ascultă mesajele noi prin Pusher
   useEffect(() => {
     if (!conversationId) return;
 
     const channel = pusherClient.subscribe(`conversation-${conversationId}`);
 
-    channel.bind("new-message", (message: any) => {
+    channel.bind("new-message", (message) => {
       setMessages((prev) => [...prev, message]);
     });
 
@@ -21,6 +31,7 @@ export default function ChatBox({ conversationId, userId }) {
     };
   }, [conversationId]);
 
+  // 3️⃣ Trimite mesaj
   const sendMessage = async () => {
     if (!text.trim()) return;
 
@@ -38,7 +49,7 @@ export default function ChatBox({ conversationId, userId }) {
   };
 
   return (
-    <div className="border rounded p-4 bg-white shadow">
+    <div className="border rounded p-4 bg-[#0f0f1a] text-white shadow">
       <div className="h-64 overflow-y-auto border-b mb-3 pb-3">
         {messages.map((m) => (
           <div key={m.id} className="mb-2">
@@ -49,7 +60,7 @@ export default function ChatBox({ conversationId, userId }) {
 
       <div className="flex gap-2">
         <input
-          className="flex-1 border p-2 rounded"
+          className="flex-1 border p-2 rounded bg-[#1a1a2e] text-white"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Scrie un mesaj..."

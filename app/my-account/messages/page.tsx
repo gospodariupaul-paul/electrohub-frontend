@@ -11,8 +11,10 @@ export default function MessagesPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 Luăm toate conversațiile userului logat
-        const res = await axiosInstance.get("/chat/my-conversations");
+        // 🔥 FIX: ruta corectă pentru conversațiile userului
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+        const res = await axiosInstance.get(`/conversations/user/${user.id}`);
         setConversations(res.data || []);
       } catch (error) {
         console.error("Eroare la încărcarea conversațiilor:", error);

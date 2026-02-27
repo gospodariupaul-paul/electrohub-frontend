@@ -23,21 +23,18 @@ export default function LoginPage() {
         password,
       });
 
-      const user = res.data.user; // user complet, cu id
+      const user = res.data.user;
       const accessToken = res.data.accessToken;
       const refreshToken = res.data.refreshToken;
 
-      // 🔥 Salvăm token-urile corect
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // 🔥 Salvăm user-ul complet (cu id)
-      localStorage.setItem("userData", JSON.stringify(user));
+      // 🔥 FIX: salvăm user-ul în cheia CORECTĂ
+      localStorage.setItem("user", JSON.stringify(user));
 
-      // 🔥 Actualizăm UserContext
       setUser(user);
 
-      // 🔥 Redirect în funcție de rol
       if (user.role === "admin") {
         router.push("/dashboard");
         return;

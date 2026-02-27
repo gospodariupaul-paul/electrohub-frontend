@@ -71,11 +71,13 @@ export default function ChatPage() {
   }, [messages]);
 
   const sendMessage = async () => {
+    console.log("APASAT TRIMITE"); // 🔥 TREBUIE SĂ VEZI ASTA
+
     if (!text.trim() || !user) return;
 
     await axiosInstance.post("/messages", {
       conversationId: Number(conversationId),
-      text: text, // 🔥 AICI ESTE FIXUL
+      text: text, // 🔥 FIX
     });
 
     setText("");
@@ -109,7 +111,7 @@ export default function ChatPage() {
                     : "bg-[#202c33] text-white rounded-bl-none"
                 }`}
               >
-                {msg.text} {/* 🔥 AICI ESTE FIXUL */}
+                {msg.text} {/* 🔥 FIX */}
               </div>
             </div>
           );

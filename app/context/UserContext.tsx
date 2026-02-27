@@ -8,34 +8,33 @@ export function UserProvider({ children }: any) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    function loadUser() {
-      try {
-        const token = localStorage.getItem("token");
-        const userData = localStorage.getItem("user");
+  const loadUser = () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userData = localStorage.getItem("user");
 
-        if (token && userData) {
-          const parsedUser = JSON.parse(userData);
-          console.log("USER LOGAT:", parsedUser);
-          setUser(parsedUser);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Failed to load user from localStorage:", err);
+      if (token && userData) {
+        const parsedUser = JSON.parse(userData);
+        console.log("USER LOGAT:", parsedUser);
+        setUser(parsedUser);
+      } else {
         setUser(null);
       }
-
-      setLoading(false);
+    } catch (err) {
+      console.error("Failed to load user from localStorage:", err);
+      setUser(null);
     }
+  };
 
-    // încărcăm userul la pornire
+  useEffect(() => {
     loadUser();
 
-    // ascultăm schimbările din localStorage (login/logout în alte tab-uri)
-    window.addEventListener("storage", loadUser);
+    // ASCULTĂ SCHIMBĂRILE DIN LOCALSTORAGE ÎN ACELAȘI TAB
+    const interval = setInterval(() => {
+      loadUser();
+    }, 300);
 
-    return () => window.removeEventListener("storage", loadUser);
+    return () => clearInterval(interval);
   }, []);
 
   return (

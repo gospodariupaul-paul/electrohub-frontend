@@ -4,7 +4,7 @@ import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiBell, FiHeart, FiShoppingCart, FiUser } from "react-icons/fi";
+import { FiMenu, FiBell, FiHeart, FiShoppingCart, FiUser, FiHome } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 
 export default function RootLayout({ children }) {
@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
           <header className="sticky top-0 z-50 bg-[#0d1117]/90 backdrop-blur-md border-b border-white/10 shadow-lg">
             <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-              {/* 🔥 Stânga: Logo + Meniu */}
+              {/* 🔥 Stânga: Meniu + Logo */}
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
@@ -28,8 +28,9 @@ export default function RootLayout({ children }) {
                   <FiMenu />
                 </button>
 
+                {/* LOGO GOSPO Electro Hub */}
                 <Link href="/" className="text-2xl font-bold tracking-wide text-[#00eaff]">
-                  ElectroHub
+                  GOSPO <span className="text-white">Electro Hub</span>
                 </Link>
               </div>
 
@@ -47,6 +48,11 @@ export default function RootLayout({ children }) {
 
               {/* 🔥 Dreapta: Acțiuni utilizator */}
               <div className="flex items-center gap-5 text-xl">
+
+                {/* HOME BUTTON */}
+                <Link href="/" className="hover:text-[#00eaff] transition">
+                  <FiHome />
+                </Link>
 
                 <Link
                   href="/sell"

@@ -59,7 +59,7 @@ export default function MessagesPage() {
               {/* Text */}
               <div className="flex-1">
                 <p className="text-white font-semibold text-lg">
-                  Ai un mesaj
+                  {conv.otherUserName || "Utilizator necunoscut"}
                 </p>
 
                 <p className="text-sm text-gray-400">
@@ -70,6 +70,13 @@ export default function MessagesPage() {
                   {conv.lastMessage || "—"}
                 </p>
               </div>
+
+              {/* Badge mesaje necitite */}
+              {conv.unreadCount > 0 && (
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-2">
+                  {conv.unreadCount}
+                </span>
+              )}
 
               {/* Ora */}
               <span className="text-xs text-gray-500 whitespace-nowrap">

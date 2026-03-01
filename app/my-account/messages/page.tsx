@@ -8,31 +8,40 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const stored = localStorage.getItem("user");
-        if (!stored) {
-          setLoading(false);
-          return;
-        }
-
-        const user = JSON.parse(stored);
-        if (!user?.id) {
-          setLoading(false);
-          return;
-        }
-
-        const res = await axiosInstance.get(`/conversations/user/${user.id}`);
-        setConversations(res.data || []);
-      } catch (error) {
-        console.error("Eroare la încărcarea conversațiilor:", error);
-      } finally {
+  // 🔥 Funcția de încărcare a conversațiilor
+  const load = async () => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (!stored) {
         setLoading(false);
+        return;
       }
-    };
 
+      const user = JSON.parse(stored);
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const res = await axiosInstance.get(`/conversations/user/${user.id}`);
+      setConversations(res.data || []);
+    } catch (error) {
+      console.error("Eroare la încărcarea conversațiilor:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔥 Se încarcă o singură dată la intrarea pe pagină
+  useEffect(() => {
     load();
+  }, []);
+
+  // 🔥 Reîncarcă automat când revii pe pagină (SOLUȚIA pentru badge)
+  useEffect(() => {
+    const handleFocus = () => load();
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
   return (

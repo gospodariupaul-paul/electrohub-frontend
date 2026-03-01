@@ -1,106 +1,174 @@
-generator client {
-  provider = "prisma-client-js"
-}
+"use client";
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+import { useEffect, useState, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import axiosInstance from "@/lib/axios";
+import Pusher from "pusher-js";
+import EmojiPicker from "emoji-picker-react";
 
-model User {
-  id                  Int            @id @default(autoincrement())
-  email               String         @unique
-  password            String
-  name                String
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
-  description         String?
-  imageUrl            String?
-  role                String         @default("user")
+export default function ChatPage() {
+  const { conversationId } = useParams();
+  const router = useRouter();
 
-  buyerConversations  Conversation[] @relation("BuyerConversations")
-  sellerConversations Conversation[] @relation("SellerConversations")
-  messages            Message[]
-  orders              Order[]
-  products            Product[]
-}
+  const [messages, setMessages] = useState<any[]>([]);
+  const [conversation, setConversation] = useState<any>(null);
+  const [text, setText] = useState("");
+  const [user, setUser] = useState<any>(null);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
-model Category {
-  id          Int       @id @default(autoincrement())
-  name        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  description String?
-  imageUrl    String?
-  products    Product[]
-}
+  // 🔥 1. Luăm userul logat
+  useEffect(() => {
+    const u = localStorage.getItem("user");
+    if (u) setUser(JSON.parse(u));
+  }, []);
 
-model Product {
-  id            Int            @id @default(autoincrement())
-  name          String
-  price         Float
-  stock         Int            @default(0)
-  categoryId    Int?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  description   String?
-  images        String[]
-  userId        Int
-  status        String         @default("active")
+  useEffect(() => {
+    if (user === null) return;
+    if (!user?.id) router.push("/login");
+  }, [user]);
 
-  conversations Conversation[]
-  orderItems    OrderItem[]
-  category      Category?      @relation(fields: [categoryId], references: [id])
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+  // 🔥 2. Încărcăm conversația + mesajele
+  useEffect(() => {
+    if (!conversationId || !user?.id) return;
 
-model Order {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  total     Float
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  status    String      @default("pending")
+    axiosInstance
+      .get(`/conversations/${conversationId}`)
+      .then((res) => {
+        setConversation(res.data);
+        return axiosInstance.get(`/messages/${conversationId}`);
+      })
+      .then((res) => setMessages(res.data))
+      .catch((err) => console.error("Error loading chat:", err));
+  }, [conversationId, user]);
 
-  user      User        @relation(fields: [userId], references: [id])
-  items     OrderItem[]
-}
+  // 🔥 3. Pusher pentru mesaje noi
+  useEffect(() => {
+    if (!conversationId) return;
 
-model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
-  productId Int
-  quantity  Int
-  price     Float
+    const key = process.env.NEXT_PUBLIC_PUSHER_KEY;
+    const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 
-  order     Order   @relation(fields: [orderId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
-}
+    const pusher = new Pusher(key!, { cluster });
+    const channel = pusher.subscribe(`conversation-${conversationId}`);
 
-model Conversation {
-  id        Int       @id @default(autoincrement())
-  buyerId   Int
-  sellerId  Int
-  productId Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+    channel.bind("new-message", (msg: any) => {
+      setMessages((prev) => [...prev, msg]);
+    });
 
-  buyer     User      @relation("BuyerConversations", fields: [buyerId], references: [id])
-  seller    User      @relation("SellerConversations", fields: [sellerId], references: [id])
-  product   Product   @relation(fields: [productId], references: [id])
-  messages  Message[]
-}
+    return () => {
+      pusher.unsubscribe(`conversation-${conversationId}`);
+      pusher.disconnect();
+    };
+  }, [conversationId]);
 
-model Message {
-  id             Int          @id @default(autoincrement())
-  conversationId Int
-  senderId       Int
-  text           String
-  createdAt      DateTime     @default(now())
+  // 🔥 4. Scroll automat
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  // 🔥 ADĂUGAT — necesar pentru unreadCount
-  isRead         Boolean      @default(false)
+  // 🔥 5. Trimite mesaj
+  const sendMessage = async () => {
+    if (!text.trim() || !user) return;
 
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
-  sender         User         @relation(fields: [senderId], references: [id])
+    try {
+      await axiosInstance.post("/messages", {
+        conversationId: Number(conversationId),
+        senderId: user.id,
+        text: text,
+      });
+
+      setText("");
+      setShowEmoji(false);
+    } catch (err) {
+      console.error("Eroare la trimitere mesaj:", err);
+    }
+  };
+
+  // 🔥 Determinăm cu cine vorbește userul
+  const otherUser =
+    conversation?.buyerId === user?.id
+      ? conversation?.seller
+      : conversation?.buyer;
+
+  return (
+    <div className="min-h-screen bg-[#0b141a] flex flex-col">
+      {/* 🔥 HEADER WHATSAPP STYLE */}
+      <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md">
+        {/* Avatar */}
+        <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
+          {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}
+        </div>
+
+        {/* Nume + produs */}
+        <div className="flex flex-col">
+          <p className="font-semibold text-base">
+            {otherUser?.name || "Utilizator"}
+          </p>
+          <p className="text-xs text-gray-300">
+            {conversation?.product?.name || ""}
+          </p>
+        </div>
+      </div>
+
+      {/* 🔥 Mesaje */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
+        {messages.map((msg, i) => {
+          const isMe = user && msg.senderId === user.id;
+          return (
+            <div
+              key={i}
+              className={`flex w-full ${
+                isMe ? "justify-end" : "justify-start"
+              }`}
+            >
+              <div
+                className={`max-w-xs px-3 py-2 rounded-lg text-sm shadow-sm ${
+                  isMe
+                    ? "bg-[#005c4b] text-white rounded-br-none"
+                    : "bg-[#202c33] text-white rounded-bl-none"
+                }`}
+              >
+                {msg.text}
+              </div>
+            </div>
+          );
+        })}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* 🔥 Input */}
+      <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
+        <button
+          onClick={() => setShowEmoji((v) => !v)}
+          className="text-2xl text-gray-300"
+        >
+          😊
+        </button>
+
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Scrie un mesaj"
+          className="flex-1 bg-[#2a3942] text-white text-sm px-3 py-2 rounded-lg outline-none"
+        />
+
+        <button
+          onClick={sendMessage}
+          className="text-sm font-semibold text-[#00a884]"
+        >
+          Trimite
+        </button>
+
+        {showEmoji && (
+          <div className="absolute bottom-14 left-2 z-10">
+            <EmojiPicker
+              onEmojiClick={(emoji) => setText((prev) => prev + emoji.emoji)}
+              theme="dark"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

@@ -4,37 +4,31 @@ export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
-// Slug → Categorie reală din baza de date
-const categoryMap: Record<string, string> = {
-  "telefoane": "telefon",
-  "laptopuri": "Laptop",
-  "drones": "drona",
-  "televizoare": "televizor",
-  "casetofoane": "casetofon",
-};
+// Slug-urile reale din baza ta de date
+const validCategories = [
+  "telefoane",
+  "laptopuri",
+  "componente-pc",
+  "audio-video",
+];
 
 export function generateStaticParams() {
-  return Object.keys(categoryMap).map((slug) => ({ slug }));
+  return validCategories.map((slug) => ({ slug }));
 }
 
 export default async function CategoryPage({ params }: { params: { slug?: string } }) {
   const { slug } = params;
 
   try {
-    if (!slug) {
-      throw new Error("Slug is missing");
-    }
-
-    const categoryName = categoryMap[slug];
-
-    if (!categoryName) {
+    if (!slug || !validCategories.includes(slug)) {
       throw new Error("Categoria nu există");
     }
 
     await connectDB();
 
+    // Căutăm direct categoria EXACT cum este în DB
     const products = await Product.find({
-      category: { $regex: new RegExp(`^${categoryName}$`, "i") }
+      category: { $regex: new RegExp(`^${slug}$`, "i") }
     });
 
     return (
@@ -55,7 +49,7 @@ export default async function CategoryPage({ params }: { params: { slug?: string
               className="border p-4 rounded-lg shadow hover:border-cyan-400 transition"
             >
               <h2 className="font-semibold">{product.name}</h2>
-              <p className="text-gray-600">{product.price} Lei</p>
+              <p className="text-gray-600">{product.price} €</p>
             </Link>
           ))}
         </div>

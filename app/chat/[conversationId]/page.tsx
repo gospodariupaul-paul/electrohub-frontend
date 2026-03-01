@@ -15,6 +15,8 @@ export default function ChatPage() {
   const [text, setText] = useState("");
   const [user, setUser] = useState<any>(null);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [contextMenu, setContextMenu] = useState<any>(null);
+
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   // 🔥 1. Luăm userul logat
@@ -90,6 +92,36 @@ export default function ChatPage() {
     }
   };
 
+  // 🔥 6. Click dreapta pe mesaj
+  const handleRightClick = (e: any, msg: any) => {
+    e.preventDefault();
+    setContextMenu({
+      x: e.pageX,
+      y: e.pageY,
+      msg,
+    });
+  };
+
+  // 🔥 7. Șterge pentru tine
+  const deleteForMe = async (id: number) => {
+    await axiosInstance.post(`/messages/delete-for-me/${id}`);
+    setMessages((prev) => prev.filter((m) => m.id !== id));
+    setContextMenu(null);
+  };
+
+  // 🔥 8. Șterge pentru toți (stil WhatsApp)
+  const deleteForAll = async (id: number) => {
+    await axiosInstance.post(`/messages/delete-for-all/${id}`);
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === id
+          ? { ...m, text: "Acest mesaj a fost șters", deletedForAll: true }
+          : m
+      )
+    );
+    setContextMenu(null);
+  };
+
   // 🔥 Determinăm cu cine vorbește userul
   const otherUser =
     conversation?.buyerId === user?.id
@@ -97,15 +129,38 @@ export default function ChatPage() {
       : conversation?.buyer;
 
   return (
-    <div className="min-h-screen bg-[#0b141a] flex flex-col">
-      {/* 🔥 HEADER WHATSAPP STYLE */}
+    <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
+
+      {/* 🔥 MENIU CLICK DREAPTA */}
+      {contextMenu && (
+        <div
+          className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50"
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+        >
+          <button
+            onClick={() => deleteForMe(contextMenu.msg.id)}
+            className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
+          >
+            Șterge pentru tine
+          </button>
+
+          {contextMenu.msg.senderId === user?.id && (
+            <button
+              onClick={() => deleteForAll(contextMenu.msg.id)}
+              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
+            >
+              Șterge pentru toți
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* 🔥 HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md">
-        {/* Avatar */}
         <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
           {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}
         </div>
 
-        {/* Nume + produs */}
         <div className="flex flex-col">
           <p className="font-semibold text-base">
             {otherUser?.name || "Utilizator"}
@@ -120,9 +175,11 @@ export default function ChatPage() {
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
+
           return (
             <div
               key={i}
+              onContextMenu={(e) => handleRightClick(e, msg)}
               className={`flex w-full ${
                 isMe ? "justify-end" : "justify-start"
               }`}
@@ -134,7 +191,9 @@ export default function ChatPage() {
                     : "bg-[#202c33] text-white rounded-bl-none"
                 }`}
               >
-                {msg.text}
+                {msg.deletedForAll
+                  ? "Acest mesaj a fost șters"
+                  : msg.text}
               </div>
             </div>
           );

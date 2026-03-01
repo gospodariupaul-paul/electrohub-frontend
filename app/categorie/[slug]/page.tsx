@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
-// Slug → Nume categorie din baza de date
+// Slug → Nume categorie EXACT ca în baza de date
 const categoryMap: Record<string, string> = {
   "telefoane": "Telefoane",
   "laptopuri": "Laptopuri",
@@ -34,7 +34,7 @@ export default async function CategoryPage({ params }: { params: { slug?: string
 
     await connectDB();
 
-    // Căutăm produsele după numele categoriei din DB, nu după slug
+    // Căutăm produsele după numele categoriei reale
     const products = await Product.find({
       category: { $regex: new RegExp(`^${categoryName}$`, "i") }
     });

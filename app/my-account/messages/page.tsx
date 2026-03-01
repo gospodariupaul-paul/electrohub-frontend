@@ -75,8 +75,11 @@ export default function MessagesPage() {
                   {conv.productName || "Produs necunoscut"}
                 </p>
 
+                {/* 🔥 Afișare corectă a ultimului mesaj */}
                 <p className="mt-1 text-sm text-gray-500 line-clamp-1">
-                  {conv.lastMessage || "—"}
+                  {conv.lastMessageDeletedForAll
+                    ? "Acest mesaj a fost șters"
+                    : conv.lastMessage || "—"}
                 </p>
               </div>
 

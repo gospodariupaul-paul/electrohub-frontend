@@ -12,6 +12,43 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
+  // 🔥 ADĂUGAT — număr mesaje necitite
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // 🔥 ADĂUGAT — fetch mesaje necitite
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    const fetchUnread = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/conversations/user/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+
+        // total mesaje necitite din toate conversațiile
+        const total = data.reduce(
+          (sum: number, conv: any) => sum + (conv.unreadCount || 0),
+          0
+        );
+
+        setUnreadCount(total);
+      } catch (err) {
+        console.error("Eroare la fetch unread:", err);
+      }
+    };
+
+    fetchUnread();
+  }, [user]);
+
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
 
@@ -122,9 +159,15 @@ export default function UserProfilePage() {
         <nav className="space-y-3">
           <SidebarItem label="Anunțuri" active />
 
-          {/* CHAT — acum este link corect */}
-          <Link href="/my-account/messages">
+          {/* 🔥 CHAT CU BADGE */}
+          <Link href="/my-account/messages" className="relative block">
             <SidebarItem label="Chat" />
+
+            {unreadCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                {unreadCount}
+              </span>
+            )}
           </Link>
 
           <SidebarItem label="Notificări" />

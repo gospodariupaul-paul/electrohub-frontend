@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function MessagesPage() {
   const [conversations, setConversations] = useState<any[]>([]);
@@ -10,6 +11,8 @@ export default function MessagesPage() {
 
   // 🔥 MENIU ⋮ HEADER
   const [headerMenu, setHeaderMenu] = useState(false);
+
+  const router = useRouter();
 
   // 🔥 Funcția de încărcare a conversațiilor
   const load = async () => {
@@ -35,14 +38,21 @@ export default function MessagesPage() {
     }
   };
 
-  // 🔥 Ștergere conversație din header
-  const deleteAllConversations = async () => {
+  // 🔥 Marchează toate conversațiile ca citite + redirect
+  const markAllAsRead = async () => {
     try {
-      await axiosInstance.delete("/conversations/delete-all");
-      setConversations([]);
+      await axiosInstance.post("/messages/mark-all-read");
+
+      // Reîncarcă lista
+      await load();
+
+      // Închide meniul
       setHeaderMenu(false);
+
+      // Redirect în pagina de cont
+      router.push("/my-account");
     } catch (err) {
-      console.error("Eroare la ștergerea conversațiilor:", err);
+      console.error("Eroare la marcarea conversațiilor ca citite:", err);
     }
   };
 
@@ -77,10 +87,10 @@ export default function MessagesPage() {
         {headerMenu && (
           <div className="absolute right-6 top-20 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-52">
             <button
-              onClick={deleteAllConversations}
-              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
+              onClick={markAllAsRead}
+              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-[#00a884]"
             >
-              🗑️ Șterge toate conversațiile
+              ✔️ Marchează ca citit
             </button>
           </div>
         )}

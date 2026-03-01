@@ -4,14 +4,13 @@ export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
-// Slug → Nume categorie EXACT ca în baza de date
+// Slug → Categorie reală din baza de date
 const categoryMap: Record<string, string> = {
-  "telefoane": "Telefoane",
-  "laptopuri": "Laptopuri",
-  "componente-pc": "Componente PC",
-  "drones": "Drones",
-  "smart-home": "IoT & Smart Home",
-  "audio-video": "Audio-Video",
+  "telefoane": "telefon",
+  "laptopuri": "Laptop",
+  "drones": "drona",
+  "televizoare": "televizor",
+  "casetofoane": "casetofon",
 };
 
 export function generateStaticParams() {
@@ -34,7 +33,6 @@ export default async function CategoryPage({ params }: { params: { slug?: string
 
     await connectDB();
 
-    // Căutăm produsele după numele categoriei reale
     const products = await Product.find({
       category: { $regex: new RegExp(`^${categoryName}$`, "i") }
     });
@@ -42,7 +40,7 @@ export default async function CategoryPage({ params }: { params: { slug?: string
     return (
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-6 capitalize">
-          {categoryName}
+          {slug.replace("-", " ")}
         </h1>
 
         {products.length === 0 && (

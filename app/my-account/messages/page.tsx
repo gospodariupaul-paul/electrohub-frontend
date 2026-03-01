@@ -8,6 +8,9 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // 🔥 MENIU ⋮ HEADER
+  const [headerMenu, setHeaderMenu] = useState(false);
+
   // 🔥 Funcția de încărcare a conversațiilor
   const load = async () => {
     try {
@@ -32,12 +35,23 @@ export default function MessagesPage() {
     }
   };
 
+  // 🔥 Ștergere conversație din header
+  const deleteAllConversations = async () => {
+    try {
+      await axiosInstance.delete("/conversations/delete-all");
+      setConversations([]);
+      setHeaderMenu(false);
+    } catch (err) {
+      console.error("Eroare la ștergerea conversațiilor:", err);
+    }
+  };
+
   // 🔥 Se încarcă o singură dată la intrarea pe pagină
   useEffect(() => {
     load();
   }, []);
 
-  // 🔥 Reîncarcă automat când revii pe pagină (SOLUȚIA pentru badge)
+  // 🔥 Reîncarcă automat când revii pe pagină
   useEffect(() => {
     const handleFocus = () => load();
     window.addEventListener("focus", handleFocus);
@@ -45,8 +59,32 @@ export default function MessagesPage() {
   }, []);
 
   return (
-    <div className="p-6 text-white space-y-6 bg-[#0b141a] min-h-screen">
-      <h1 className="text-3xl font-bold">Mesajele mele</h1>
+    <div className="p-6 text-white space-y-6 bg-[#0b141a] min-h-screen relative">
+
+      {/* 🔥 HEADER CU ⋮ */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Mesajele mele</h1>
+
+        {/* ⋮ BUTON */}
+        <button
+          onClick={() => setHeaderMenu((v) => !v)}
+          className="text-3xl px-2"
+        >
+          ⋮
+        </button>
+
+        {/* MENIU ⋮ */}
+        {headerMenu && (
+          <div className="absolute right-6 top-20 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-52">
+            <button
+              onClick={deleteAllConversations}
+              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
+            >
+              🗑️ Șterge toate conversațiile
+            </button>
+          </div>
+        )}
+      </div>
 
       {loading ? (
         <p className="opacity-70">Se încarcă conversațiile...</p>

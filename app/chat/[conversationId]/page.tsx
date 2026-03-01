@@ -17,6 +17,9 @@ export default function ChatPage() {
   const [showEmoji, setShowEmoji] = useState(false);
   const [contextMenu, setContextMenu] = useState<any>(null);
 
+  // 🔥 MENIU ⋮ HEADER
+  const [headerMenu, setHeaderMenu] = useState(false);
+
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   // 🔥 1. Luăm userul logat
@@ -43,7 +46,6 @@ export default function ChatPage() {
       .then((res) => {
         setMessages(res.data);
 
-        // 🔥 MARCHEAZĂ MESAJELE CA CITITE
         axiosInstance.post(`/conversations/mark-read/${conversationId}`);
       })
       .catch((err) => console.error("Error loading chat:", err));
@@ -109,7 +111,7 @@ export default function ChatPage() {
     setContextMenu(null);
   };
 
-  // 🔥 8. Șterge pentru toți (stil WhatsApp)
+  // 🔥 8. Șterge pentru toți
   const deleteForAll = async (id: number) => {
     await axiosInstance.post(`/messages/delete-for-all/${id}`);
     setMessages((prev) =>
@@ -120,6 +122,16 @@ export default function ChatPage() {
       )
     );
     setContextMenu(null);
+  };
+
+  // 🔥 9. Ștergere conversație din ⋮
+  const deleteConversation = async () => {
+    try {
+      await axiosInstance.delete(`/conversations/${conversationId}`);
+      router.push("/my-account/messages");
+    } catch (err) {
+      console.error("Eroare la ștergerea conversației:", err);
+    }
   };
 
   // 🔥 Determinăm cu cine vorbește userul
@@ -155,13 +167,14 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* 🔥 HEADER */}
-      <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md">
+      {/* 🔥 HEADER CU ⋮ */}
+      <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
+
         <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
           {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <p className="font-semibold text-base">
             {otherUser?.name || "Utilizator"}
           </p>
@@ -169,6 +182,26 @@ export default function ChatPage() {
             {conversation?.product?.name || ""}
           </p>
         </div>
+
+        {/* ⋮ BUTON */}
+        <button
+          onClick={() => setHeaderMenu((v) => !v)}
+          className="text-2xl px-2"
+        >
+          ⋮
+        </button>
+
+        {/* MENIU ⋮ */}
+        {headerMenu && (
+          <div className="absolute right-4 top-14 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-40">
+            <button
+              onClick={deleteConversation}
+              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
+            >
+              🗑️ Șterge conversația
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 🔥 Mesaje */}

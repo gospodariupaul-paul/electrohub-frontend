@@ -30,7 +30,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#050712] text-white flex flex-col">
 
-      {/* NAVBAR REPARAT */}
+      {/* NAVBAR */}
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
 
@@ -185,16 +185,16 @@ export default function HomePage() {
 
             <div className="grid md:grid-cols-4 gap-4">
               {[
-                { id: 1, name: "Telefoane", slug: "telefoane" },
-                { id: 2, name: "Laptopuri", slug: "laptopuri" },
-                { id: 3, name: "Componente PC", slug: "componente-pc" },
-                { id: 4, name: "Drones", slug: "drones" },
-                { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
-                { id: 6, name: "Audio-Video", slug: "audio-video" },
+                { id: 1, name: "Telefoane", category: "Telefoane" },
+                { id: 2, name: "Laptopuri", category: "Laptopuri" },
+                { id: 3, name: "Componente PC", category: "Componente PC" },
+                { id: 4, name: "Drones", category: "Drones" },
+                { id: 5, name: "IoT & Smart Home", category: "IoT & Smart Home" },
+                { id: 6, name: "Audio-Video", category: "Audio-Video" },
               ].map((cat) => (
-                <a
+                <Link
                   key={cat.id}
-                  href={`/categorie/${cat.slug}`}
+                  href={`/products?category=${encodeURIComponent(cat.category)}`}
                   className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition flex flex-col justify-between"
                 >
                   <div>
@@ -207,7 +207,7 @@ export default function HomePage() {
                   <span className="mt-3 text-[11px] text-cyan-300">
                     Vezi produsele →
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </section>

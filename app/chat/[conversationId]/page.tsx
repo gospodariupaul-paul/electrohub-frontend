@@ -28,7 +28,7 @@ export default function ChatPage() {
     if (!user?.id) router.push("/login");
   }, [user]);
 
-  // 🔥 2. Încărcăm conversația + mesajele
+  // 🔥 2. Încărcăm conversația + mesajele + MARCĂM CA CITITE
   useEffect(() => {
     if (!conversationId || !user?.id) return;
 
@@ -38,7 +38,12 @@ export default function ChatPage() {
         setConversation(res.data);
         return axiosInstance.get(`/messages/${conversationId}`);
       })
-      .then((res) => setMessages(res.data))
+      .then((res) => {
+        setMessages(res.data);
+
+        // 🔥 MARCHEAZĂ MESAJELE CA CITITE
+        axiosInstance.post(`/conversations/mark-read/${conversationId}`);
+      })
       .catch((err) => console.error("Error loading chat:", err));
   }, [conversationId, user]);
 

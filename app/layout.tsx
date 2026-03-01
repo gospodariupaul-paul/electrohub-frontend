@@ -54,9 +54,9 @@ export default function RootLayout({ children }) {
                   <FiHome />
                 </Link>
 
-                {/* 🔥 MODIFICAT: Vinde → /my-account */}
+                {/* 🔥 MODIFICAT: Vinde → /my-account/products */}
                 <Link
-                  href="/my-account"
+                  href="/my-account/products"
                   className="hidden md:block bg-[#00eaff] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#00c7d6] transition"
                 >
                   Vinde

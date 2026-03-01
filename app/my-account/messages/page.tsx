@@ -38,7 +38,7 @@ export default function MessagesPage() {
     }
   };
 
-  // 🔥 Marchează toate conversațiile ca citite + redirect
+  // 🔥 Marchează toate conversațiile ca citite + redirect la profil
   const markAllAsRead = async () => {
     try {
       await axiosInstance.post("/messages/mark-all-read");
@@ -49,8 +49,8 @@ export default function MessagesPage() {
       // Închide meniul
       setHeaderMenu(false);
 
-      // Redirect în pagina de cont
-      router.push("/my-account");
+      // Redirect în pagina de profil
+      router.push("/my-account/profile");
     } catch (err) {
       console.error("Eroare la marcarea conversațiilor ca citite:", err);
     }

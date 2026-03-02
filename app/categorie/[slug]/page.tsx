@@ -4,35 +4,33 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 
-// 🔥 Funcția addToCart trebuie să fie ÎNAINTE de componentă și ÎNCHISĂ corect
-const addToCart = (product) => {
-  if (!product || !product.id) return;
-
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-  const existing = cart.find((item) => item.id === product.id);
-
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      images: product.images,
-      stock: product.stock,
-      quantity: 1,
-    });
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  return cart;
-}; // 🔥 AICI LIPSEA ACOLADA ȘI PUNCTUL ȘI VIRGULA
-
 export default function CategoryPage({ params }) {
   const { slug } = params;
   const [products, setProducts] = useState([]);
+
+  // 🔥 FUNCȚIA ESTE ACUM ÎN INTERIORUL COMPONENTEI (OBLIGATORIU)
+  const addToCart = (product) => {
+    if (!product || !product.id) return;
+
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    const existing = cart.find((item) => item.id === product.id);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        images: product.images,
+        stock: product.stock,
+        quantity: 1,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  };
 
   useEffect(() => {
     async function loadProducts() {
@@ -70,7 +68,6 @@ export default function CategoryPage({ params }) {
               <p className="text-gray-600 mb-4">{product.price} RON</p>
 
               <div className="flex flex-col gap-3">
-                {/* Detalii produs */}
                 <Link
                   href={`/produs/${product.id}`}
                   className="text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
@@ -78,7 +75,6 @@ export default function CategoryPage({ params }) {
                   Detalii produs
                 </Link>
 
-                {/* Adaugă la coș */}
                 <button
                   onClick={() => addToCart(product)}
                   className="flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"

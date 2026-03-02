@@ -7,8 +7,6 @@ import { useState } from "react";
 import { FiMenu, FiBell, FiHeart, FiHome } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
-
-// 🔔 Importăm contextul de notificări
 import { useNotifications } from "./context/NotificationContext";
 
 export default function RootLayout({ children }) {
@@ -30,14 +28,8 @@ function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
 
   const { user } = useUser();
-
-  // 🔔 Notificări
-  const {
-    notifications,
-    unreadCount,
-    markAsRead,
-    deleteNotification,
-  } = useNotifications();
+  const { notifications, unreadCount, markAsRead, deleteNotification } =
+    useNotifications();
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
@@ -89,7 +81,7 @@ function Header() {
             <FiHeart />
           </Link>
 
-          {/* 🔔 CLOPOȚEL FUNCȚIONAL */}
+          {/* 🔔 CLOPOȚEL FIXAT */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}
@@ -100,7 +92,6 @@ function Header() {
             >
               <FiBell />
 
-              {/* Badge notificări necitite */}
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                   {unreadCount}
@@ -108,10 +99,9 @@ function Header() {
               )}
             </button>
 
-            {/* LISTA DE NOTIFICĂRI */}
             {notifOpen && (
               <div
-                className="absolute right-0 mt-3 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-3 z-50"
+                className="absolute right-0 mt-1 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-3 z-50"
                 onMouseEnter={() => setNotifOpen(true)}
               >
                 <h3 className="text-lg font-semibold mb-2">Notificări</h3>

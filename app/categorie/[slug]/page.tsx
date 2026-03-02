@@ -8,19 +8,19 @@ export default function CategoryPage({ params }) {
   const { slug } = params;
   const [products, setProducts] = useState([]);
 
-  // 🔥 FUNCȚIA ESTE ACUM ÎN INTERIORUL COMPONENTEI (OBLIGATORIU)
+  // 🔥 FUNCȚIE CORECTĂ — FOLOSEȘTE product.product_id
   const addToCart = (product) => {
-    if (!product || !product.id) return;
+    if (!product || !product.product_id) return;
 
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    const existing = cart.find((item) => item.id === product.id);
+    const existing = cart.find((item) => item.id === product.product_id);
 
     if (existing) {
       existing.quantity += 1;
     } else {
       cart.push({
-        id: product.id,
+        id: product.product_id, // 🔥 ID CORECT
         name: product.name,
         price: product.price,
         images: product.images,
@@ -55,7 +55,7 @@ export default function CategoryPage({ params }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {products.map((product) => (
             <div
-              key={product.id}
+              key={product.product_id} // 🔥 ID CORECT
               className="border p-4 rounded-lg shadow hover:shadow-lg transition"
             >
               <img
@@ -69,7 +69,7 @@ export default function CategoryPage({ params }) {
 
               <div className="flex flex-col gap-3">
                 <Link
-                  href={`/produs/${product.id}`}
+                  href={`/produs/${product.product_id}`} // 🔥 ID CORECT
                   className="text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
                 >
                   Detalii produs

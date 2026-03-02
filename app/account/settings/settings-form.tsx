@@ -36,7 +36,6 @@ export default function SettingsForm({ user }: any) {
 
   return (
     <div className="bg-[#111] p-6 rounded-xl border border-[#222] space-y-4">
-      {/* Avatar */}
       <div>
         <label className="block mb-1 text-gray-300">Avatar</label>
         <input
@@ -48,7 +47,6 @@ export default function SettingsForm({ user }: any) {
         />
       </div>
 
-      {/* Nume */}
       <div>
         <label className="block mb-1 text-gray-300">Nume</label>
         <input
@@ -59,7 +57,6 @@ export default function SettingsForm({ user }: any) {
         />
       </div>
 
-      {/* Email */}
       <div>
         <label className="block mb-1 text-gray-300">Email</label>
         <input
@@ -70,7 +67,6 @@ export default function SettingsForm({ user }: any) {
         />
       </div>
 
-      {/* Telefon */}
       <div>
         <label className="block mb-1 text-gray-300">Telefon</label>
         <input
@@ -81,7 +77,6 @@ export default function SettingsForm({ user }: any) {
         />
       </div>
 
-      {/* Localitate */}
       <div>
         <label className="block mb-1 text-gray-300">Localitate</label>
         <input
@@ -92,7 +87,6 @@ export default function SettingsForm({ user }: any) {
         />
       </div>
 
-      {/* Parola */}
       <div>
         <label className="block mb-1 text-gray-300">Parolă nouă</label>
         <input
@@ -104,10 +98,8 @@ export default function SettingsForm({ user }: any) {
         />
       </div>
 
-      {/* Mesaj */}
       {msg && <p className="text-cyan-400">{msg}</p>}
 
-      {/* Buton salvare */}
       <button
         onClick={save}
         disabled={loading}

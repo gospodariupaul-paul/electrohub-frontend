@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
 }
 
 /* ---------------------------------------------------------
-   🔥 HEADER — CLICK PENTRU DESCHIDERE, ÎNCHIDERE LA MOUSE LEAVE
+   🔥 HEADER — CLICK OPEN, CLOSE ONLY WHEN LEAVING MENU AREA
 --------------------------------------------------------- */
 
 function Header() {
@@ -83,16 +83,16 @@ function Header() {
           </Link>
 
           <Link href="/notifications" className="hover:text-[#00eaff] transition">
-            FiBell />
+            <FiBell />
           </Link>
 
-          {/* 🔥 MENIU PROFIL — CLICK OPEN + MOUSE LEAVE CLOSE */}
+          {/* 🔥 MENIU PROFIL — CLICK OPEN + CLOSE ON MOUSE LEAVE */}
           <div
             className="relative"
-            onMouseLeave={() => setProfileOpen(false)}  // închidere doar când ieși din container
+            onMouseLeave={() => setProfileOpen(false)} // închide DOAR când ieși din zona iconiță+meniu
           >
             <button
-              onClick={() => setProfileOpen(!profileOpen)} // deschidere la click
+              onClick={() => setProfileOpen(!profileOpen)} // deschide DOAR la click
               className="text-2xl transition"
               style={{ color: "white" }}
             >

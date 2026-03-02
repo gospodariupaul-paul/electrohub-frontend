@@ -8,6 +8,9 @@ import { FiMenu, FiBell, FiHeart, FiHome } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 
+// 🔔 Importăm contextul de notificări
+import { useNotifications } from "./context/NotificationContext";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="ro">
@@ -24,7 +27,17 @@ export default function RootLayout({ children }) {
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+
   const { user } = useUser();
+
+  // 🔔 Notificări
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    deleteNotification,
+  } = useNotifications();
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
@@ -76,16 +89,82 @@ function Header() {
             <FiHeart />
           </Link>
 
-          <Link href="/notifications" className="hover:text-[#00eaff] transition">
-            <FiBell />
-          </Link>
-
-          {/* 🔥 CONTAINER COMUN ICONIȚĂ + MENIU (FĂRĂ SPAȚIU) */}
+          {/* 🔔 CLOPOȚEL FUNCȚIONAL */}
           <div
             className="relative inline-block"
-            onMouseLeave={() => setProfileOpen(false)}  // închide DOAR când ieși din container
+            onMouseLeave={() => setNotifOpen(false)}
           >
-            {/* CLICK pentru deschidere */}
+            <button
+              onClick={() => setNotifOpen(!notifOpen)}
+              className="relative text-2xl hover:text-[#00eaff] transition"
+            >
+              <FiBell />
+
+              {/* Badge notificări necitite */}
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* LISTA DE NOTIFICĂRI */}
+            {notifOpen && (
+              <div
+                className="absolute right-0 mt-3 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-3 z-50"
+                onMouseEnter={() => setNotifOpen(true)}
+              >
+                <h3 className="text-lg font-semibold mb-2">Notificări</h3>
+
+                {notifications.length === 0 && (
+                  <p className="text-sm text-gray-400">Nu ai notificări noi</p>
+                )}
+
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      className={`p-3 rounded-lg flex justify-between items-center cursor-pointer ${
+                        n.read
+                          ? "bg-white/5"
+                          : "bg-white/10 border border-cyan-500/40"
+                      }`}
+                    >
+                      <a
+                        href={n.link}
+                        className="flex-1"
+                        onClick={() => markAsRead(n.id)}
+                      >
+                        <p className={`${n.read ? "opacity-70" : "font-bold"}`}>
+                          {n.text}
+                        </p>
+                      </a>
+
+                      <button
+                        onClick={() => deleteNotification(n.id)}
+                        className="text-red-400 text-sm hover:text-red-300 ml-3"
+                      >
+                        Șterge
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <a
+                  href="/notifications/settings"
+                  className="block text-center text-sm text-cyan-400 mt-3 hover:underline"
+                >
+                  Setări notificări
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* 🔥 MENIU PROFIL */}
+          <div
+            className="relative inline-block"
+            onMouseLeave={() => setProfileOpen(false)}
+          >
             <button
               onClick={() => setProfileOpen(!profileOpen)}
               className="text-2xl transition"
@@ -94,13 +173,11 @@ function Header() {
               👤
             </button>
 
-            {/* MENIU PROFIL */}
             {profileOpen && (
               <div
                 className="absolute right-0 mt-1 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50"
-                onMouseEnter={() => setProfileOpen(true)} // menține deschis când intri pe meniu
+                onMouseEnter={() => setProfileOpen(true)}
               >
-                {/* NELOGAT */}
                 {!user && (
                   <>
                     <Link href="/login" className="block px-4 py-2 hover:bg-white/10 rounded">
@@ -115,7 +192,6 @@ function Header() {
                   </>
                 )}
 
-                {/* LOGAT */}
                 {user && (
                   <>
                     <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">

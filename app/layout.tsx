@@ -89,7 +89,7 @@ function Header() {
           {/* 🔥 MENIU PROFIL — CLICK OPEN + CLOSE ON MOUSE LEAVE */}
           <div
             className="relative"
-            onMouseLeave={() => setProfileOpen(false)} // închide DOAR când ieși din zona iconiță+meniu
+            onMouseLeave={() => setProfileOpen(false)}   // închide DOAR când ieși din container
           >
             <button
               onClick={() => setProfileOpen(!profileOpen)} // deschide DOAR la click

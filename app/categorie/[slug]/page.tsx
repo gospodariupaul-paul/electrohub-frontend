@@ -1,12 +1,25 @@
-export default async function CategoryPage({ params }) {
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaShoppingCart } from "react-icons/fa";
+
+export default function CategoryPage({ params }) {
   const { slug } = params;
+  const [products, setProducts] = useState([]);
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/products/category/${slug}`,
-    { cache: "no-store" }
-  );
+  useEffect(() => {
+    async function loadProducts() {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/category/${slug}`,
+        { cache: "no-store" }
+      );
+      const data = await res.json();
+      setProducts(data);
+    }
 
-  const products = await res.json();
+    loadProducts();
+  }, [slug]);
 
   return (
     <div className="container mx-auto py-10">
@@ -17,14 +30,36 @@ export default async function CategoryPage({ params }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {products.map((product) => (
-            <div key={product.id} className="border p-4 rounded-lg shadow">
+            <div
+              key={product.id}
+              className="border p-4 rounded-lg shadow hover:shadow-lg transition"
+            >
               <img
                 src={product.images[0]}
                 alt={product.name}
                 className="w-full h-48 object-cover rounded"
               />
+
               <h2 className="text-xl font-semibold mt-4">{product.name}</h2>
-              <p className="text-gray-600">{product.price} RON</p>
+              <p className="text-gray-600 mb-4">{product.price} RON</p>
+
+              <div className="flex flex-col gap-3">
+                {/* Detalii produs */}
+                <Link
+                  href={`/produs/${product.id}`}
+                  className="text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                >
+                  Detalii produs
+                </Link>
+
+                {/* Adaugă la coș */}
+                <button
+                  className="flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+                >
+                  <FaShoppingCart />
+                  Adaugă la coș
+                </button>
+              </div>
             </div>
           ))}
         </div>

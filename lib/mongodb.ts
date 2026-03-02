@@ -22,3 +22,6 @@ export async function connectDB() {
   cached.conn = await cached.promise;
   return cached.conn;
 }
+
+// 🔥 FIX: adăugăm export default ca să nu mai dea eroare importurile existente
+export default connectDB;

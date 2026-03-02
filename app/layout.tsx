@@ -4,27 +4,25 @@ import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiBell, FiHeart, FiHome } from "react-icons/fi"; 
+import { FiMenu, FiBell, FiHeart, FiHome } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
-import { useUser } from "./context/UserContext";
 
 export default function RootLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const { user } = useUser();
 
   return (
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
         <UserProvider>
 
-          {/* 🔥 HEADER FUTURIST GLOBAL */}
+          {/* HEADER */}
           <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
             <div className="pointer-events-none absolute inset-0"></div>
 
             <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-              {/* 🔥 Stânga: Meniu + Logo */}
+              {/* Stânga */}
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
@@ -38,7 +36,7 @@ export default function RootLayout({ children }) {
                 </Link>
               </div>
 
-              {/* 🔥 Mijloc: Căutare futuristă */}
+              {/* Căutare */}
               <div className="hidden md:flex flex-1 mx-6">
                 <div className="flex items-center w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-2 shadow-inner">
                   <IoSearch className="text-xl text-gray-400" />
@@ -50,7 +48,7 @@ export default function RootLayout({ children }) {
                 </div>
               </div>
 
-              {/* 🔥 Dreapta: Acțiuni utilizator */}
+              {/* Dreapta */}
               <div className="flex items-center gap-5 text-xl">
 
                 <Link href="/" className="hover:text-[#00eaff] transition">
@@ -72,7 +70,7 @@ export default function RootLayout({ children }) {
                   <FiBell />
                 </Link>
 
-                {/* 🔥 MENIU PROFIL OLX-STYLE */}
+                {/* MENIU PROFIL OLX-STYLE */}
                 <div className="relative">
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
@@ -84,23 +82,21 @@ export default function RootLayout({ children }) {
                   {profileOpen && (
                     <div className="absolute right-0 mt-3 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50">
 
-                      {/* 🔵 Dacă utilizatorul NU este logat */}
-                      {!user && (
-                        <>
-                          <Link href="/login" className="block px-4 py-2 hover:bg-white/10 rounded">
-                            Autentificare
-                          </Link>
-                          <Link href="/register" className="block px-4 py-2 hover:bg-white/10 rounded">
-                            Creează cont
-                          </Link>
-                          <Link href="/help" className="block px-4 py-2 hover:bg-white/10 rounded">
-                            Ajutor / Contact
-                          </Link>
-                        </>
-                      )}
+                      {/* Utilizator NELOGAT */}
+                      <>
+                        <Link href="/login" className="block px-4 py-2 hover:bg-white/10 rounded">
+                          Autentificare
+                        </Link>
+                        <Link href="/register" className="block px-4 py-2 hover:bg-white/10 rounded">
+                          Creează cont
+                        </Link>
+                        <Link href="/help" className="block px-4 py-2 hover:bg-white/10 rounded">
+                          Ajutor / Contact
+                        </Link>
+                      </>
 
-                      {/* 🟢 Dacă utilizatorul ESTE logat */}
-                      {user && (
+                      {/* Utilizator LOGAT (activ când ai backend-ul) */}
+                      {false && (
                         <>
                           <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">
                             Profilul meu
@@ -123,7 +119,6 @@ export default function RootLayout({ children }) {
                           <Link href="/account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
                             Setări cont
                           </Link>
-
                           <Link href="/logout" className="block px-4 py-2 text-red-400 hover:bg-white/10 rounded">
                             Deconectare
                           </Link>
@@ -136,7 +131,7 @@ export default function RootLayout({ children }) {
               </div>
             </div>
 
-            {/* 🔥 Meniu categorii (hamburger) */}
+            {/* Meniu mobil */}
             {menuOpen && (
               <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-3 md:hidden">
                 <Link href="/category/componente" className="block text-gray-300 hover:text-[#00eaff] transition">

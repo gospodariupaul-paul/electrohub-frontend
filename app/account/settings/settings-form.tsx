@@ -36,7 +36,6 @@ export default function SettingsForm({ user }: any) {
 
   return (
     <div className="bg-[#111] p-6 rounded-xl border border-[#222] space-y-4">
-
       {/* Avatar */}
       <div>
         <label className="block mb-1 text-gray-300">Avatar</label>

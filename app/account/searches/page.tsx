@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import clientPromise from "@/lib/mongodb";
+import connectDB from "@/lib/mongodb";
 
 export default async function SavedSearchesPage() {
   const session = await getServerSession(authOptions);
@@ -10,8 +10,7 @@ export default async function SavedSearchesPage() {
     return <div className="text-gray-400">Trebuie să fii autentificat.</div>;
   }
 
-  const client = await clientPromise;
-  const db = client.db("electrohub");
+  const db = (await connectDB()).connection.getClient().db("electrohub");
 
   const searches = await db
     .collection("saved_searches")

@@ -4,7 +4,7 @@ import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiBell, FiHeart, FiShoppingCart, FiUser, FiHome } from "react-icons/fi";
+import { FiMenu, FiBell, FiHeart, FiUser, FiHome } from "react-icons/fi"; // 🔥 FiShoppingCart ELIMINAT
 import { IoSearch } from "react-icons/io5";
 
 export default function RootLayout({ children }) {
@@ -17,7 +17,6 @@ export default function RootLayout({ children }) {
 
           {/* 🔥 HEADER FUTURIST GLOBAL */}
           <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
-            {/* 🔥 FIX: dezactivăm overlay-ul blur să nu blocheze click-urile */}
             <div className="pointer-events-none absolute inset-0"></div>
 
             <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -31,7 +30,6 @@ export default function RootLayout({ children }) {
                   <FiMenu />
                 </button>
 
-                {/* LOGO GOSPO Electro Hub */}
                 <Link href="/" className="text-2xl font-bold tracking-wide text-[#00eaff]">
                   GOSPO <span className="text-white">Electro Hub</span>
                 </Link>
@@ -52,12 +50,10 @@ export default function RootLayout({ children }) {
               {/* 🔥 Dreapta: Acțiuni utilizator */}
               <div className="flex items-center gap-5 text-xl">
 
-                {/* HOME BUTTON */}
                 <Link href="/" className="hover:text-[#00eaff] transition">
                   <FiHome />
                 </Link>
 
-                {/* 🔥 MODIFICAT: Vinde → /my-account/profile */}
                 <Link
                   href="/my-account/profile"
                   className="hidden md:block bg-[#00eaff] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#00c7d6] transition"
@@ -69,12 +65,7 @@ export default function RootLayout({ children }) {
                   <FiHeart />
                 </Link>
 
-                <Link href="/cart" className="hover:text-[#00eaff] transition relative">
-                  <FiShoppingCart />
-                  <span className="absolute -top-2 -right-2 bg-[#00eaff] text-black text-xs px-1.5 py-0.5 rounded-full">
-                    2
-                  </span>
-                </Link>
+                {/* 🔥 COȘUL A FOST ELIMINAT COMPLET */}
 
                 <Link href="/notifications" className="hover:text-[#00eaff] transition">
                   <FiBell />
@@ -105,7 +96,6 @@ export default function RootLayout({ children }) {
             )}
           </header>
 
-          {/* 🔥 Conținutul paginii */}
           <main className="pt-4">{children}</main>
 
         </UserProvider>

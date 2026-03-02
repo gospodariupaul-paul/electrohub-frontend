@@ -13,7 +13,6 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
 
-        {/* UserProvider trebuie să fie ÎN JURUL întregului layout */}
         <UserProvider>
           <Header />
           <main className="pt-4">{children}</main>
@@ -25,13 +24,13 @@ export default function RootLayout({ children }) {
 }
 
 /* ---------------------------------------------------------
-   🔥 HEADER MUTAT AICI, ÎN INTERIORUL UserProvider
+   🔥 HEADER — ACUM CU MENIU CARE SE ÎNCHIDE LA MOUSE LEAVE
 --------------------------------------------------------- */
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const { user } = useUser(); // ACUM FUNCȚIONEAZĂ CORECT
+  const { user } = useUser();
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
@@ -87,12 +86,15 @@ function Header() {
             <FiBell />
           </Link>
 
-          {/* MENIU PROFIL OLX-STYLE */}
-          <div className="relative">
+          {/* 🔥 MENIU PROFIL OLX-STYLE CU HOVER */}
+          <div
+            className="relative"
+            onMouseEnter={() => setProfileOpen(true)}
+            onMouseLeave={() => setProfileOpen(false)}
+          >
             <button
-              onClick={() => setProfileOpen(!profileOpen)}
               className="text-2xl transition"
-              style={{ color: "white" }} // omuleț alb
+              style={{ color: "white" }}
             >
               👤
             </button>
@@ -139,8 +141,6 @@ function Header() {
                     <Link href="/account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Setări cont
                     </Link>
-
-                    {/* LOGOUT */}
                     <Link href="/logout" className="block px-4 py-2 text-red-400 hover:bg-white/10 rounded">
                       Deconectare
                     </Link>

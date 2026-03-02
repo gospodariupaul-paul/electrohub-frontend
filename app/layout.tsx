@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
         <UserProvider>
 
           {/* 🔥 HEADER FUTURIST GLOBAL */}
-          <header className="sticky top-0 z-50 bg-[#0d1117]/90 backdrop-blur-md border-b border-white/10 shadow-lg">
+          <header className="sticky top-0 z-50 bg-[#0d1117]/90 backdrop-blur-md border-b border-white/10 shadow-lg pointer-events-auto">
             <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
               {/* 🔥 Stânga: Meniu + Logo */}

@@ -4,6 +4,32 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 
+// 🔥 Funcția addToCart adăugată EXACT unde trebuie
+const addToCart = (product) => {
+  if (!product || !product.id) return;
+
+  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+  const existing = cart.find((item) => item.id === product.id);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      images: product.images,
+      stock: product.stock,
+      quantity: 1,
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  return cart;
+};
+
 export default function CategoryPage({ params }) {
   const { slug } = params;
   const [products, setProducts] = useState([]);
@@ -54,6 +80,7 @@ export default function CategoryPage({ params }) {
 
                 {/* Adaugă la coș */}
                 <button
+                  onClick={() => addToCart(product)}   {/* 🔥 AICI am conectat funcția */}
                   className="flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
                 >
                   <FaShoppingCart />

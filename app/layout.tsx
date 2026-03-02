@@ -12,12 +12,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
-
         <UserProvider>
           <Header />
           <main className="pt-4">{children}</main>
         </UserProvider>
-
       </body>
     </html>
   );
@@ -82,10 +80,10 @@ function Header() {
             <FiBell />
           </Link>
 
-          {/* 🔥 CONTAINER COMUN — ICONIȚĂ + MENIU */}
+          {/* 🔥 CONTAINER COMUN ICONIȚĂ + MENIU (FĂRĂ SPAȚIU) */}
           <div
-            className="relative"
-            onMouseLeave={() => setProfileOpen(false)}   // închide DOAR când ieși din container
+            className="relative inline-block"
+            onMouseLeave={() => setProfileOpen(false)}  // închide DOAR când ieși din container
           >
             {/* CLICK pentru deschidere */}
             <button
@@ -99,7 +97,7 @@ function Header() {
             {/* MENIU PROFIL */}
             {profileOpen && (
               <div
-                className="absolute right-0 mt-3 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50"
+                className="absolute right-0 mt-1 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50"
                 onMouseEnter={() => setProfileOpen(true)} // menține deschis când intri pe meniu
               >
                 {/* NELOGAT */}

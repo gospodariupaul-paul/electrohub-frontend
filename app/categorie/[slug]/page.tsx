@@ -20,7 +20,7 @@ export default function CategoryPage({ params }) {
       existing.quantity += 1;
     } else {
       cart.push({
-        id: product.product_id, // 🔥 ID CORECT
+        id: product.product_id, // ID CORECT
         name: product.name,
         price: product.price,
         images: product.images,
@@ -55,7 +55,7 @@ export default function CategoryPage({ params }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {products.map((product) => (
             <div
-              key={product.product_id} // 🔥 ID CORECT
+              key={product.product_id} // ID CORECT
               className="border p-4 rounded-lg shadow hover:shadow-lg transition"
             >
               <img
@@ -69,7 +69,7 @@ export default function CategoryPage({ params }) {
 
               <div className="flex flex-col gap-3">
                 <Link
-                  href={`/produs/${product.product_id}`} // 🔥 ID CORECT
+                  href={`/produs/${product.product_id}`} // ID CORECT
                   className="text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
                 >
                   Detalii produs

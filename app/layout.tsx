@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
 }
 
 /* ---------------------------------------------------------
-   🔥 HEADER — MENIU PROFIL CARE RĂMÂNE DESCHIS LA HOVER
+   🔥 HEADER — CLICK PENTRU DESCHIDERE, ÎNCHIDERE LA MOUSE LEAVE
 --------------------------------------------------------- */
 
 function Header() {
@@ -83,16 +83,16 @@ function Header() {
           </Link>
 
           <Link href="/notifications" className="hover:text-[#00eaff] transition">
-            <FiBell />
+            FiBell />
           </Link>
 
-          {/* 🔥 MENIU PROFIL OLX-STYLE — FUNCȚIONEAZĂ PERFECT LA HOVER */}
+          {/* 🔥 MENIU PROFIL — CLICK OPEN + MOUSE LEAVE CLOSE */}
           <div
             className="relative"
-            onMouseEnter={() => setProfileOpen(true)}
-            onMouseLeave={() => setProfileOpen(false)}
+            onMouseLeave={() => setProfileOpen(false)}  // închidere doar când ieși din container
           >
             <button
+              onClick={() => setProfileOpen(!profileOpen)} // deschidere la click
               className="text-2xl transition"
               style={{ color: "white" }}
             >
@@ -100,7 +100,10 @@ function Header() {
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 mt-3 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50">
+              <div
+                className="absolute right-0 mt-3 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50"
+                onMouseEnter={() => setProfileOpen(true)} // menține deschis când intri pe meniu
+              >
 
                 {/* NELOGAT */}
                 {!user && (

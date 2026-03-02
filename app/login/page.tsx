@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useUser } from "@/app/context/UserContext";
 
+// 🔥 Importăm iconițele
+import { FaFacebook, FaApple } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+
 export default function LoginPage() {
   const router = useRouter();
   const { setUser, reloadUser } = useUser();
@@ -59,17 +63,31 @@ export default function LoginPage() {
 
         {/* 🔵 CONTINUĂ CU */}
         <div className="space-y-3 mb-6">
-          <button type="button" className="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition">
+
+          <button
+            type="button"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition flex items-center justify-center gap-3"
+          >
+            <FaFacebook size={22} />
             Continuă cu Facebook
           </button>
 
-          <button type="button" className="w-full py-3 bg-black hover:bg-gray-900 rounded-lg font-semibold transition">
+          <button
+            type="button"
+            className="w-full py-3 bg-black hover:bg-gray-900 rounded-lg font-semibold transition flex items-center justify-center gap-3"
+          >
+            <FaApple size={22} />
             Continuă cu Apple
           </button>
 
-          <button type="button" className="w-full py-3 bg-red-600 hover:bg-red-500 rounded-lg font-semibold transition">
+          <button
+            type="button"
+            className="w-full py-3 bg-white text-black hover:bg-gray-200 rounded-lg font-semibold transition flex items-center justify-center gap-3"
+          >
+            <FcGoogle size={22} />
             Continuă cu Google
           </button>
+
         </div>
 
         <div className="text-center text-sm opacity-70 mb-4">

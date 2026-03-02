@@ -11,7 +11,6 @@ export default async function SettingsPage() {
     return <div className="text-gray-400">Trebuie să fii autentificat.</div>;
   }
 
-  // 🔥 FIX MONGOOSE — forma corectă
   const mongoose = await connectDB();
   const db = mongoose.connection.db;
 

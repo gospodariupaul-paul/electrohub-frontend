@@ -23,10 +23,6 @@ export default function RootLayout({ children }) {
   );
 }
 
-/* ---------------------------------------------------------
-   🔥 HEADER — CLICK OPEN, CLOSE ONLY WHEN LEAVING MENU AREA
---------------------------------------------------------- */
-
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -86,25 +82,26 @@ function Header() {
             <FiBell />
           </Link>
 
-          {/* 🔥 MENIU PROFIL — CLICK OPEN + CLOSE ON MOUSE LEAVE */}
+          {/* 🔥 CONTAINER COMUN — ICONIȚĂ + MENIU */}
           <div
             className="relative"
             onMouseLeave={() => setProfileOpen(false)}   // închide DOAR când ieși din container
           >
+            {/* CLICK pentru deschidere */}
             <button
-              onClick={() => setProfileOpen(!profileOpen)} // deschide DOAR la click
+              onClick={() => setProfileOpen(!profileOpen)}
               className="text-2xl transition"
               style={{ color: "white" }}
             >
               👤
             </button>
 
+            {/* MENIU PROFIL */}
             {profileOpen && (
               <div
                 className="absolute right-0 mt-3 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50"
                 onMouseEnter={() => setProfileOpen(true)} // menține deschis când intri pe meniu
               >
-
                 {/* NELOGAT */}
                 {!user && (
                   <>

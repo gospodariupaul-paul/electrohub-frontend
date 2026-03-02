@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 
-const NotificationContext = createContext();
+const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([
@@ -38,13 +38,32 @@ export function NotificationProvider({ children }) {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
+  const value = {
+    notifications,
+    unreadCount,
+    markAsRead,
+    deleteNotification,
+  };
+
   return (
-    <NotificationContext.Provider
-      value={{ notifications, unreadCount, markAsRead, deleteNotification }}
-    >
+    <NotificationContext.Provider value={value}>
       {children}
     </NotificationContext.Provider>
   );
 }
 
-export const useNotifications = () => useContext(NotificationContext);
+export function useNotifications() {
+  const ctx = useContext(NotificationContext);
+
+  // 🔥 fallback sigur: dacă nu există provider, nu mai crapă aplicația
+  if (!ctx) {
+    return {
+      notifications: [],
+      unreadCount: 0,
+      markAsRead: () => {},
+      deleteNotification: () => {},
+    };
+  }
+
+  return ctx;
+}

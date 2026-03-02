@@ -10,7 +10,9 @@ export default async function SavedSearchesPage() {
     return <div className="text-gray-400">Trebuie să fii autentificat.</div>;
   }
 
-  const db = (await connectDB()).connection.getClient().db("electrohub");
+  // 🔥 FIX MONGOOSE — forma corectă
+  const mongoose = await connectDB();
+  const db = mongoose.connection.db;
 
   const searches = await db
     .collection("saved_searches")

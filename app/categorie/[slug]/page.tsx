@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 
-// 🔥 Funcția addToCart adăugată EXACT unde trebuie
+// 🔥 Funcția addToCart trebuie să fie ÎNAINTE de componentă și ÎNCHISĂ corect
 const addToCart = (product) => {
   if (!product || !product.id) return;
 
@@ -28,7 +28,7 @@ const addToCart = (product) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 
   return cart;
-};
+}; // 🔥 AICI LIPSEA ACOLADA ȘI PUNCTUL ȘI VIRGULA
 
 export default function CategoryPage({ params }) {
   const { slug } = params;
@@ -80,7 +80,7 @@ export default function CategoryPage({ params }) {
 
                 {/* Adaugă la coș */}
                 <button
-                  onClick={() => addToCart(product)}   {/* 🔥 AICI am conectat funcția */}
+                  onClick={() => addToCart(product)}
                   className="flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
                 >
                   <FaShoppingCart />

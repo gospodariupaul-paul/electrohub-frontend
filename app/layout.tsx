@@ -6,10 +6,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { FiMenu, FiBell, FiHeart, FiHome } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
+import { useUser } from "./context/UserContext";
 
 export default function RootLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { user } = useUser(); // user real
 
   return (
     <html lang="ro">
@@ -74,7 +76,8 @@ export default function RootLayout({ children }) {
                 <div className="relative">
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="hover:text-[#00eaff] transition text-xl"
+                    className="text-2xl transition"
+                    style={{ color: "white" }} // 👤 ALB ȘI VIZIBIL
                   >
                     👤
                   </button>
@@ -82,21 +85,23 @@ export default function RootLayout({ children }) {
                   {profileOpen && (
                     <div className="absolute right-0 mt-3 w-56 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-2 z-50">
 
-                      {/* Utilizator NELOGAT */}
-                      <>
-                        <Link href="/login" className="block px-4 py-2 hover:bg-white/10 rounded">
-                          Autentificare
-                        </Link>
-                        <Link href="/register" className="block px-4 py-2 hover:bg-white/10 rounded">
-                          Creează cont
-                        </Link>
-                        <Link href="/help" className="block px-4 py-2 hover:bg-white/10 rounded">
-                          Ajutor / Contact
-                        </Link>
-                      </>
+                      {/* 🔵 Utilizator NELOGAT */}
+                      {!user && (
+                        <>
+                          <Link href="/login" className="block px-4 py-2 hover:bg-white/10 rounded">
+                            Autentificare
+                          </Link>
+                          <Link href="/register" className="block px-4 py-2 hover:bg-white/10 rounded">
+                            Creează cont
+                          </Link>
+                          <Link href="/help" className="block px-4 py-2 hover:bg-white/10 rounded">
+                            Ajutor / Contact
+                          </Link>
+                        </>
+                      )}
 
-                      {/* Utilizator LOGAT (activ când ai backend-ul) */}
-                      {false && (
+                      {/* 🟢 Utilizator LOGAT */}
+                      {user && (
                         <>
                           <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">
                             Profilul meu
@@ -119,6 +124,8 @@ export default function RootLayout({ children }) {
                           <Link href="/account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
                             Setări cont
                           </Link>
+
+                          {/* 🔥 ACUM APARE LOGOUT */}
                           <Link href="/logout" className="block px-4 py-2 text-red-400 hover:bg-white/10 rounded">
                             Deconectare
                           </Link>

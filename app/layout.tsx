@@ -28,7 +28,7 @@ function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
 
   const { user } = useUser();
-  const { notifications, unreadCount, markAsRead, deleteNotification } =
+  const { notifications, unreadCount, markAsRead, deleteNotification, emptyState } =
     useNotifications();
 
   return (
@@ -106,10 +106,23 @@ function Header() {
               >
                 <h3 className="text-lg font-semibold mb-2">Notificări</h3>
 
+                {/* 🔥 FALLBACK FUTURIST CU IMAGINE */}
                 {notifications.length === 0 && (
-                  <p className="text-sm text-gray-400">Nu ai notificări noi</p>
+                  <div className="text-center text-gray-400 px-2 py-4">
+                    <img
+                      src={emptyState.image}
+                      alt="Nu ai notificări"
+                      className="mx-auto mb-4 w-40 h-auto opacity-90"
+                    />
+                    <h4 className="text-lg font-semibold text-white">
+                      {emptyState.title}
+                    </h4>
+                    <p className="text-sm text-gray-400">{emptyState.line1}</p>
+                    <p className="text-sm text-gray-400">{emptyState.line2}</p>
+                  </div>
                 )}
 
+                {/* LISTA DE NOTIFICĂRI */}
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {notifications.map((n) => (
                     <div

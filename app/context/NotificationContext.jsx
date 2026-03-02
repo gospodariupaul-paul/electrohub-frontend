@@ -43,6 +43,13 @@ export function NotificationProvider({ children }) {
     unreadCount,
     markAsRead,
     deleteNotification,
+    // 🔥 fallback vizual pentru notificări goale
+    emptyState: {
+      image: "/images/notification-empty-hologram.png",
+      title: "Missing notifications",
+      line1: "Nu ai nicio notificare deocamdată",
+      line2: "Te vom informa atunci când se întâmplă ceva important.",
+    },
   };
 
   return (
@@ -55,13 +62,19 @@ export function NotificationProvider({ children }) {
 export function useNotifications() {
   const ctx = useContext(NotificationContext);
 
-  // 🔥 fallback sigur: dacă nu există provider, nu mai crapă aplicația
+  // fallback sigur dacă provider-ul lipsește
   if (!ctx) {
     return {
       notifications: [],
       unreadCount: 0,
       markAsRead: () => {},
       deleteNotification: () => {},
+      emptyState: {
+        image: "/images/notification-empty-hologram.png",
+        title: "Missing notifications",
+        line1: "Nu ai nicio notificare deocamdată",
+        line2: "Te vom informa atunci când se întâmplă ceva important.",
+      },
     };
   }
 

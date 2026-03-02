@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
 }
 
 /* ---------------------------------------------------------
-   🔥 HEADER — ACUM CU MENIU CARE SE ÎNCHIDE LA MOUSE LEAVE
+   🔥 HEADER — MENIU PROFIL CARE RĂMÂNE DESCHIS LA HOVER
 --------------------------------------------------------- */
 
 function Header() {
@@ -86,7 +86,7 @@ function Header() {
             <FiBell />
           </Link>
 
-          {/* 🔥 MENIU PROFIL OLX-STYLE CU HOVER */}
+          {/* 🔥 MENIU PROFIL OLX-STYLE — FUNCȚIONEAZĂ PERFECT LA HOVER */}
           <div
             className="relative"
             onMouseEnter={() => setProfileOpen(true)}

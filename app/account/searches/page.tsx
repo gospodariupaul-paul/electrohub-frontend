@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import connectDB from "@/lib/mongodb";
+import { ObjectId } from "mongodb"; // 🔥 ADĂUGAT
 
 export default async function SavedSearchesPage() {
   const session = await getServerSession(authOptions);
@@ -13,9 +14,10 @@ export default async function SavedSearchesPage() {
   const mongoose = await connectDB();
   const db = mongoose.connection.db;
 
+  // 🔥 FIX CRITIC — convertim user.id în ObjectId
   const searches = await db
     .collection("saved_searches")
-    .find({ userId: user.id })
+    .find({ userId: new ObjectId(user.id) })
     .sort({ createdAt: -1 })
     .toArray();
 

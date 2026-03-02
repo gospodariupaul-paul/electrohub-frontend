@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import connectDB from "@/lib/mongodb";
 import SettingsForm from "./SettingsForm";
+import { ObjectId } from "mongodb"; // 🔥 ADĂUGAT
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
@@ -14,7 +15,10 @@ export default async function SettingsPage() {
   const mongoose = await connectDB();
   const db = mongoose.connection.db;
 
-  const userData = await db.collection("users").findOne({ _id: user.id });
+  // 🔥 FIX CRITIC — convertim user.id în ObjectId
+  const userData = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user.id) });
 
   return (
     <div className="max-w-3xl">

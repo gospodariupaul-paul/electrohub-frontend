@@ -27,18 +27,13 @@ export default function LoginPage() {
       const accessToken = res.data.accessToken;
       const refreshToken = res.data.refreshToken;
 
-      // Salvăm token-urile
       localStorage.setItem("token", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-
-      // Salvăm user-ul
       localStorage.setItem("user", JSON.stringify(user));
 
-      // Actualizăm contextul
       setUser(user);
-      reloadUser(); // 🔥 OBLIGATORIU
+      reloadUser();
 
-      // Redirect în funcție de rol
       if (user.role === "admin") {
         router.push("/dashboard");
         return;
@@ -62,8 +57,28 @@ export default function LoginPage() {
       >
         <h1 className="text-3xl font-bold mb-6 text-center">Autentificare</h1>
 
+        {/* 🔵 CONTINUĂ CU */}
+        <div className="space-y-3 mb-6">
+          <button type="button" className="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition">
+            Continuă cu Facebook
+          </button>
+
+          <button type="button" className="w-full py-3 bg-black hover:bg-gray-900 rounded-lg font-semibold transition">
+            Continuă cu Apple
+          </button>
+
+          <button type="button" className="w-full py-3 bg-red-600 hover:bg-red-500 rounded-lg font-semibold transition">
+            Continuă cu Google
+          </button>
+        </div>
+
+        <div className="text-center text-sm opacity-70 mb-4">
+          Intră în cont sau Creează un cont
+        </div>
+
+        {/* 🔵 EMAIL */}
         <label className="block mb-3">
-          <span className="text-sm opacity-80">Email</span>
+          <span className="text-sm opacity-80">Adresa ta de e-mail</span>
           <input
             type="email"
             className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
@@ -71,8 +86,12 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          {email.length === 0 && (
+            <span className="text-xs text-red-400">Lipsește e-mail-ul tău</span>
+          )}
         </label>
 
+        {/* 🔵 PAROLA */}
         <label className="block mb-6">
           <span className="text-sm opacity-80">Parola</span>
           <input
@@ -82,15 +101,31 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          {password.length > 0 && password.length < 6 && (
+            <span className="text-xs text-red-400">
+              Sigur asta e parola corectă? E prea scurtă
+            </span>
+          )}
         </label>
 
+        <div className="text-right mb-4">
+          <a href="/forgot-password" className="text-sm text-cyan-400 hover:underline">
+            Ai uitat parola?
+          </a>
+        </div>
+
+        {/* 🔵 BUTON LOGIN */}
         <button
           type="submit"
           disabled={loading}
           className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold transition"
         >
-          {loading ? "Se autentifică..." : "Autentificare"}
+          {loading ? "Se autentifică..." : "Intră în cont"}
         </button>
+
+        <p className="text-xs text-center opacity-60 mt-4">
+          Intrând în cont, accepți Termenii si Conditiile site-ului nostru
+        </p>
       </form>
     </div>
   );

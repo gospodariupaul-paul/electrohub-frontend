@@ -11,7 +11,9 @@ export default async function SettingsPage() {
     return <div className="text-gray-400">Trebuie să fii autentificat.</div>;
   }
 
-  const db = (await connectDB()).connection.getClient().db("electrohub");
+  // 🔥 FIX MONGOOSE
+  const mongoose = await connectDB();
+  const db = mongoose.connection.db;
 
   const userData = await db.collection("users").findOne({ _id: user.id });
 

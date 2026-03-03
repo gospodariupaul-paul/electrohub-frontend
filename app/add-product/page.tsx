@@ -3,14 +3,16 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
+import { useNotifications } from "@/app/context/NotificationContext"; // 🔥 ADĂUGAT
 
 export default function AddProductPage() {
   const router = useRouter();
+  const { refreshNotifications } = useNotifications(); // 🔥 ADĂUGAT
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(1);
-  const [categoryId, setCategoryId] = useState<number>(1);
+  const [category, setCategory] = useState("Telefoane"); // 🔥 MODIFICAT
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -87,7 +89,7 @@ export default function AddProductPage() {
         stock,
         description,
         images,
-        categoryId,
+        category, // 🔥 MODIFICAT
         userId: user.id,
       };
 
@@ -95,6 +97,9 @@ export default function AddProductPage() {
 
       const res = await axiosInstance.post("/products", payload);
       const createdProduct = res.data;
+
+      // 🔥 REFRESH NOTIFICĂRI DUPĂ PUBLICARE
+      refreshNotifications();
 
       alert("Anunț publicat cu succes!");
       router.push("/my-account/profile");
@@ -171,14 +176,14 @@ export default function AddProductPage() {
           <span className="text-sm opacity-80">Categoria*</span>
           <select
             className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
-            value={categoryId}
-            onChange={(e) => setCategoryId(parseInt(e.target.value))}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)} // 🔥 MODIFICAT
             required
           >
-            <option value="1">Telefoane</option>
-            <option value="2">Laptopuri</option>
-            <option value="3">Componente PC</option>
-            <option value="4">Audio-Video</option>
+            <option value="Telefoane">Telefoane</option>
+            <option value="Laptopuri">Laptopuri</option>
+            <option value="Componente PC">Componente PC</option>
+            <option value="Audio-Video">Audio-Video</option>
           </select>
         </label>
 

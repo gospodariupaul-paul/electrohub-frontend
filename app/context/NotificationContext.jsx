@@ -8,7 +8,7 @@ export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [userId, setUserId] = useState(null);
 
-  // 🔥 Preluăm userId din localStorage (salvat de UserContext)
+  // 🔥 Preluăm userId din localStorage
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -17,32 +17,47 @@ export function NotificationProvider({ children }) {
     }
   }, []);
 
-  // 🔥 Când avem userId → încărcăm notificările din backend
-  useEffect(() => {
-    if (!userId) return;
+  // 🔥 Funcție care încarcă notificările din backend
+  const loadNotifications = async (uid) => {
+    try {
+      const res = await fetch(
+        `https://electrohub-backend.onrender.com/notifications/${uid}`
+      );
+      const data = await res.json();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Eroare notificări:", err);
+    }
+  };
 
-    fetch(`https://electrohub-backend.onrender.com/notifications/${userId}`)
-      .then((res) => res.json())
-      .then((data) => setNotifications(data))
-      .catch((err) => console.error("Eroare notificări:", err));
+  // 🔥 Când avem userId → încărcăm notificările
+  useEffect(() => {
+    if (userId) loadNotifications(userId);
   }, [userId]);
 
-  // 🔵 Marchează notificare ca citită (backend)
+  // 🔥 Funcție publică pentru refresh manual
+  const refreshNotifications = () => {
+    if (userId) loadNotifications(userId);
+  };
+
+  // 🔵 Marchează notificare ca citită
   const markAsRead = async (id) => {
-    await fetch(`https://electrohub-backend.onrender.com/notifications/read/${id}`, {
-      method: "PATCH",
-    });
+    await fetch(
+      `https://electrohub-backend.onrender.com/notifications/read/${id}`,
+      { method: "PATCH" }
+    );
 
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
   };
 
-  // 🔵 Șterge notificare (backend)
+  // 🔵 Șterge notificare
   const deleteNotification = async (id) => {
-    await fetch(`https://electrohub-backend.onrender.com/notifications/${id}`, {
-      method: "DELETE",
-    });
+    await fetch(
+      `https://electrohub-backend.onrender.com/notifications/${id}`,
+      { method: "DELETE" }
+    );
 
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
@@ -63,6 +78,7 @@ export function NotificationProvider({ children }) {
     getUserNotifications,
     markAsRead,
     deleteNotification,
+    refreshNotifications, // 🔥 ADĂUGAT
 
     emptyState: {
       image: "/images/bell-icon-hologram.png",

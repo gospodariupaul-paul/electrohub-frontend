@@ -34,14 +34,12 @@ export default function ProductPage() {
     }
 
     try {
-      // 🔥 Creează conversația în backend
       const res = await axiosInstance.post("/conversations", {
         productId: Number(id),
       });
 
       const conversationId = res.data.id;
 
-      // 🔥 Navighează către chat
       router.push(`/chat/${conversationId}`);
     } catch (err) {
       console.error("Error creating conversation:", err);
@@ -66,6 +64,15 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
+
+      {/* 🔙 BUTON ÎNAPOI */}
+      <button
+        onClick={() => window.history.back()}
+        className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
+      >
+        ← Înapoi
+      </button>
+
       <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
 
       <img

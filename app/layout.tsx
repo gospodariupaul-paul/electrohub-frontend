@@ -28,8 +28,16 @@ function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
 
   const { user } = useUser();
-  const { notifications, unreadCount, markAsRead, deleteNotification, emptyState } =
-    useNotifications();
+  const {
+    getUnreadCount,
+    getUserNotifications,
+    markAsRead,
+    deleteNotification,
+    emptyState
+  } = useNotifications();
+
+  const unread = user ? getUnreadCount(user.id) : 0;
+  const userNotifications = user ? getUserNotifications(user.id) : [];
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
@@ -81,7 +89,7 @@ function Header() {
             <FiHeart />
           </Link>
 
-          {/* 🔔 CLOPOȚEL NORMAL ÎN HEADER */}
+          {/* 🔔 CLOPOȚEL NORMAL + NUMĂR NOTIFICĂRI */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}
@@ -92,13 +100,14 @@ function Header() {
             >
               <FiBell className="w-7 h-7 text-gray-300 hover:text-[#00eaff] transition" />
 
-              {unreadCount > 0 && (
+              {unread > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                  {unreadCount}
+                  {unread}
                 </span>
               )}
             </button>
 
+            {/* 🔽 DROPDOWN NOTIFICĂRI */}
             {notifOpen && (
               <div
                 className="absolute right-0 mt-1 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-3 z-50"
@@ -106,7 +115,8 @@ function Header() {
               >
                 <h3 className="text-lg font-semibold mb-2">Notificări</h3>
 
-                {notifications.length === 0 && (
+                {/* EMPTY STATE */}
+                {userNotifications.length === 0 && (
                   <div className="text-center text-gray-400 px-2 py-4">
                     <img
                       src={emptyState.image}
@@ -121,8 +131,9 @@ function Header() {
                   </div>
                 )}
 
+                {/* LISTA NOTIFICĂRI */}
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {notifications.map((n) => (
+                  {userNotifications.map((n) => (
                     <div
                       key={n.id}
                       className={`p-3 rounded-lg flex justify-between items-center cursor-pointer ${

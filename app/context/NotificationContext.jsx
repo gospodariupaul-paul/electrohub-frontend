@@ -23,10 +23,25 @@ export function NotificationProvider({ children }) {
       const res = await fetch(
         `https://electrohub-backend-1-10qa.onrender.com/notifications/${uid}`
       );
+
+      // 🔥 Dacă backend-ul răspunde cu 404 → punem array gol
+      if (!res.ok) {
+        setNotifications([]);
+        return;
+      }
+
       const data = await res.json();
+
+      // 🔥 Dacă nu e array → punem array gol
+      if (!Array.isArray(data)) {
+        setNotifications([]);
+        return;
+      }
+
       setNotifications(data);
     } catch (err) {
       console.error("Eroare notificări:", err);
+      setNotifications([]); // fallback sigur
     }
   };
 

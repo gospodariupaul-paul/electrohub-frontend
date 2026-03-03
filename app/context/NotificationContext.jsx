@@ -1,62 +1,52 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      userId: 1,
-      text: "Cineva ți-a apreciat anunțul",
-      link: "/my-account/listings",
-      read: false,
-    },
-    {
-      id: 2,
-      userId: 1,
-      text: "Ai un mesaj nou",
-      link: "/messages",
-      read: false,
-    },
-    {
-      id: 3,
-      userId: 1,
-      text: "Actualizare comandă: în curs de livrare",
-      link: "/orders",
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
-  // 🔵 Adaugă notificare nouă (ex: când userul publică un anunț)
+  // 🔥 Încarcă notificările din localStorage la pornire
+  useEffect(() => {
+    const saved = localStorage.getItem("notifications");
+    if (saved) {
+      setNotifications(JSON.parse(saved));
+    }
+  }, []);
+
+  // 🔥 Salvează notificările în localStorage la fiecare modificare
+  useEffect(() => {
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+  }, [notifications]);
+
+  // 🔵 Adaugă notificare nouă
   const addNotification = (userId, text, link) => {
-    setNotifications((prev) => [
-      {
-        id: Date.now(),
-        userId,
-        text,
-        link,
-        read: false,
-        createdAt: Date.now(),
-      },
-      ...prev,
-    ]);
+    const newNotif = {
+      id: Date.now(),
+      userId,
+      text,
+      link,
+      read: false,
+      createdAt: Date.now(),
+    };
+
+    setNotifications((prev) => [newNotif, ...prev]);
   };
 
-  // 🔵 Număr notificări necitite pentru userul curent
+  // 🔵 Număr notificări necitite
   const getUnreadCount = (userId) => {
     if (!userId) return 0;
     return notifications.filter((n) => n.userId === userId && !n.read).length;
   };
 
-  // 🔵 Notificările userului curent
+  // 🔵 Notificările userului
   const getUserNotifications = (userId) => {
     if (!userId) return [];
     return notifications.filter((n) => n.userId === userId);
   };
 
-  // 🔵 Marchează o notificare ca citită
+  // 🔵 Marchează ca citită
   const markAsRead = (id) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
@@ -70,11 +60,9 @@ export function NotificationProvider({ children }) {
 
   const value = {
     notifications,
-
     addNotification,
     getUnreadCount,
     getUserNotifications,
-
     markAsRead,
     deleteNotification,
 
@@ -94,24 +82,5 @@ export function NotificationProvider({ children }) {
 }
 
 export function useNotifications() {
-  const ctx = useContext(NotificationContext);
-
-  if (!ctx) {
-    return {
-      notifications: [],
-      addNotification: () => {},
-      getUnreadCount: () => 0,
-      getUserNotifications: () => [],
-      markAsRead: () => {},
-      deleteNotification: () => {},
-      emptyState: {
-        image: "/images/bell-icon-hologram.png",
-        title: "Missing notifications",
-        line1: "Nu ai nicio notificare deocamdată",
-        line2: "Te vom informa atunci când se întâmplă ceva important.",
-      },
-    };
-  }
-
-  return ctx;
+  return useContext(NotificationContext);
 }

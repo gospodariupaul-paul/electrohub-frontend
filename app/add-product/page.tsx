@@ -3,11 +3,9 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import { useNotifications } from "@/app/context/NotificationContext"; // 🔥 ADĂUGAT
 
 export default function AddProductPage() {
   const router = useRouter();
-  const { addNotification } = useNotifications(); // 🔥 ADĂUGAT
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -96,14 +94,7 @@ export default function AddProductPage() {
       console.log("DATA TRIMISA CATRE BACKEND:", payload);
 
       const res = await axiosInstance.post("/products", payload);
-      const createdProduct = res.data; // 🔥 avem ID-ul produsului
-
-      // 🔥 AICI SE CREEAZĂ NOTIFICAREA
-      addNotification(
-        user.id,
-        `Ai publicat un anunț nou: ${name}`,
-        `/product/${createdProduct.id}`
-      );
+      const createdProduct = res.data;
 
       alert("Anunț publicat cu succes!");
       router.push("/my-account/profile");

@@ -21,7 +21,7 @@ export function NotificationProvider({ children }) {
   const loadNotifications = async (uid) => {
     try {
       const res = await fetch(
-        `https://electrohub-backend.onrender.com/notifications/${uid}`
+        `https://electrohub-backend-1-10qa.onrender.com/notifications/${uid}`
       );
       const data = await res.json();
       setNotifications(data);
@@ -43,7 +43,7 @@ export function NotificationProvider({ children }) {
   // 🔵 Marchează notificare ca citită
   const markAsRead = async (id) => {
     await fetch(
-      `https://electrohub-backend.onrender.com/notifications/read/${id}`,
+      `https://electrohub-backend-1-10qa.onrender.com/notifications/read/${id}`,
       { method: "PATCH" }
     );
 
@@ -55,7 +55,7 @@ export function NotificationProvider({ children }) {
   // 🔵 Șterge notificare
   const deleteNotification = async (id) => {
     await fetch(
-      `https://electrohub-backend.onrender.com/notifications/${id}`,
+      `https://electrohub-backend-1-10qa.onrender.com/notifications/${id}`,
       { method: "DELETE" }
     );
 
@@ -78,7 +78,7 @@ export function NotificationProvider({ children }) {
     getUserNotifications,
     markAsRead,
     deleteNotification,
-    refreshNotifications, // 🔥 ADĂUGAT
+    refreshNotifications,
 
     emptyState: {
       image: "/images/bell-icon-hologram.png",

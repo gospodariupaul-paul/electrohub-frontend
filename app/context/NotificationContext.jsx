@@ -43,9 +43,10 @@ export function NotificationProvider({ children }) {
     unreadCount,
     markAsRead,
     deleteNotification,
-    // 🔥 fallback vizual pentru notificări goale
+
+    // 🔥 Fallback vizual pentru notificări goale — FIXAT
     emptyState: {
-      image: "/images/notification-empty-hologram.png",
+      image: "/images/bell-icon-hologram.png",
       title: "Missing notifications",
       line1: "Nu ai nicio notificare deocamdată",
       line2: "Te vom informa atunci când se întâmplă ceva important.",
@@ -70,7 +71,7 @@ export function useNotifications() {
       markAsRead: () => {},
       deleteNotification: () => {},
       emptyState: {
-        image: "/images/notification-empty-hologram.png",
+        image: "/images/bell-icon-hologram.png",
         title: "Missing notifications",
         line1: "Nu ai nicio notificare deocamdată",
         line2: "Te vom informa atunci când se întâmplă ceva important.",

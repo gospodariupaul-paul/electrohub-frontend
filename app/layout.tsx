@@ -4,7 +4,7 @@ import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiBell, FiHeart, FiHome } from "react-icons/fi";
+import { FiMenu, FiHeart, FiHome } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 import { useNotifications } from "./context/NotificationContext";
@@ -81,16 +81,20 @@ function Header() {
             <FiHeart />
           </Link>
 
-          {/* 🔔 CLOPOȚEL FIXAT */}
+          {/* 🔔 CLOPOȚEL CU ICONIȚA VR + ANIMAȚIE HOLOGRAM */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}
           >
             <button
               onClick={() => setNotifOpen(!notifOpen)}
-              className="relative text-2xl hover:text-[#00eaff] transition"
+              className="relative hover:opacity-80 transition"
             >
-              <FiBell />
+              <img
+                src="/images/bell-icon-hologram.png"
+                alt="Notificări"
+                className="w-7 h-7 object-contain hologram-glow"
+              />
 
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
@@ -106,7 +110,6 @@ function Header() {
               >
                 <h3 className="text-lg font-semibold mb-2">Notificări</h3>
 
-                {/* 🔥 FALLBACK FUTURIST CU IMAGINE */}
                 {notifications.length === 0 && (
                   <div className="text-center text-gray-400 px-2 py-4">
                     <img
@@ -122,7 +125,6 @@ function Header() {
                   </div>
                 )}
 
-                {/* LISTA DE NOTIFICĂRI */}
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {notifications.map((n) => (
                     <div

@@ -2,6 +2,7 @@
 
 import "./globals.css";
 import { UserProvider } from "./context/UserContext";
+import { NotificationProvider } from "./context/NotificationContext"; // 🔥 ADĂUGAT
 import Link from "next/link";
 import { useState } from "react";
 import { FiMenu, FiHeart, FiHome, FiBell } from "react-icons/fi";
@@ -13,10 +14,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
-        <UserProvider>
-          <Header />
-          <main className="pt-4">{children}</main>
-        </UserProvider>
+        <NotificationProvider> {/* 🔥 ADĂUGAT */}
+          <UserProvider>
+            <Header />
+            <main className="pt-4">{children}</main>
+          </UserProvider>
+        </NotificationProvider>
       </body>
     </html>
   );

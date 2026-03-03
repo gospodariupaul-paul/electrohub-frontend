@@ -44,9 +44,9 @@ export function NotificationProvider({ children }) {
     markAsRead,
     deleteNotification,
 
-    // 🔥 Fallback vizual pentru notificări goale — FIXAT
+    // 🔥 Imagine mare, colorată, pentru dropdown
     emptyState: {
-      image: "/images/bell-icon-hologram.png",
+      image: "/images/notification-empty-hologram.png",
       title: "Missing notifications",
       line1: "Nu ai nicio notificare deocamdată",
       line2: "Te vom informa atunci când se întâmplă ceva important.",
@@ -63,7 +63,6 @@ export function NotificationProvider({ children }) {
 export function useNotifications() {
   const ctx = useContext(NotificationContext);
 
-  // fallback sigur dacă provider-ul lipsește
   if (!ctx) {
     return {
       notifications: [],
@@ -71,7 +70,7 @@ export function useNotifications() {
       markAsRead: () => {},
       deleteNotification: () => {},
       emptyState: {
-        image: "/images/bell-icon-hologram.png",
+        image: "/images/notification-empty-hologram.png",
         title: "Missing notifications",
         line1: "Nu ai nicio notificare deocamdată",
         line2: "Te vom informa atunci când se întâmplă ceva important.",

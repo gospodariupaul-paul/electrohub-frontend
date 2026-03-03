@@ -1,21 +1,26 @@
 "use client";
 
 import { useUser } from "@/app/context/UserContext";
+import { useNotifications } from "@/app/context/NotificationContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function UserProfilePage() {
   const { user, loading } = useUser();
+  const { getUnreadCount } = useNotifications();
   const router = useRouter();
 
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
-  // 🔥 ADĂUGAT — număr mesaje necitite
+  // 🔥 Mesaje necitite
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // 🔥 ADĂUGAT — fetch mesaje necitite
+  // 🔥 Notificări necitite
+  const notificationCount = user ? getUnreadCount(user.id) : 0;
+
+  // 🔥 Fetch mesaje necitite
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -34,7 +39,6 @@ export default function UserProfilePage() {
 
         const data = await res.json();
 
-        // total mesaje necitite din toate conversațiile
         const total = data.reduce(
           (sum: number, conv: any) => sum + (conv.unreadCount || 0),
           0
@@ -162,7 +166,6 @@ export default function UserProfilePage() {
           {/* 🔥 CHAT CU BADGE */}
           <Link href="/my-account/messages" className="relative block">
             <SidebarItem label="Chat" />
-
             {unreadCount > 0 && (
               <span className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
                 {unreadCount}
@@ -170,7 +173,16 @@ export default function UserProfilePage() {
             )}
           </Link>
 
-          <SidebarItem label="Notificări" />
+          {/* 🔥 NOTIFICĂRI CU BADGE */}
+          <Link href="/my-account/notifications" className="relative block">
+            <SidebarItem label="Notificări" />
+            {notificationCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                {notificationCount}
+              </span>
+            )}
+          </Link>
+
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />

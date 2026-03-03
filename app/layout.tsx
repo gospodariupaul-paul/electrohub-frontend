@@ -39,7 +39,6 @@ function Header() {
     emptyState
   } = useNotifications();
 
-  // 🔥 FIX: funcțiile NU primesc parametri
   const unread = user ? getUnreadCount() : 0;
   const userNotifications = user ? getUserNotifications() : [];
 
@@ -149,7 +148,11 @@ function Header() {
                       <a
                         href={n.link}
                         className="flex-1"
-                        onClick={() => markAsRead(n.id)}
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          await markAsRead(n.id);
+                          window.location.href = n.link;
+                        }}
                       >
                         <p className={`${n.read ? "opacity-70" : "font-bold"}`}>
                           {n.text}

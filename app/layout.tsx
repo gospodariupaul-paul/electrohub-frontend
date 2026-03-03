@@ -36,7 +36,10 @@ function Header() {
     emptyState
   } = useNotifications();
 
+  // 🔥 Număr notificări pentru user
   const unread = user ? getUnreadCount(user.id) : 0;
+
+  // 🔥 Lista notificări pentru user
   const userNotifications = user ? getUserNotifications(user.id) : [];
 
   return (

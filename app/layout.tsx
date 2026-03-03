@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
-        <NotificationProvider> {/* 🔥 ADĂUGAT */}
+        <NotificationProvider>
           <UserProvider>
             <Header />
             <main className="pt-4">{children}</main>
@@ -39,11 +39,9 @@ function Header() {
     emptyState
   } = useNotifications();
 
-  // 🔥 Număr notificări pentru user
-  const unread = user ? getUnreadCount(user.id) : 0;
-
-  // 🔥 Lista notificări pentru user
-  const userNotifications = user ? getUserNotifications(user.id) : [];
+  // 🔥 FIX: funcțiile NU primesc parametri
+  const unread = user ? getUnreadCount() : 0;
+  const userNotifications = user ? getUserNotifications() : [];
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">

@@ -46,36 +46,38 @@ export function NotificationProvider({ children }) {
 
   // 🔵 Număr notificări necitite pentru userul curent
   const getUnreadCount = (userId) => {
+    if (!userId) return 0;
     return notifications.filter((n) => n.userId === userId && !n.read).length;
   };
 
   // 🔵 Notificările userului curent
   const getUserNotifications = (userId) => {
+    if (!userId) return [];
     return notifications.filter((n) => n.userId === userId);
   };
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
+  // 🔵 Marchează o notificare ca citită
   const markAsRead = (id) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
   };
 
+  // 🔵 Șterge notificare
   const deleteNotification = (id) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
   const value = {
     notifications,
-    unreadCount,
-    markAsRead,
-    deleteNotification,
 
-    // 🔵 Funcții noi pentru clopoțel și dropdown
+    // FUNCȚII NOI
     addNotification,
     getUnreadCount,
     getUserNotifications,
+
+    markAsRead,
+    deleteNotification,
 
     // 🔥 Imaginea hologram apare DOAR în dropdown
     emptyState: {
@@ -99,12 +101,11 @@ export function useNotifications() {
   if (!ctx) {
     return {
       notifications: [],
-      unreadCount: 0,
-      markAsRead: () => {},
-      deleteNotification: () => {},
       addNotification: () => {},
       getUnreadCount: () => 0,
       getUserNotifications: () => [],
+      markAsRead: () => {},
+      deleteNotification: () => {},
       emptyState: {
         image: "/images/bell-icon-hologram.png",
         title: "Missing notifications",

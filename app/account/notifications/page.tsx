@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import clientPromise from "@/lib/mongodb";
 import NotificationItem from "./notification-item";
-import BackButton from "./BackButton";
 
 export default async function NotificationsPage() {
   const session = await getServerSession(authOptions);
@@ -23,10 +22,6 @@ export default async function NotificationsPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-[#0f172a] rounded-xl border border-white/10">
-
-      {/* 🔙 BUTON ÎNAPOI */}
-      <BackButton />
-
       <h1 className="text-3xl font-bold mb-6">Notificări</h1>
 
       {notifications.length === 0 && (

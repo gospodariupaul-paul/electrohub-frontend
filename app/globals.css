@@ -17,3 +17,31 @@
 }
 
 /* Eliminăm complet stilurile globale care stricau paginile */
+
+
+/* 🔵 Efect hologram pentru iconița clopoțelului */
+.hologram-glow {
+  filter: drop-shadow(0 0 4px #00eaff)
+          drop-shadow(0 0 8px #00eaff)
+          drop-shadow(0 0 12px #00eaff);
+  animation: holoPulse 2.5s infinite ease-in-out;
+  opacity: 1;
+}
+
+@keyframes holoPulse {
+  0% {
+    filter: drop-shadow(0 0 4px #00eaff)
+            drop-shadow(0 0 8px #00eaff)
+            drop-shadow(0 0 12px #00eaff);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px #00eaff)
+            drop-shadow(0 0 14px #00eaff)
+            drop-shadow(0 0 20px #00eaff);
+  }
+  100% {
+    filter: drop-shadow(0 0 4px #00eaff)
+            drop-shadow(0 0 8px #00eaff)
+            drop-shadow(0 0 12px #00eaff);
+  }
+}

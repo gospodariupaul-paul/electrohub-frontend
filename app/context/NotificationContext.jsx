@@ -71,7 +71,6 @@ export function NotificationProvider({ children }) {
   const value = {
     notifications,
 
-    // FUNCȚII NOI
     addNotification,
     getUnreadCount,
     getUserNotifications,
@@ -79,7 +78,6 @@ export function NotificationProvider({ children }) {
     markAsRead,
     deleteNotification,
 
-    // 🔥 Imaginea hologram apare DOAR în dropdown
     emptyState: {
       image: "/images/bell-icon-hologram.png",
       title: "Missing notifications",

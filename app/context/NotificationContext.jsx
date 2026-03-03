@@ -6,61 +6,59 @@ const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
+  const [userId, setUserId] = useState(null);
 
-  // 🔥 Încarcă notificările din localStorage la pornire
+  // 🔥 Preluăm userId din localStorage (salvat de UserContext)
   useEffect(() => {
-    const saved = localStorage.getItem("notifications");
-    if (saved) {
-      setNotifications(JSON.parse(saved));
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      setUserId(parsed.id);
     }
   }, []);
 
-  // 🔥 Salvează notificările în localStorage la fiecare modificare
+  // 🔥 Când avem userId → încărcăm notificările din backend
   useEffect(() => {
-    localStorage.setItem("notifications", JSON.stringify(notifications));
-  }, [notifications]);
+    if (!userId) return;
 
-  // 🔵 Adaugă notificare nouă
-  const addNotification = (userId, text, link) => {
-    const newNotif = {
-      id: Date.now(),
-      userId,
-      text,
-      link,
-      read: false,
-      createdAt: Date.now(),
-    };
+    fetch(`https://electrohub-backend.onrender.com/notifications/${userId}`)
+      .then((res) => res.json())
+      .then((data) => setNotifications(data))
+      .catch((err) => console.error("Eroare notificări:", err));
+  }, [userId]);
 
-    setNotifications((prev) => [newNotif, ...prev]);
-  };
+  // 🔵 Marchează notificare ca citită (backend)
+  const markAsRead = async (id) => {
+    await fetch(`https://electrohub-backend.onrender.com/notifications/read/${id}`, {
+      method: "PATCH",
+    });
 
-  // 🔵 Număr notificări necitite
-  const getUnreadCount = (userId) => {
-    if (!userId) return 0;
-    return notifications.filter((n) => n.userId === userId && !n.read).length;
-  };
-
-  // 🔵 Notificările userului
-  const getUserNotifications = (userId) => {
-    if (!userId) return [];
-    return notifications.filter((n) => n.userId === userId);
-  };
-
-  // 🔵 Marchează ca citită
-  const markAsRead = (id) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
   };
 
-  // 🔵 Șterge notificare
-  const deleteNotification = (id) => {
+  // 🔵 Șterge notificare (backend)
+  const deleteNotification = async (id) => {
+    await fetch(`https://electrohub-backend.onrender.com/notifications/${id}`, {
+      method: "DELETE",
+    });
+
     setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  // 🔵 Număr notificări necitite
+  const getUnreadCount = () => {
+    return notifications.filter((n) => !n.read).length;
+  };
+
+  // 🔵 Notificările userului
+  const getUserNotifications = () => {
+    return notifications;
   };
 
   const value = {
     notifications,
-    addNotification,
     getUnreadCount,
     getUserNotifications,
     markAsRead,

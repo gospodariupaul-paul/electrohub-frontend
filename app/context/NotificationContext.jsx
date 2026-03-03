@@ -44,9 +44,9 @@ export function NotificationProvider({ children }) {
     markAsRead,
     deleteNotification,
 
-    // 🔥 Imagine mare, colorată, pentru dropdown
+    // 🔥 Imaginea hologram apare DOAR în dropdown
     emptyState: {
-      image: "/images/notification-empty-hologram.png",
+      image: "/images/bell-icon-hologram.png",
       title: "Missing notifications",
       line1: "Nu ai nicio notificare deocamdată",
       line2: "Te vom informa atunci când se întâmplă ceva important.",
@@ -70,7 +70,7 @@ export function useNotifications() {
       markAsRead: () => {},
       deleteNotification: () => {},
       emptyState: {
-        image: "/images/notification-empty-hologram.png",
+        image: "/images/bell-icon-hologram.png",
         title: "Missing notifications",
         line1: "Nu ai nicio notificare deocamdată",
         line2: "Te vom informa atunci când se întâmplă ceva important.",

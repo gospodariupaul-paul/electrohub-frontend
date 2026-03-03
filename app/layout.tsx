@@ -4,7 +4,7 @@ import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiHeart, FiHome } from "react-icons/fi";
+import { FiMenu, FiHeart, FiHome, FiBell } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 import { useNotifications } from "./context/NotificationContext";
@@ -81,7 +81,7 @@ function Header() {
             <FiHeart />
           </Link>
 
-          {/* 🔔 CLOPOȚEL CU ICONIȚA VR + ANIMAȚIE HOLOGRAM */}
+          {/* 🔔 CLOPOȚEL NORMAL ÎN HEADER */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}
@@ -90,11 +90,7 @@ function Header() {
               onClick={() => setNotifOpen(!notifOpen)}
               className="relative hover:opacity-80 transition"
             >
-              <img
-                src="/images/bell-icon-hologram.png"
-                alt="Notificări"
-                className="w-7 h-7 object-contain hologram-glow"
-              />
+              <FiBell className="w-7 h-7 text-gray-300 hover:text-[#00eaff] transition" />
 
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">

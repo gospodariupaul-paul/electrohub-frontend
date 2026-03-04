@@ -32,7 +32,7 @@ export default function CategoryPage({ params }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {products.map((product) => (
             <div
-              key={product.id}   {/* 🔥 FIX */}
+              key={product.id}
               className="border p-4 rounded-lg shadow hover:shadow-lg transition"
             >
               <img
@@ -45,7 +45,7 @@ export default function CategoryPage({ params }) {
               <p className="text-gray-600 mb-4">{product.price} RON</p>
 
               <Link
-                href={`/produs/${product.id}`}   {/* 🔥 FIX */}
+                href={`/produs/${product.id}`}
                 className="text-center block bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
               >
                 Detalii produs

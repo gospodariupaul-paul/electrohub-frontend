@@ -19,7 +19,8 @@ export default function HomePage() {
   {Array.from({ length: 20 }).map((_, i) => (
     <img
       key={i}
-      src={`/electro/e${(i % 6) + 1}.png`}
+      src={`/electro/e${(i % 6) + 1}.svg`}
+
       className="electro-item"
       style={{
         left: `${Math.random() * 100}%`,

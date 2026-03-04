@@ -24,7 +24,6 @@ export function NotificationProvider({ children }) {
         `https://electrohub-backend-1-10qa.onrender.com/notifications/${uid}`
       );
 
-      // 🔥 Dacă backend-ul răspunde cu 404 → punem array gol
       if (!res.ok) {
         setNotifications([]);
         return;
@@ -32,16 +31,22 @@ export function NotificationProvider({ children }) {
 
       const data = await res.json();
 
-      // 🔥 Dacă nu e array → punem array gol
       if (!Array.isArray(data)) {
         setNotifications([]);
         return;
       }
 
-      setNotifications(data);
+      // 🔥 AICI ESTE MODIFICAREA IMPORTANTĂ
+      // Ne asigurăm că fiecare notificare are "images" ca array
+      const normalized = data.map((n) => ({
+        ...n,
+        images: n.images || (n.image ? [n.image] : []), // ← AICI E MAGIA
+      }));
+
+      setNotifications(normalized);
     } catch (err) {
       console.error("Eroare notificări:", err);
-      setNotifications([]); // fallback sigur
+      setNotifications([]);
     }
   };
 
@@ -50,12 +55,10 @@ export function NotificationProvider({ children }) {
     if (userId) loadNotifications(userId);
   }, [userId]);
 
-  // 🔥 Funcție publică pentru refresh manual
   const refreshNotifications = () => {
     if (userId) loadNotifications(userId);
   };
 
-  // 🔵 Marchează notificare ca citită
   const markAsRead = async (id) => {
     await fetch(
       `https://electrohub-backend-1-10qa.onrender.com/notifications/read/${id}`,
@@ -67,7 +70,6 @@ export function NotificationProvider({ children }) {
     );
   };
 
-  // 🔵 Șterge notificare
   const deleteNotification = async (id) => {
     await fetch(
       `https://electrohub-backend-1-10qa.onrender.com/notifications/${id}`,
@@ -77,12 +79,10 @@ export function NotificationProvider({ children }) {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
-  // 🔵 Număr notificări necitite
   const getUnreadCount = () => {
     return notifications.filter((n) => !n.read).length;
   };
 
-  // 🔵 Notificările userului
   const getUserNotifications = () => {
     return notifications;
   };

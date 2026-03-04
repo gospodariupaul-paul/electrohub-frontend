@@ -89,7 +89,7 @@ export default function RegisterPage() {
           <div>
             <label style={labelStyle}>Name</label>
             <div style={inputWrapper}>
-              <FaUser style={{ opacity: 0.7 }} />
+              <FaUser style={{ opacity: 1, color: "#333" }} />
               <input
                 type="text"
                 placeholder="Your name"
@@ -103,7 +103,7 @@ export default function RegisterPage() {
           <div>
             <label style={labelStyle}>Email</label>
             <div style={inputWrapper}>
-              <FaEnvelope style={{ opacity: 0.7 }} />
+              <FaEnvelope style={{ opacity: 1, color: "#333" }} />
               <input
                 type="email"
                 placeholder="you@example.com"
@@ -117,7 +117,7 @@ export default function RegisterPage() {
           <div>
             <label style={labelStyle}>Password</label>
             <div style={inputWrapper}>
-              <FaLock style={{ opacity: 0.7 }} />
+              <FaLock style={{ opacity: 1, color: "#333" }} />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -181,7 +181,7 @@ const inputWrapper = {
   display: "flex",
   alignItems: "center",
   gap: 10,
-  background: "#e5e5e5", // mai închis, textul se vede clar
+  background: "#e5e5e5",
   padding: "12px 14px",
   borderRadius: 8,
 };
@@ -192,9 +192,6 @@ const inputStyle = {
   background: "transparent",
   outline: "none",
   fontSize: 15,
-  color: "#000", // text clar
+  color: "#000",
   fontWeight: "500",
-  "::placeholder": {
-    color: "#555",
-  },
 };

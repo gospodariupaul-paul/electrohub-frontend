@@ -28,9 +28,8 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050712] text-white flex flex-col">
-
-      {/* 🔥 FUNDAL ANIMAT — AICI TREBUIE SĂ FIE */}
+    <>
+      {/* 🔥 FUNDAL ANIMAT — AICI, ÎN AFARA CONTAINERULUI PRINCIPAL */}
       <div className="electro-bg">
         {Array.from({ length: 20 }).map((_, i) => (
           <img
@@ -45,6 +44,17 @@ export default function HomePage() {
           />
         ))}
       </div>
+
+      {/* 🔥 CONȚINUTUL PAGINII */}
+      <div className="min-h-screen bg-[#050712] text-white flex flex-col">
+        {/* aici continuă tot ce aveai deja în pagină:
+            header, search, butoane, ProductsList etc. */}
+      </div>
+    </>
+  );
+}
+
+   
 
       {/* 🔥 RESTUL PAGINII TALE CONTINUĂ NORMAL */}
 

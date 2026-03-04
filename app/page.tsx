@@ -15,21 +15,6 @@ export default function HomePage() {
       const token = localStorage.getItem("token");
       setIsLogged(!!token);
     }
-<div className="electro-bg">
-  {Array.from({ length: 20 }).map((_, i) => (
-    <img
-      key={i}
-      src={`/electro/e${(i % 6) + 1}.svg`}
-
-      className="electro-item"
-      style={{
-        left: `${Math.random() * 100}%`,
-        animationDuration: `${6 + Math.random() * 10}s`,
-        animationDelay: `${Math.random() * 5}s`,
-      }}
-    />
-  ))}
-</div>
 
     axios
       .get("https://electrohub-backend-1-10qa.onrender.com/products")
@@ -44,6 +29,24 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#050712] text-white flex flex-col">
+
+      {/* 🔥 FUNDAL ANIMAT — AICI TREBUIE SĂ FIE */}
+      <div className="electro-bg">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <img
+            key={i}
+            src={`/electro/e${(i % 6) + 1}.svg`}
+            className="electro-item"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${6 + Math.random() * 10}s`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* 🔥 RESTUL PAGINII TALE CONTINUĂ NORMAL */}
 
       {/* NAVBAR */}
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">

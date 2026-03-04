@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useNotifications } from "@/app/context/NotificationContext";
 import { useUser } from "@/app/context/UserContext";
 import Link from "next/link";
@@ -12,6 +13,8 @@ export default function NotificationsPage() {
     deleteNotification,
     emptyState
   } = useNotifications();
+
+  const [currentIndex, setCurrentIndex] = useState({});
 
   if (!user) {
     return (
@@ -61,6 +64,51 @@ export default function NotificationsPage() {
                 : "bg-white/10 border border-cyan-500/40"
             }`}
           >
+
+            {/* SLIDER IMAGINI */}
+            {n.images && n.images.length > 0 && (
+              <div className="relative w-32 h-32 overflow-hidden rounded-lg mr-4">
+                <img
+                  src={n.images[currentIndex[n.id] || 0]}
+                  className="w-full h-full object-cover"
+                />
+
+                {/* Săgeată stânga */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentIndex((prev) => ({
+                      ...prev,
+                      [n.id]:
+                        prev[n.id] > 0
+                          ? prev[n.id] - 1
+                          : n.images.length - 1,
+                    }));
+                  }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
+                >
+                  ‹
+                </button>
+
+                {/* Săgeată dreapta */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentIndex((prev) => ({
+                      ...prev,
+                      [n.id]:
+                        prev[n.id] < n.images.length - 1
+                          ? prev[n.id] + 1
+                          : 0,
+                    }));
+                  }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
+                >
+                  ›
+                </button>
+              </div>
+            )}
+
             {/* TEXT + LINK */}
             <div className="flex flex-col flex-1">
               <Link

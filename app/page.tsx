@@ -15,6 +15,20 @@ export default function HomePage() {
       const token = localStorage.getItem("token");
       setIsLogged(!!token);
     }
+<div className="electro-bg">
+  {Array.from({ length: 20 }).map((_, i) => (
+    <img
+      key={i}
+      src={`/electro/e${(i % 6) + 1}.png`}
+      className="electro-item"
+      style={{
+        left: `${Math.random() * 100}%`,
+        animationDuration: `${6 + Math.random() * 10}s`,
+        animationDelay: `${Math.random() * 5}s`,
+      }}
+    />
+  ))}
+</div>
 
     axios
       .get("https://electrohub-backend-1-10qa.onrender.com/products")

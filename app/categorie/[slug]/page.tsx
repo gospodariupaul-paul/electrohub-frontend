@@ -28,32 +28,28 @@ export default function CategoryPage({ params }) {
         <p>Nu există produse în această categorie.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {products.map((product) => {
-            console.log("PRODUCT:", product); // 🔥 AICI VEDEM STRUCTURA REALĂ
+          {products.map((product) => (
+            <div
+              key={product.id}   // ← AICI era product.product_id
+              className="border p-4 rounded-lg shadow hover:shadow-lg transition"
+            >
+              <img
+                src={product.images?.[0]}
+                alt={product.name}
+                className="w-full h-48 object-cover rounded"
+              />
 
-            return (
-              <div
-                key={product.product_id}
-                className="border p-4 rounded-lg shadow hover:shadow-lg transition"
+              <h2 className="text-xl font-semibold mt-4">{product.name}</h2>
+              <p className="text-gray-600 mb-4">{product.price} RON</p>
+
+              <Link
+                href={`/produs/${product.id}`}   // ← AICI era product.product_id
+                className="text-center block bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
               >
-                <img
-                  src={product.images?.[0]}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded"
-                />
-
-                <h2 className="text-xl font-semibold mt-4">{product.name}</h2>
-                <p className="text-gray-600 mb-4">{product.price} RON</p>
-
-                <Link
-                  href={`/produs/${product.product_id}`}
-                  className="text-center block bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-                >
-                  Detalii produs
-                </Link>
-              </div>
-            );
-          })}
+                Detalii produs
+              </Link>
+            </div>
+          ))}
         </div>
       )}
     </div>

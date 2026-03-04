@@ -181,7 +181,7 @@ const inputWrapper = {
   display: "flex",
   alignItems: "center",
   gap: 10,
-  background: "#f1f1f1",
+  background: "#e5e5e5", // mai închis, textul se vede clar
   padding: "12px 14px",
   borderRadius: 8,
 };
@@ -192,4 +192,9 @@ const inputStyle = {
   background: "transparent",
   outline: "none",
   fontSize: 15,
+  color: "#000", // text clar
+  fontWeight: "500",
+  "::placeholder": {
+    color: "#555",
+  },
 };

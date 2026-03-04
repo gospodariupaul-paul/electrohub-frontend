@@ -14,6 +14,9 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
+  // 🔥 Slider index pentru fiecare produs
+  const [sliderIndex, setSliderIndex] = useState<any>({});
+
   // 🔥 Mesaje necitite
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -257,10 +260,52 @@ export default function UserProfilePage() {
                       key={p.id}
                       className="bg-[#070a20] border border-white/10 rounded-xl p-4"
                     >
-                      <img
-                        src={p.images?.[0] || "/placeholder.png"}
-                        className="w-full h-40 object-cover rounded-lg"
-                      />
+
+                      {/* 🔥 SLIDER IMAGINI */}
+                      <div className="relative w-full h-40 mb-3">
+                        <img
+                          src={
+                            p.images?.[sliderIndex[p.id] || 0] ||
+                            "/placeholder.png"
+                          }
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+
+                        {p.images && p.images.length > 1 && (
+                          <>
+                            <button
+                              onClick={() =>
+                                setSliderIndex((prev: any) => ({
+                                  ...prev,
+                                  [p.id]:
+                                    prev[p.id] === 0
+                                      ? p.images.length - 1
+                                      : (prev[p.id] || 0) - 1,
+                                }))
+                              }
+                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1 rounded"
+                            >
+                              ‹
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                setSliderIndex((prev: any) => ({
+                                  ...prev,
+                                  [p.id]:
+                                    prev[p.id] === p.images.length - 1
+                                      ? 0
+                                      : (prev[p.id] || 0) + 1,
+                                }))
+                              }
+                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1 rounded"
+                            >
+                              ›
+                            </button>
+                          </>
+                        )}
+                      </div>
+
                       <h3 className="text-lg font-bold mt-3">{p.name}</h3>
                       <p className="opacity-70">{p.price} €</p>
 

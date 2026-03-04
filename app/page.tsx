@@ -46,7 +46,7 @@ export default function HomePage() {
       </div>
 
       {/* 🔥 PAGINA */}
-      <div className="min-h-screen bg-[#050712]/70 backdrop-blur-md text-white flex flex-col px-4 md:px-10 lg:px-20">
+      <div className="min-h-screen bg-[#050712]/60 backdrop-blur-md text-white flex flex-col px-4 md:px-10 lg:px-20">
 
         {/* NAVBAR */}
         <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">

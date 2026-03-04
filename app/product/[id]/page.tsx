@@ -80,7 +80,7 @@ export default function ProductPage() {
 
       {/* 🔙 BUTON ÎNAPOI */}
       <button
-        onClick={() => window.history.back()}
+        onClick={() => router.back()}
         className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
       >
         ← Înapoi

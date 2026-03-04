@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CategoryPage({ params }) {
   const { slug } = params;
   const [products, setProducts] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function loadProducts() {
@@ -22,6 +24,15 @@ export default function CategoryPage({ params }) {
 
   return (
     <div className="container mx-auto py-10">
+
+      {/* 🔙 BUTON ÎNAPOI */}
+      <button
+        onClick={() => router.back()}
+        className="mb-6 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-black rounded-lg font-semibold transition"
+      >
+        ← Înapoi
+      </button>
+
       <h1 className="text-3xl font-bold mb-6 capitalize">{slug}</h1>
 
       {products.length === 0 ? (
@@ -43,7 +54,7 @@ export default function CategoryPage({ params }) {
               <p className="text-gray-600 mb-4">{product.price} RON</p>
 
               <Link
-                href={`/product/${product.id}`}   // ← AICI era problema
+                href={`/product/${product.id}`}
                 className="text-center block bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
               >
                 Detalii produs

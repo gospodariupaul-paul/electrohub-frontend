@@ -12,6 +12,9 @@ export default function ProductPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // 🔥 Slider index
+  const [index, setIndex] = useState(0);
+
   useEffect(() => {
     const u = localStorage.getItem("user");
     if (u) setUser(JSON.parse(u));
@@ -62,6 +65,16 @@ export default function ProductPage() {
     );
   }
 
+  const images = product.images || [];
+
+  const prev = () => {
+    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  };
+
+  const next = () => {
+    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  };
+
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
 
@@ -75,11 +88,32 @@ export default function ProductPage() {
 
       <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
 
-      <img
-        src={product.images?.[0] || "/placeholder.png"}
-        alt={product.name}
-        className="w-full max-w-md rounded-lg mb-4"
-      />
+      {/* 🔥 SLIDER IMAGINI */}
+      <div className="relative w-full max-w-md mb-4">
+        <img
+          src={images[index] || "/placeholder.png"}
+          alt={product.name}
+          className="w-full rounded-lg h-80 object-cover"
+        />
+
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-3 py-2 rounded"
+            >
+              ‹
+            </button>
+
+            <button
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-3 py-2 rounded"
+            >
+              ›
+            </button>
+          </>
+        )}
+      </div>
 
       <p className="text-lg font-semibold mb-2">{product.price} RON</p>
       <p className="text-gray-300 mb-6">{product.description}</p>

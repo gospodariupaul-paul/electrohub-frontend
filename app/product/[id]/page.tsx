@@ -88,7 +88,7 @@ export default function ProductPage() {
 
       <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
 
-      {/* 🔥 SLIDER IMAGINI */}
+      {/* 🔥 SLIDER IMAGINI CU PUNCTULEȚE */}
       <div className="relative w-full max-w-md mb-4">
         <img
           src={images[index] || "/placeholder.png"}
@@ -98,6 +98,7 @@ export default function ProductPage() {
 
         {images.length > 1 && (
           <>
+            {/* SĂGEATA STÂNGA */}
             <button
               onClick={prev}
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-3 py-2 rounded"
@@ -105,12 +106,26 @@ export default function ProductPage() {
               ‹
             </button>
 
+            {/* SĂGEATA DREAPTA */}
             <button
               onClick={next}
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-3 py-2 rounded"
             >
               ›
             </button>
+
+            {/* 🔵 PUNCTULEȚE */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIndex(i)}
+                  className={`w-3 h-3 rounded-full ${
+                    index === i ? "bg-white" : "bg-white/40"
+                  }`}
+                ></button>
+              ))}
+            </div>
           </>
         )}
       </div>

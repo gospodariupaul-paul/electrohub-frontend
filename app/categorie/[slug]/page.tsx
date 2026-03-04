@@ -7,6 +7,9 @@ export default function CategoryPage({ params }) {
   const { slug } = params;
   const [products, setProducts] = useState([]);
 
+  // 🔥 Previne încărcarea înainte ca slug să existe
+  if (!slug) return null;
+
   useEffect(() => {
     async function loadProducts() {
       const res = await fetch(

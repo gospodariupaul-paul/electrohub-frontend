@@ -189,7 +189,7 @@ export default function HomePage() {
                 { id: 2, name: "Laptopuri", slug: "laptopuri" },
                 { id: 3, name: "Componente PC", slug: "componente-pc" },
                 { id: 4, name: "Drones", slug: "drones" },
-                { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
+                { id: 5, name: "IoT & Smart Home", slug: "iot-smart-home" },
                 { id: 6, name: "Audio-Video", slug: "audio-video" },
               ].map((cat) => (
                 <Link

@@ -23,9 +23,8 @@ export default function ProductPage() {
   useEffect(() => {
     if (!id) return;
 
-    // 🔥 AICI ERA PROBLEMA — endpoint greșit
     axiosInstance
-      .get(`/products/product/${id}`)
+      .get(`/products/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.error("Error loading product:", err))
       .finally(() => setLoading(false));

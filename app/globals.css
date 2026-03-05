@@ -109,4 +109,21 @@
   display: none !important;
 }
 
+/* 📱 RESPONSIVE — glob mai mic pe telefon și tabletă */
+@media (max-width: 768px) {
+  .earth-video {
+    width: 350px;
+    height: 350px;
+    opacity: 0.45;
+  }
+}
+
+@media (max-width: 480px) {
+  .earth-video {
+    width: 260px;
+    height: 260px;
+    opacity: 0.40;
+  }
+}
+
 /* force build */

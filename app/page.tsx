@@ -46,7 +46,16 @@ export default function HomePage() {
       </div>
 
       {/* 🔥 PAGINA */}
-     <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20">
+      <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative">
+
+        {/* 🌍 GLOB PĂMÂNTESC ANIMAT — CENTRAT PE MIJLOC */}
+        <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-0">
+          <img
+            src="/worldmap.svg"
+            className="w-72 h-72 opacity-30 animate-spin-slow"
+            alt="Earth Globe"
+          />
+        </div>
 
         {/* NAVBAR */}
         <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
@@ -107,7 +116,7 @@ export default function HomePage() {
         </header>
 
         {/* MAIN */}
-        <main className="flex-1">
+        <main className="flex-1 relative z-10">
           <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
 
             {/* HERO SECTION */}

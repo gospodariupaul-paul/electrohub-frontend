@@ -74,42 +74,23 @@
   }
 }
 
-/* 🌍 GLOB HOLOGRAFIC FUTURIST — STIL VIDEO DEPOSITPHOTOS */
-.earth-3d {
+/* 🌍 GLOB VIDEO HOLOGRAFIC FUTURIST — EXACT CA ÎN LINK */
+.earth-video {
   width: 900px;
   height: 900px;
   border-radius: 50%;
+  object-fit: cover;
+  opacity: 0.55;
 
-  /* TEXTURĂ CONTINUĂ */
-  background-image: url('/1.webp'), url('/1.webp');
-  background-size: cover;
-  background-repeat: repeat-x;
-
-  /* ROTIRE SMOOTH */
-  animation: spin-3d 40s linear infinite;
-
-  /* HOLOGRAM GLOW */
+  /* glow hologram */
   filter: drop-shadow(0 0 25px rgba(0,255,255,0.5))
           drop-shadow(0 0 50px rgba(0,255,255,0.3));
 
-  /* EFECT DE PROFUNZIME */
-  transform-style: preserve-3d;
-  opacity: 0.55;
-
-  /* HALO ATMOSFERIC */
+  /* atmosferă */
   box-shadow:
     0 0 60px rgba(0, 200, 255, 0.35),
     0 0 120px rgba(0, 200, 255, 0.25),
     inset 0 0 40px rgba(0, 200, 255, 0.25);
-}
-
-@keyframes spin-3d {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -2000px 0;
-  }
 }
 
 /* force build */

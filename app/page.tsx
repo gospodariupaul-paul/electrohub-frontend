@@ -48,9 +48,16 @@ export default function HomePage() {
       {/* 🔥 PAGINA */}
       <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
-        {/* 🌍 GLOB 3D REAL CU TEXTURĂ CONTINUĂ (NU DISPARE NICIODATĂ) */}
+        {/* 🌍 GLOB VIDEO FUTURIST EXACT CA ÎN LINK */}
         <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
-          <div className="earth-3d"></div>
+          <video
+            src="/earth.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="earth-video"
+          />
         </div>
 
         {/* NAVBAR */}

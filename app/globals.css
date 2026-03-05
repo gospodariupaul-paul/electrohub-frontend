@@ -91,6 +91,22 @@
     0 0 60px rgba(0, 200, 255, 0.35),
     0 0 120px rgba(0, 200, 255, 0.25),
     inset 0 0 40px rgba(0, 200, 255, 0.25);
+
+  /* elimină interacțiunea pe mobil */
+  pointer-events: none;
+}
+
+/* 🔥 Elimină complet controalele video pe mobil (iPhone + Android) */
+.earth-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.earth-video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+.earth-video::-webkit-media-controls-panel {
+  display: none !important;
 }
 
 /* force build */

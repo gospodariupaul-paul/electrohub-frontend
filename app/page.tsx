@@ -48,13 +48,9 @@ export default function HomePage() {
       {/* 🔥 PAGINA */}
       <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
-        {/* 🌍 GLOB REAL 3D ROTUND, 900px, ROTIRE AXIALĂ */}
+        {/* 🌍 GLOB 3D REAL CU TEXTURĂ CONTINUĂ (NU DISPARE NICIODATĂ) */}
         <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
-          <img
-            src="/1.webp"
-            className="w-[900px] h-[900px] opacity-40 rounded-full animate-spin-earth"
-            alt="Earth Globe"
-          />
+          <div className="earth-3d"></div>
         </div>
 
         {/* NAVBAR */}

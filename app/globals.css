@@ -82,20 +82,27 @@
   }
 }
 
-/* 🌍 GLOB PĂMÂNTESC ANIMAT — ROTIȚIE REALĂ 3D ÎN JURUL AXEI */
-@keyframes spin-earth {
-  from {
-    transform: rotateY(0deg);
-  }
-  to {
-    transform: rotateY(360deg);
-  }
+/* 🌍 GLOB 3D REAL CU TEXTURĂ CONTINUĂ — NU DISARE NICIODATĂ */
+.earth-3d {
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  background-image: url('/1.webp'), url('/1.webp');
+  background-size: cover;
+  background-repeat: repeat-x;
+  animation: spin-3d 40s linear infinite;
+  transform-style: preserve-3d;
+  opacity: 0.45;
+  filter: drop-shadow(0 0 25px rgba(0,255,255,0.3));
 }
 
-.animate-spin-earth {
-  animation: spin-earth 40s linear infinite;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
+@keyframes spin-3d {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -2000px 0;
+  }
 }
 
 /* force build */

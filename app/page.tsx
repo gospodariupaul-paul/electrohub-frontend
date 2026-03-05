@@ -48,12 +48,12 @@ export default function HomePage() {
       {/* 🔥 PAGINA */}
       <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
-        {/* 🌍 GLOB REALIST FULL-PAGE FIXAT PE CENTRU (800px) */}
+        {/* 🌍 GLOB REAL 3D FULL-PAGE FIXAT PE CENTRU (800px) */}
         <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
           <img
-            src="/realglobe.svg"
+            src="/1.webp"
             className="w-[800px] h-[800px] opacity-40 animate-spin-slow"
-            alt="Realistic Earth Globe"
+            alt="Earth Globe"
           />
         </div>
 

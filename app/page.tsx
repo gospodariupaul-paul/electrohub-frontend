@@ -29,7 +29,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 🔥 FUNDAL ANIMAT */}
+      {/* 🔥 FUNDAL ANIMAT ICONIȚE */}
       <div className="electro-bg">
         {Array.from({ length: 20 }).map((_, i) => (
           <img
@@ -46,13 +46,13 @@ export default function HomePage() {
       </div>
 
       {/* 🔥 PAGINA */}
-      <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative">
+      <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
-        {/* 🌍 GLOB PĂMÂNTESC ANIMAT — CENTRAT PE MIJLOC */}
-        <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-0">
+        {/* 🌍 GLOB FULL-PAGE FIXAT PE CENTRU */}
+        <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
           <img
             src="/worldmap.svg"
-            className="w-72 h-72 opacity-30 animate-spin-slow"
+            className="w-[500px] h-[500px] opacity-40 animate-spin-slow"
             alt="Earth Globe"
           />
         </div>

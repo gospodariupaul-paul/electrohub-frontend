@@ -2,23 +2,19 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "https://electrohub-backend-1-10qa.onrender.com",
-  withCredentials: true, // 🔥 OBLIGATORIU
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  config.withCredentials = true; // 🔥 OBLIGATORIU
+  config.withCredentials = true;
 
-  const token = localStorage.getItem("token");
-
+  // 🔥 scoate complet tokenul din localStorage
+  // backend-ul tău folosește cookie-uri, nu Authorization header
   if (!config.headers) {
     config.headers = {};
   }
 
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete config.headers["Authorization"];
-  }
+  delete config.headers["Authorization"];
 
   return config;
 });

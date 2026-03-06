@@ -8,8 +8,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
   config.withCredentials = true;
 
-  // 🔥 scoate complet tokenul din localStorage
-  // backend-ul tău folosește cookie-uri, nu Authorization header
+  // backend-ul tău folosește cookie-uri, nu token în localStorage
   if (!config.headers) {
     config.headers = {};
   }

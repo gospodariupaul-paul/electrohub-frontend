@@ -2,12 +2,14 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "https://electrohub-backend-1-10qa.onrender.com",
+  withCredentials: true, // 🔥 OBLIGATORIU
 });
 
 axiosInstance.interceptors.request.use((config) => {
+  config.withCredentials = true; // 🔥 OBLIGATORIU
+
   const token = localStorage.getItem("token");
 
-  // 🔥 FIX CRITIC: dacă headers nu există, le creăm
   if (!config.headers) {
     config.headers = {};
   }

@@ -6,6 +6,7 @@ const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [userId, setUserId] = useState(null);
 
   // 🔥 Preluăm userId din localStorage
@@ -17,7 +18,7 @@ export function NotificationProvider({ children }) {
     }
   }, []);
 
-  // 🔥 Funcție care încarcă notificările din backend
+  // 🔥 Încarcă notificările
   const loadNotifications = async (uid) => {
     try {
       const res = await fetch(
@@ -31,16 +32,9 @@ export function NotificationProvider({ children }) {
 
       const data = await res.json();
 
-      if (!Array.isArray(data)) {
-        setNotifications([]);
-        return;
-      }
-
-      // 🔥 AICI ESTE MODIFICAREA IMPORTANTĂ
-      // Ne asigurăm că fiecare notificare are "images" ca array
       const normalized = data.map((n) => ({
         ...n,
-        images: n.images || (n.image ? [n.image] : []), // ← AICI E MAGIA
+        images: n.images || (n.image ? [n.image] : []),
       }));
 
       setNotifications(normalized);
@@ -50,14 +44,54 @@ export function NotificationProvider({ children }) {
     }
   };
 
-  // 🔥 Când avem userId → încărcăm notificările
-  useEffect(() => {
-    if (userId) loadNotifications(userId);
-  }, [userId]);
+  // 🔥 Încarcă setările utilizatorului
+  const loadSettings = async () => {
+    try {
+      const res = await fetch(
+        "https://electrohub-backend-1-10qa.onrender.com/notifications/settings/me",
+        { credentials: "include" }
+      );
 
-  const refreshNotifications = () => {
-    if (userId) loadNotifications(userId);
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setSettings(data);
+    } catch (err) {
+      console.error("Eroare setări:", err);
+    }
   };
+
+  // 🔥 Salvează setările
+  const saveSettings = async (newSettings) => {
+    try {
+      const res = await fetch(
+        "https://electrohub-backend-1-10qa.onrender.com/notifications/settings",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(newSettings),
+        }
+      );
+
+      if (!res.ok) throw new Error("Eroare la salvare");
+
+      const data = await res.json();
+      setSettings(data);
+      return true;
+    } catch (err) {
+      console.error("Eroare salvare setări:", err);
+      return false;
+    }
+  };
+
+  // 🔥 Când avem userId → încărcăm notificările și setările
+  useEffect(() => {
+    if (userId) {
+      loadNotifications(userId);
+      loadSettings();
+    }
+  }, [userId]);
 
   const markAsRead = async (id) => {
     await fetch(
@@ -89,11 +123,12 @@ export function NotificationProvider({ children }) {
 
   const value = {
     notifications,
+    settings,
+    saveSettings,
     getUnreadCount,
     getUserNotifications,
     markAsRead,
     deleteNotification,
-    refreshNotifications,
 
     emptyState: {
       image: "/images/bell-icon-hologram.png",

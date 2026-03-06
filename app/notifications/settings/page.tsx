@@ -15,13 +15,11 @@ export default function NotificationSettingsPage() {
 
   // 🔥 Încarcă setările utilizatorului
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
     axios
-      .get("https://electrohub-backend-1-10qa.onrender.com/notifications/settings", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(
+        "https://electrohub-backend-1-10qa.onrender.com/notifications/settings/me",
+        { withCredentials: true }
+      )
       .then((res) => {
         setSettings(res.data);
         setLoading(false);
@@ -31,20 +29,17 @@ export default function NotificationSettingsPage() {
 
   // 🔥 Salvează setările
   const saveSettings = () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
     axios
       .post(
         "https://electrohub-backend-1-10qa.onrender.com/notifications/settings",
         settings,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials: true }
       )
       .then(() => alert("Setările au fost salvate"))
       .catch(() => alert("Eroare la salvare"));
   };
 
-  const toggle = (key: string) => {
+  const toggle = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
@@ -68,9 +63,7 @@ export default function NotificationSettingsPage() {
           Controlează ce notificări dorești să primești în contul tău ElectroHub.
         </p>
 
-        {/* LISTA DE SETĂRI */}
         <div className="space-y-6">
-
           {[
             { key: "email_notifications", label: "Notificări prin email" },
             { key: "push_notifications", label: "Notificări push" },
@@ -84,13 +77,10 @@ export default function NotificationSettingsPage() {
             >
               <span className="text-sm">{item.label}</span>
 
-              {/* TOGGLE SWITCH */}
               <button
                 onClick={() => toggle(item.key)}
                 className={`w-14 h-7 rounded-full transition relative ${
-                  settings[item.key]
-                    ? "bg-cyan-500"
-                    : "bg-white/20"
+                  settings[item.key] ? "bg-cyan-500" : "bg-white/20"
                 }`}
               >
                 <span
@@ -101,10 +91,8 @@ export default function NotificationSettingsPage() {
               </button>
             </div>
           ))}
-
         </div>
 
-        {/* SAVE BUTTON */}
         <button
           onClick={saveSettings}
           className="mt-8 w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition"

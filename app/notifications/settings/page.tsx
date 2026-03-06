@@ -29,14 +29,18 @@ export default function NotificationSettingsPage() {
 
   // 🔥 Salvează setările
   const saveSettings = () => {
-    axios
-      .post(
-        "https://electrohub-backend-1-10qa.onrender.com/notifications/settings",
-        settings,
-        { withCredentials: true }
-      )
-      .then(() => alert("Setările au fost salvate"))
-      .catch(() => alert("Eroare la salvare"));
+    axios.post(
+      "https://electrohub-backend-1-10qa.onrender.com/notifications/settings",
+      settings,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    )
+    .then(() => alert("Setările au fost salvate"))
+    .catch(() => alert("Eroare la salvare"));
   };
 
   const toggle = (key) => {

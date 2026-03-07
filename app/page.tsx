@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
+import { FiMessageCircle } from "react-icons/fi"; // 🔥 iconiță chat
 
 // 🔥 FIX: dezactivăm prefetch pentru a evita 401 după login
 Link.defaultProps = { prefetch: false };
@@ -12,6 +13,26 @@ export default function HomePage() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
+
+  // 🔥 unread messages
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // 🔥 încarcă numărul de mesaje necitite
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    fetch("https://electrohub-backend-1-10qa.onrender.com/conversations/unread", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.count !== undefined) {
+          setUnreadCount(data.count);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -89,7 +110,21 @@ export default function HomePage() {
             </Link>
 
             {/* AUTH BUTTONS */}
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-4 text-sm">
+
+              {/* 🔥 ICONIȚĂ CHAT CU NUMĂR NECITITE */}
+              {isLogged && (
+                <Link href="/chat" className="relative">
+                  <FiMessageCircle size={24} className="text-cyan-300" />
+
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+
               {!isLogged && (
                 <>
                   <Link

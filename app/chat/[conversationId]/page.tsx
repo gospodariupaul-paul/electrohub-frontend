@@ -18,15 +18,11 @@ export default function ChatPage() {
   const [showEmoji, setShowEmoji] = useState(false);
   const [contextMenu, setContextMenu] = useState<any>(null);
 
-  // 🔥 MENIU ⋮ HEADER
   const [headerMenu, setHeaderMenu] = useState(false);
-
-  // 🔥 unread messages
   const [unreadCount, setUnreadCount] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔥 1. Luăm userul logat
   useEffect(() => {
     const u = localStorage.getItem("user");
     if (u) setUser(JSON.parse(u));
@@ -35,9 +31,8 @@ export default function ChatPage() {
   useEffect(() => {
     if (user === null) return;
     if (!user?.id) router.push("/login");
-  }, [user, router]);
+  }, [user]);
 
-  // 🔥 2. Încărcăm conversația + mesajele + MARCĂM CA CITITE
   useEffect(() => {
     if (!conversationId || !user?.id) return;
 
@@ -54,7 +49,6 @@ export default function ChatPage() {
       .catch((err) => console.error("Error loading chat:", err));
   }, [conversationId, user]);
 
-  // 🔥 3. Pusher pentru mesaje noi
   useEffect(() => {
     if (!conversationId) return;
 
@@ -74,12 +68,10 @@ export default function ChatPage() {
     };
   }, [conversationId]);
 
-  // 🔥 4. Scroll automat
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 🔥 5. Trimite mesaj
   const sendMessage = async () => {
     if (!text.trim() || !user) return;
 
@@ -97,7 +89,6 @@ export default function ChatPage() {
     }
   };
 
-  // 🔥 6. Click dreapta pe mesaj
   const handleRightClick = (e: any, msg: any) => {
     e.preventDefault();
     setContextMenu({
@@ -107,10 +98,10 @@ export default function ChatPage() {
     });
   };
 
-  // 🔥 7. Șterge pentru tine (FIX: DELETE)
+  // 🔥 FIX: stopPropagation + închidere meniu
   const deleteForMe = async (id: number) => {
     try {
-      await axiosInstance.delete(`/messages/delete-for-me/${id}`);
+      await axiosInstance.post(`/messages/delete-for-me/${id}`);
       setMessages((prev) => prev.filter((m) => m.id !== id));
       setContextMenu(null);
     } catch (err) {
@@ -118,10 +109,9 @@ export default function ChatPage() {
     }
   };
 
-  // 🔥 8. Șterge pentru toți (FIX: DELETE)
   const deleteForAll = async (id: number) => {
     try {
-      await axiosInstance.delete(`/messages/delete-for-all/${id}`);
+      await axiosInstance.post(`/messages/delete-for-all/${id}`);
       setMessages((prev) =>
         prev.map((m) =>
           m.id === id
@@ -135,7 +125,6 @@ export default function ChatPage() {
     }
   };
 
-  // 🔥 9. Ștergere conversație din ⋮
   const deleteConversation = async () => {
     try {
       await axiosInstance.delete(`/conversations/${conversationId}`);
@@ -145,7 +134,6 @@ export default function ChatPage() {
     }
   };
 
-  // 🔥 10. Încărcăm numărul de mesaje necitite
   useEffect(() => {
     fetch("https://electrohub-backend-1-10qa.onrender.com/conversations/unread", {
       credentials: "include",
@@ -159,7 +147,6 @@ export default function ChatPage() {
       .catch(() => {});
   }, [messages]);
 
-  // 🔥 Determinăm cu cine vorbește userul
   const otherUser =
     conversation?.buyerId === user?.id
       ? conversation?.seller
@@ -168,14 +155,18 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
 
-      {/* 🔥 MENIU CLICK DREAPTA */}
+      {/* 🔥 MENIU CLICK DREAPTA — FIX: stopPropagation */}
       {contextMenu && (
         <div
           className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50"
           style={{ top: contextMenu.y, left: contextMenu.x }}
+          onClick={(e) => e.stopPropagation()} // 🔥 FIX
         >
           <button
-            onClick={() => deleteForMe(contextMenu.msg.id)}
+            onClick={(e) => {
+              e.stopPropagation(); // 🔥 FIX
+              deleteForMe(contextMenu.msg.id);
+            }}
             className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
           >
             Șterge pentru tine
@@ -183,7 +174,10 @@ export default function ChatPage() {
 
           {contextMenu.msg.senderId === user?.id && (
             <button
-              onClick={() => deleteForAll(contextMenu.msg.id)}
+              onClick={(e) => {
+                e.stopPropagation(); // 🔥 FIX
+                deleteForAll(contextMenu.msg.id);
+              }}
               className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
             >
               Șterge pentru toți
@@ -192,7 +186,7 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* 🔥 HEADER CU ⋮ + UNREAD */}
+      {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
 
         <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
@@ -208,7 +202,6 @@ export default function ChatPage() {
           </p>
         </div>
 
-        {/* 🔥 ICONIȚĂ CHAT CU NUMĂR NECITITE */}
         <div className="relative mr-3">
           <FiMessageCircle size={22} className="text-cyan-300" />
           {unreadCount > 0 && (
@@ -218,7 +211,6 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* ⋮ BUTON */}
         <button
           onClick={() => setHeaderMenu((v) => !v)}
           className="text-2xl px-2"
@@ -226,7 +218,6 @@ export default function ChatPage() {
           ⋮
         </button>
 
-        {/* MENIU ⋮ */}
         {headerMenu && (
           <div className="absolute right-4 top-14 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-40">
             <button
@@ -239,7 +230,7 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* 🔥 Mesaje */}
+      {/* MESAJ */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
@@ -269,7 +260,7 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* 🔥 Input */}
+      {/* INPUT */}
       <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
         <button
           onClick={() => setShowEmoji((v) => !v)}

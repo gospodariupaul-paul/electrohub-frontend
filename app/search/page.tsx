@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -14,10 +15,16 @@ export default function SearchPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const res = await axios.get(`/api/products/search?q=${q}`);
+
+      // FOARTE IMPORTANT: aici pui backend-ul tău de pe Render
+      const res = await axios.get(
+        `https://BACKEND-TAU-RENDER.com/api/products/search?q=${q}`
+      );
+
       setResults(res.data);
       setLoading(false);
     };
+
     load();
   }, [q]);
 

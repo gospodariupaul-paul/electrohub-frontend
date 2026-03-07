@@ -10,8 +10,8 @@ import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 import { useNotifications } from "./context/NotificationContext";
 
-// 🔥 IMPORT COOKIE CONSENT
-import CookieConsent from "./components/CookieConsent";
+// 🔥 IMPORT CORECT (components este în rădăcină)
+import CookieConsent from "../components/CookieConsent";
 
 export default function RootLayout({ children }) {
   return (

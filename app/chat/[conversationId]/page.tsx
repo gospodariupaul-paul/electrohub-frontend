@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
-import { FiMessageCircle } from "react-icons/fi"; // 🔥 iconiță chat
+import { FiMessageCircle } from "react-icons/fi";
 
 export default function ChatPage() {
   const { conversationId } = useParams();
@@ -35,7 +35,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (user === null) return;
     if (!user?.id) router.push("/login");
-  }, [user]);
+  }, [user, router]);
 
   // 🔥 2. Încărcăm conversația + mesajele + MARCĂM CA CITITE
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function ChatPage() {
       })
       .then((res) => {
         setMessages(res.data);
-
         axiosInstance.post(`/conversations/mark-read/${conversationId}`);
       })
       .catch((err) => console.error("Error loading chat:", err));
@@ -108,24 +107,32 @@ export default function ChatPage() {
     });
   };
 
-  // 🔥 7. Șterge pentru tine
+  // 🔥 7. Șterge pentru tine (FIX: DELETE)
   const deleteForMe = async (id: number) => {
-    await axiosInstance.post(`/messages/delete-for-me/${id}`);
-    setMessages((prev) => prev.filter((m) => m.id !== id));
-    setContextMenu(null);
+    try {
+      await axiosInstance.delete(`/messages/delete-for-me/${id}`);
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+      setContextMenu(null);
+    } catch (err) {
+      console.error("Eroare la ștergere pentru tine:", err);
+    }
   };
 
-  // 🔥 8. Șterge pentru toți
+  // 🔥 8. Șterge pentru toți (FIX: DELETE)
   const deleteForAll = async (id: number) => {
-    await axiosInstance.post(`/messages/delete-for-all/${id}`);
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === id
-          ? { ...m, text: "Acest mesaj a fost șters", deletedForAll: true }
-          : m
-      )
-    );
-    setContextMenu(null);
+    try {
+      await axiosInstance.delete(`/messages/delete-for-all/${id}`);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === id
+            ? { ...m, text: "Acest mesaj a fost șters", deletedForAll: true }
+            : m
+        )
+      );
+      setContextMenu(null);
+    } catch (err) {
+      console.error("Eroare la ștergere pentru toți:", err);
+    }
   };
 
   // 🔥 9. Ștergere conversație din ⋮
@@ -150,7 +157,7 @@ export default function ChatPage() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [messages]);
 
   // 🔥 Determinăm cu cine vorbește userul
   const otherUser =

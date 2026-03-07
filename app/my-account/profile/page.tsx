@@ -23,20 +23,16 @@ export default function UserProfilePage() {
   // 🔥 Notificări necitite
   const notificationCount = user ? getUnreadCount(user.id) : 0;
 
-  // 🔥 Fetch mesaje necitite
+  // 🔥 Fetch mesaje necitite — FIXAT
   useEffect(() => {
     if (!user || !user.id) return;
 
     const fetchUnread = async () => {
       try {
-        const token = localStorage.getItem("token");
-
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/conversations/user/${user.id}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            credentials: "include", // 🔥 FIX AICI
           }
         );
 
@@ -260,7 +256,6 @@ export default function UserProfilePage() {
                       key={p.id}
                       className="bg-[#070a20] border border-white/10 rounded-xl p-4"
                     >
-
                       {/* 🔥 SLIDER IMAGINI */}
                       <div className="relative w-full h-40 mb-3">
                         <img

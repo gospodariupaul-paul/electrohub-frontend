@@ -16,9 +16,8 @@ export default function SearchPage() {
     const load = async () => {
       setLoading(true);
 
-      // IMPORTANT: pune URL-ul backend-ului tău Render aici
       const res = await axios.get(
-        `https://BACKEND-TAU-RENDER.com/api/products/search?q=${q}`
+        `https://electrohub-backend-1-10qa.onrender.com/api/products/search?q=${q}`
       );
 
       setResults(res.data);

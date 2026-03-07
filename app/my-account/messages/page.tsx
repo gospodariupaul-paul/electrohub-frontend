@@ -100,7 +100,7 @@ export default function MessagesPage() {
           Mesajele mele
         </h1>
 
-        {/* ⋮ BUTON */}
+        {/* ⋮ BUTON HEADER */}
         <button
           onClick={() => setHeaderMenu((v) => !v)}
           className="text-3xl px-2"
@@ -108,7 +108,7 @@ export default function MessagesPage() {
           ⋮
         </button>
 
-        {/* MENIU ⋮ */}
+        {/* MENIU HEADER */}
         {headerMenu && (
           <div className="absolute right-6 top-20 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-52">
             <button
@@ -134,10 +134,12 @@ export default function MessagesPage() {
                 href={`/chat/${conv.id}`}
                 className="flex items-center gap-4 p-4 rounded-xl bg-[#111b21] hover:bg-[#202c33] transition border border-transparent hover:border-[#00a884]"
               >
+                {/* Avatar */}
                 <div className="w-12 h-12 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg shadow-md">
                   {conv.otherUserName?.charAt(0)?.toUpperCase() || "?"}
                 </div>
 
+                {/* Text */}
                 <div className="flex-1">
                   <p className="text-white font-semibold text-lg">
                     {conv.otherUserName || "Utilizator necunoscut"}
@@ -160,12 +162,14 @@ export default function MessagesPage() {
                   )}
                 </div>
 
+                {/* Badge mesaje necitite */}
                 {conv.unreadCount > 0 && (
                   <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-2">
                     {conv.unreadCount}
                   </span>
                 )}
 
+                {/* Ora */}
                 <span className="text-xs text-gray-500 whitespace-nowrap">
                   {new Date(conv.updatedAt).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -173,20 +177,20 @@ export default function MessagesPage() {
                   })}
                 </span>
 
-                {conv.unreadCount > 0 && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setOpenMenuId(openMenuId === conv.id ? null : conv.id);
-                    }}
-                    className="text-xl px-2"
-                  >
-                    ⋮
-                  </button>
-                )}
+                {/* 🔥 BUTON ⋮ PE FIECARE CONVERSAȚIE */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenMenuId(openMenuId === conv.id ? null : conv.id);
+                  }}
+                  className="text-xl px-2"
+                >
+                  ⋮
+                </button>
               </Link>
 
-              {openMenuId === conv.id && conv.unreadCount > 0 && (
+              {/* 🔥 MENIU INDIVIDUAL PE CONVERSAȚIE */}
+              {openMenuId === conv.id && (
                 <div className="absolute right-4 top-16 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-48">
                   <button
                     onClick={() => markAsRead(conv.id)}

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
 import { FiMessageCircle } from "react-icons/fi";
+import { useRouter } from "next/navigation"; // 🔥 ADAUGAT
 
 Link.defaultProps = { prefetch: false };
 
@@ -12,8 +13,9 @@ export default function HomePage() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
-
   const [unreadCount, setUnreadCount] = useState(0);
+
+  const router = useRouter(); // 🔥 ADAUGAT
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -45,7 +47,9 @@ export default function HomePage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Căutare:", search);
+    if (!search.trim()) return;
+
+    router.push(`/search?q=${encodeURIComponent(search)}`); // 🔥 ADAUGAT
   };
 
   return (
@@ -170,6 +174,12 @@ export default function HomePage() {
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleSearch(e as any);
+                        }
+                      }}
                       placeholder='Caută: "laptop i7 32gb 1tb", "dronă 4k sub 500eur"...'
                       className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-cyan-400 placeholder:text-white/40"
                     />

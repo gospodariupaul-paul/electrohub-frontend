@@ -121,6 +121,11 @@ export function NotificationProvider({ children }) {
     return notifications;
   };
 
+  // 🔥 FUNCȚIA CARE LIPSEA — cauza erorii
+  const refreshNotifications = () => {
+    if (userId) loadNotifications(userId);
+  };
+
   const value = {
     notifications,
     settings,
@@ -129,6 +134,7 @@ export function NotificationProvider({ children }) {
     getUserNotifications,
     markAsRead,
     deleteNotification,
+    refreshNotifications, // 🔥 ADĂUGAT
 
     emptyState: {
       image: "/images/bell-icon-hologram.png",

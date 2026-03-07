@@ -18,7 +18,8 @@ export default function SellerChatButton({ userId }: { userId?: number }) {
       );
 
       if (!res.data || res.data.length === 0) {
-        alert("Nu există conversații încă.");
+        // 🔥 SINGURA MODIFICARE: în loc de alert → redirect corect
+        router.push("/my-account/messages");
         return;
       }
 

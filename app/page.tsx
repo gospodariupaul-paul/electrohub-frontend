@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
 
+// 🔥 FIX: dezactivăm prefetch pentru a evita 401 după login
+Link.defaultProps = { prefetch: false };
+
 export default function HomePage() {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
@@ -45,7 +48,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* 🌍 GLOB VIDEO FUTURIST — PORNEȘTE AUTOMAT ȘI PE TELEFON */}
+      {/* 🌍 GLOB VIDEO FUTURIST */}
       <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
         <video
           src="/earth.mp4"
@@ -108,7 +111,6 @@ export default function HomePage() {
               {isLogged && (
                 <Link
                   href="/logout"
-                  prefetch={false}
                   className="px-4 py-2 rounded-lg border border-red-500/40 text-red-300 hover:bg-red-500/10 text-xs transition"
                 >
                   Logout

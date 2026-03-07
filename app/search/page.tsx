@@ -18,7 +18,7 @@ function SearchContent() {
       setLoading(true);
 
       const res = await axios.get(
-        `https://electrohub-backend-1-10qa.onrender.com/products/search?q=${q}` // 🔥 FIX AICI
+        `https://electrohub-backend-1-10qa.onrender.com/products/search?q=${q}`
       );
 
       setResults(res.data);

@@ -175,15 +175,18 @@ export default function AddProductPage() {
         <label className="block mb-4">
           <span className="text-sm opacity-80">Categoria*</span>
           <select
-            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
+            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none text-white"
             value={category}
-            onChange={(e) => setCategory(e.target.value)} // 🔥 MODIFICAT
+            onChange={(e) => setCategory(e.target.value)}
             required
           >
             <option value="Telefoane">Telefoane</option>
             <option value="Laptopuri">Laptopuri</option>
             <option value="Componente PC">Componente PC</option>
             <option value="Audio-Video">Audio-Video</option>
+
+            {/* 🔥 CATEGORIA NOUĂ */}
+            <option value="Altele">Altele</option>
           </select>
         </label>
 

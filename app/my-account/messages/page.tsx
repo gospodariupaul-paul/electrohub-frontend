@@ -9,15 +9,11 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 MENIU ⋮ HEADER
   const [headerMenu, setHeaderMenu] = useState(false);
-
-  // 🔥 MENIU ⋮ PE FIECARE CONVERSAȚIE
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
   const router = useRouter();
 
-  // 🔥 Funcția de încărcare a conversațiilor
   const load = async () => {
     try {
       const stored = localStorage.getItem("user");
@@ -34,7 +30,6 @@ export default function MessagesPage() {
 
       const res = await axiosInstance.get(`/conversations/user/${user.id}`);
 
-      // 🔥 IMPORTANT: setăm markedRead = false implicit
       const cleaned = res.data.map((c: any) => ({
         ...c,
         markedRead: false
@@ -48,11 +43,9 @@ export default function MessagesPage() {
     }
   };
 
-  // 🔥 Marchează toate conversațiile ca citite + redirect la profil
   const markAllAsRead = async () => {
     try {
       await axiosInstance.post("/messages/mark-all-read");
-
       await load();
       setHeaderMenu(false);
       router.push("/my-account/profile");
@@ -61,12 +54,10 @@ export default function MessagesPage() {
     }
   };
 
-  // 🔥 Marchează o singură conversație ca citită
   const markAsRead = async (id: number) => {
     try {
       await axiosInstance.post(`/messages/mark-read/${id}`);
 
-      // 🔥 Actualizăm UI-ul local
       setConversations((prev) =>
         prev.map((c) =>
           c.id === id
@@ -81,12 +72,10 @@ export default function MessagesPage() {
     }
   };
 
-  // 🔥 Se încarcă o singură dată la intrarea pe pagină
   useEffect(() => {
     load();
   }, []);
 
-  // 🔥 Reîncarcă automat când revii pe pagină
   useEffect(() => {
     const handleFocus = () => load();
     window.addEventListener("focus", handleFocus);
@@ -96,9 +85,20 @@ export default function MessagesPage() {
   return (
     <div className="p-6 text-white space-y-6 bg-[#0b141a] min-h-screen relative">
 
-      {/* 🔥 HEADER CU ⋮ */}
+      {/* 🔥 HEADER CU BUTON ÎNAPOI + TITLU + ⋮ */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Mesajele mele</h1>
+
+        {/* 🔙 BUTON ÎNAPOI */}
+        <button
+          onClick={() => router.push("/my-account/profile")}
+          className="text-white text-xl px-3 py-1 hover:text-[#00a884] transition"
+        >
+          ←
+        </button>
+
+        <h1 className="text-3xl font-bold flex-1 text-center -ml-6">
+          Mesajele mele
+        </h1>
 
         {/* ⋮ BUTON */}
         <button
@@ -128,20 +128,16 @@ export default function MessagesPage() {
       ) : (
         <div className="space-y-4">
           {conversations.map((conv) => (
-            <div
-              key={conv.id}
-              className="relative"
-            >
+            <div key={conv.id} className="relative">
+
               <Link
                 href={`/chat/${conv.id}`}
                 className="flex items-center gap-4 p-4 rounded-xl bg-[#111b21] hover:bg-[#202c33] transition border border-transparent hover:border-[#00a884]"
               >
-                {/* Avatar */}
                 <div className="w-12 h-12 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg shadow-md">
                   {conv.otherUserName?.charAt(0)?.toUpperCase() || "?"}
                 </div>
 
-                {/* Text */}
                 <div className="flex-1">
                   <p className="text-white font-semibold text-lg">
                     {conv.otherUserName || "Utilizator necunoscut"}
@@ -151,14 +147,12 @@ export default function MessagesPage() {
                     {conv.productName || "Produs necunoscut"}
                   </p>
 
-                  {/* Ultimul mesaj */}
                   <p className="mt-1 text-sm text-gray-500 line-clamp-1">
                     {conv.lastMessageDeletedForAll
                       ? "Acest mesaj a fost șters"
                       : conv.lastMessage || "—"}
                   </p>
 
-                  {/* 🔥 Afișare „Marcat ca citit” DOAR după click */}
                   {conv.markedRead === true && (
                     <p className="text-xs text-green-400 mt-1">
                       ✔️ Marcat ca citit
@@ -166,14 +160,12 @@ export default function MessagesPage() {
                   )}
                 </div>
 
-                {/* Badge mesaje necitite */}
                 {conv.unreadCount > 0 && (
                   <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-2">
                     {conv.unreadCount}
                   </span>
                 )}
 
-                {/* Ora */}
                 <span className="text-xs text-gray-500 whitespace-nowrap">
                   {new Date(conv.updatedAt).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -181,20 +173,20 @@ export default function MessagesPage() {
                   })}
                 </span>
 
-                {/* 🔥 BUTON ⋮ PE FIECARE CONVERSAȚIE */}
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenMenuId(openMenuId === conv.id ? null : conv.id);
-                  }}
-                  className="text-xl px-2"
-                >
-                  ⋮
-                </button>
+                {conv.unreadCount > 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenMenuId(openMenuId === conv.id ? null : conv.id);
+                    }}
+                    className="text-xl px-2"
+                  >
+                    ⋮
+                  </button>
+                )}
               </Link>
 
-              {/* 🔥 MENIU INDIVIDUAL */}
-              {openMenuId === conv.id && (
+              {openMenuId === conv.id && conv.unreadCount > 0 && (
                 <div className="absolute right-4 top-16 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-48">
                   <button
                     onClick={() => markAsRead(conv.id)}

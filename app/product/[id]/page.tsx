@@ -12,7 +12,6 @@ export default function ProductPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Slider index
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function ProductPage() {
     if (!id) return;
 
     axiosInstance
-      .get(`/products/${id}`)
+      .get(`/products/${id}`, { withCredentials: true })
       .then((res) => setProduct(res.data))
       .catch((err) => console.error("Error loading product:", err))
       .finally(() => setLoading(false));
@@ -37,15 +36,17 @@ export default function ProductPage() {
     }
 
     try {
-      const res = await axiosInstance.post("/conversations", {
-        productId: Number(id),
-      });
+      const res = await axiosInstance.post(
+        "/conversations",
+        { productId: Number(id) },
+        { withCredentials: true }
+      );
 
       const conversationId = res.data.id;
-
       router.push(`/chat/${conversationId}`);
     } catch (err) {
       console.error("Error creating conversation:", err);
+      alert("Eroare: nu s-a putut crea conversația.");
     }
   };
 
@@ -67,18 +68,11 @@ export default function ProductPage() {
 
   const images = product.images || [];
 
-  const prev = () => {
-    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  };
-
-  const next = () => {
-    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
-  };
+  const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
-
-      {/* 🔙 BUTON ÎNAPOI */}
       <button
         onClick={() => router.back()}
         className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
@@ -88,7 +82,6 @@ export default function ProductPage() {
 
       <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
 
-      {/* 🔥 SLIDER IMAGINI CU PUNCTULEȚE */}
       <div className="relative w-full max-w-md mb-4">
         <img
           src={images[index] || "/placeholder.png"}
@@ -98,7 +91,6 @@ export default function ProductPage() {
 
         {images.length > 1 && (
           <>
-            {/* SĂGEATA STÂNGA */}
             <button
               onClick={prev}
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-3 py-2 rounded"
@@ -106,7 +98,6 @@ export default function ProductPage() {
               ‹
             </button>
 
-            {/* SĂGEATA DREAPTA */}
             <button
               onClick={next}
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-3 py-2 rounded"
@@ -114,7 +105,6 @@ export default function ProductPage() {
               ›
             </button>
 
-            {/* 🔵 PUNCTULEȚE */}
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
               {images.map((_, i) => (
                 <button

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
-import { FiMessageCircle } from "react-icons/fi"; // 🔥 iconiță chat
+import { FiMessageCircle } from "react-icons/fi";
 
-// 🔥 FIX: dezactivăm prefetch pentru a evita 401 după login
 Link.defaultProps = { prefetch: false };
 
 export default function HomePage() {
@@ -14,10 +13,8 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
 
-  // 🔥 unread messages
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // 🔥 încarcă numărul de mesaje necitite
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -53,7 +50,6 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 🔥 FUNDAL ANIMAT ICONIȚE */}
       <div className="electro-bg">
         {Array.from({ length: 20 }).map((_, i) => (
           <img
@@ -69,7 +65,6 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* 🌍 GLOB VIDEO FUTURIST */}
       <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
         <video
           src="/earth.mp4"
@@ -82,10 +77,8 @@ export default function HomePage() {
         />
       </div>
 
-      {/* 🔥 PAGINA */}
       <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
-        {/* NAVBAR */}
         <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
           <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
 
@@ -109,10 +102,8 @@ export default function HomePage() {
               </div>
             </Link>
 
-            {/* AUTH BUTTONS */}
             <div className="flex items-center gap-4 text-sm">
 
-              {/* 🔥 ICONIȚĂ CHAT CU NUMĂR NECITITE */}
               {isLogged && (
                 <Link href="/chat" className="relative">
                   <FiMessageCircle size={24} className="text-cyan-300" />
@@ -156,11 +147,9 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* MAIN */}
         <main className="flex-1 relative z-10">
           <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
 
-            {/* HERO SECTION */}
             <section className="grid md:grid-cols-[3fr,2fr] gap-8 items-center">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-cyan-400 mb-3">
@@ -175,7 +164,6 @@ export default function HomePage() {
                   Vinde și cumpără tech rapid, cu recomandări inteligente, anunțuri verificate și experiență futuristă în dark mode.
                 </p>
 
-                {/* SEARCH BAR */}
                 <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 mb-5">
                   <div className="relative flex-1">
                     <input
@@ -195,7 +183,6 @@ export default function HomePage() {
                   </button>
                 </form>
 
-                {/* CTA BUTTONS */}
                 <div className="flex flex-wrap gap-3 text-sm">
                   <Link href="/add-product" className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold">
                     Adaugă anunț
@@ -206,7 +193,6 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* HERO VISUAL */}
               <div className="relative">
                 <div className="absolute -inset-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-transparent blur-3xl pointer-events-none" />
                 <div className="relative bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-4">
@@ -241,7 +227,7 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* CATEGORII */}
+            {/* 🔥 CATEGORII PRINCIPALE */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Categorii principale</h2>
@@ -258,6 +244,9 @@ export default function HomePage() {
                   { id: 4, name: "Drones", slug: "drones" },
                   { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
                   { id: 6, name: "Audio-Video", slug: "audio-video" },
+
+                  // 🔥 CATEGORIA NOUĂ
+                  { id: 7, name: "Altele", slug: "altele" },
                 ].map((cat) => (
                   <Link
                     key={cat.id}
@@ -358,7 +347,6 @@ export default function HomePage() {
           </div>
         </main>
 
-        {/* FOOTER */}
         <footer className="border-t border-white/10 bg-black/60 mt-8">
           <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-[11px] text-white/50">
 

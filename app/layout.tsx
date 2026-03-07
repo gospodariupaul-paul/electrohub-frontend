@@ -1,16 +1,15 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import "./globals.css";
 import { UserProvider } from "./context/UserContext";
-import { NotificationProvider } from "./context/NotificationContext"; // 🔥 ADĂUGAT
+import { NotificationProvider } from "./context/NotificationContext"; 
 import Link from "next/link";
 import { useState } from "react";
 import { FiMenu, FiHeart, FiHome, FiBell } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 import { useNotifications } from "./context/NotificationContext";
-
-// 🔥 IMPORT CORECT (components este în rădăcină)
 import CookieConsent from "../components/CookieConsent";
 
 export default function RootLayout({ children }) {
@@ -21,10 +20,7 @@ export default function RootLayout({ children }) {
           <UserProvider>
             <Header />
             <main className="pt-4">{children}</main>
-
-            {/* 🔥 COOKIE BANNER FUTURIST */}
             <CookieConsent />
-
           </UserProvider>
         </NotificationProvider>
       </body>
@@ -55,7 +51,6 @@ function Header() {
 
       <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-        {/* Stânga */}
         <div className="flex items-center gap-4">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -69,7 +64,6 @@ function Header() {
           </Link>
         </div>
 
-        {/* Căutare */}
         <div className="hidden md:flex flex-1 mx-6">
           <div className="flex items-center w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-2 shadow-inner">
             <IoSearch className="text-xl text-gray-400" />
@@ -81,7 +75,6 @@ function Header() {
           </div>
         </div>
 
-        {/* Dreapta */}
         <div className="flex items-center gap-5 text-xl">
 
           <Link href="/" className="hover:text-[#00eaff] transition">
@@ -99,7 +92,6 @@ function Header() {
             <FiHeart />
           </Link>
 
-          {/* 🔔 CLOPOȚEL NORMAL + NUMĂR NOTIFICĂRI */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}
@@ -117,7 +109,6 @@ function Header() {
               )}
             </button>
 
-            {/* 🔽 DROPDOWN NOTIFICĂRI */}
             {notifOpen && (
               <div
                 className="absolute right-0 mt-1 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-3 z-50"
@@ -125,7 +116,6 @@ function Header() {
               >
                 <h3 className="text-lg font-semibold mb-2">Notificări</h3>
 
-                {/* EMPTY STATE */}
                 {userNotifications.length === 0 && (
                   <div className="text-center text-gray-400 px-2 py-4">
                     <img
@@ -141,7 +131,6 @@ function Header() {
                   </div>
                 )}
 
-                {/* LISTA NOTIFICĂRI */}
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {userNotifications.map((n) => (
                     <div
@@ -186,7 +175,6 @@ function Header() {
             )}
           </div>
 
-          {/* 🔥 MENIU PROFIL */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setProfileOpen(false)}
@@ -253,7 +241,6 @@ function Header() {
         </div>
       </div>
 
-      {/* Meniu mobil */}
       {menuOpen && (
         <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-3 md:hidden">
           <Link href="/category/componente" className="block text-gray-300 hover:text-[#00eaff] transition">

@@ -154,16 +154,16 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
 
+      {/* 🔥 BUTON SIMPLU ÎNAPOI */}
+      <button
+        onClick={() => router.push("/my-account/messages")}
+        className="text-white text-lg px-4 py-2"
+      >
+        ← Înapoi
+      </button>
+
       {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
-
-        {/* 🔥 BUTON ÎNAPOI */}
-        <button
-          onClick={() => router.push("/my-account/messages")}
-          className="text-white text-xl mr-3"
-        >
-          ←
-        </button>
 
         <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
           {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}

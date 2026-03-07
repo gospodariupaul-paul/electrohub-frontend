@@ -98,7 +98,6 @@ export default function ChatPage() {
     });
   };
 
-  // 🔥 FIX: stopPropagation + închidere meniu
   const deleteForMe = async (id: number) => {
     try {
       await axiosInstance.post(`/messages/delete-for-me/${id}`);
@@ -155,39 +154,16 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
 
-      {/* 🔥 MENIU CLICK DREAPTA — FIX: stopPropagation */}
-      {contextMenu && (
-        <div
-          className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50"
-          style={{ top: contextMenu.y, left: contextMenu.x }}
-          onClick={(e) => e.stopPropagation()} // 🔥 FIX
-        >
-          <button
-            onClick={(e) => {
-              e.stopPropagation(); // 🔥 FIX
-              deleteForMe(contextMenu.msg.id);
-            }}
-            className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
-          >
-            Șterge pentru tine
-          </button>
-
-          {contextMenu.msg.senderId === user?.id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); // 🔥 FIX
-                deleteForAll(contextMenu.msg.id);
-              }}
-              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
-            >
-              Șterge pentru toți
-            </button>
-          )}
-        </div>
-      )}
-
       {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
+
+        {/* 🔥 BUTON ÎNAPOI */}
+        <button
+          onClick={() => router.push("/my-account/messages")}
+          className="text-white text-xl mr-3"
+        >
+          ←
+        </button>
 
         <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
           {otherUser?.name?.charAt(0)?.toUpperCase() || "?"}

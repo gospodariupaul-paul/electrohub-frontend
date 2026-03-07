@@ -33,7 +33,14 @@ export default function MessagesPage() {
       }
 
       const res = await axiosInstance.get(`/conversations/user/${user.id}`);
-      setConversations(res.data || []);
+
+      // 🔥 IMPORTANT: setăm markedRead = false implicit
+      const cleaned = res.data.map((c: any) => ({
+        ...c,
+        markedRead: false
+      }));
+
+      setConversations(cleaned);
     } catch (error) {
       console.error("Eroare la încărcarea conversațiilor:", error);
     } finally {
@@ -59,7 +66,7 @@ export default function MessagesPage() {
     try {
       await axiosInstance.post(`/messages/mark-read/${id}`);
 
-      // Actualizează UI-ul local
+      // 🔥 Actualizăm UI-ul local
       setConversations((prev) =>
         prev.map((c) =>
           c.id === id
@@ -151,8 +158,8 @@ export default function MessagesPage() {
                       : conv.lastMessage || "—"}
                   </p>
 
-                  {/* 🔥 Afișare „Marcat ca citit” */}
-                  {conv.markedRead && (
+                  {/* 🔥 Afișare „Marcat ca citit” DOAR după click */}
+                  {conv.markedRead === true && (
                     <p className="text-xs text-green-400 mt-1">
                       ✔️ Marcat ca citit
                     </p>

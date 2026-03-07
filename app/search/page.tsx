@@ -30,6 +30,15 @@ function SearchContent() {
 
   return (
     <div className="p-6 text-white space-y-6">
+
+      {/* 🔥 Buton Înapoi la Home */}
+      <Link
+        href="/"
+        className="inline-block px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition"
+      >
+        ← Înapoi la Home
+      </Link>
+
       <h1 className="text-3xl font-bold">Rezultate pentru: "{q}"</h1>
 
       {loading ? (

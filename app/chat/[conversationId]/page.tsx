@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
+import { FiMessageCircle } from "react-icons/fi"; // 🔥 iconiță chat
 
 export default function ChatPage() {
   const { conversationId } = useParams();
@@ -19,6 +20,9 @@ export default function ChatPage() {
 
   // 🔥 MENIU ⋮ HEADER
   const [headerMenu, setHeaderMenu] = useState(false);
+
+  // 🔥 unread messages
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -134,6 +138,20 @@ export default function ChatPage() {
     }
   };
 
+  // 🔥 10. Încărcăm numărul de mesaje necitite
+  useEffect(() => {
+    fetch("https://electrohub-backend-1-10qa.onrender.com/conversations/unread", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.count !== undefined) {
+          setUnreadCount(data.count);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // 🔥 Determinăm cu cine vorbește userul
   const otherUser =
     conversation?.buyerId === user?.id
@@ -167,7 +185,7 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* 🔥 HEADER CU ⋮ */}
+      {/* 🔥 HEADER CU ⋮ + UNREAD */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
 
         <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white font-bold text-lg">
@@ -181,6 +199,16 @@ export default function ChatPage() {
           <p className="text-xs text-gray-300">
             {conversation?.product?.name || ""}
           </p>
+        </div>
+
+        {/* 🔥 ICONIȚĂ CHAT CU NUMĂR NECITITE */}
+        <div className="relative mr-3">
+          <FiMessageCircle size={22} className="text-cyan-300" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+              {unreadCount}
+            </span>
+          )}
         </div>
 
         {/* ⋮ BUTON */}

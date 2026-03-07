@@ -29,6 +29,7 @@ export default function ProductPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  // 🔥 FIX 401 Unauthorized — adăugat withCredentials: true
   const startConversation = async () => {
     if (!user) {
       router.push("/login");
@@ -39,7 +40,7 @@ export default function ProductPage() {
       const res = await axiosInstance.post(
         "/conversations",
         { productId: Number(id) },
-        { withCredentials: true }
+        { withCredentials: true } // 🔥 OBLIGATORIU pentru cookie JWT
       );
 
       const conversationId = res.data.id;

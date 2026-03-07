@@ -10,6 +10,9 @@ import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 import { useNotifications } from "./context/NotificationContext";
 
+// 🔥 IMPORT COOKIE CONSENT
+import CookieConsent from "./components/CookieConsent";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="ro">
@@ -18,6 +21,10 @@ export default function RootLayout({ children }) {
           <UserProvider>
             <Header />
             <main className="pt-4">{children}</main>
+
+            {/* 🔥 COOKIE BANNER FUTURIST */}
+            <CookieConsent />
+
           </UserProvider>
         </NotificationProvider>
       </body>

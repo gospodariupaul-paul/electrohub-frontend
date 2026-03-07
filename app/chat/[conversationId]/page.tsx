@@ -154,13 +154,15 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
 
-      {/* 🔥 BUTON SIMPLU ÎNAPOI */}
-      <button
-        onClick={() => router.push("/my-account/messages")}
-        className="text-white text-lg px-4 py-2"
-      >
-        ← Înapoi
-      </button>
+      {/* 🔥 BUTON ÎNAPOI ÎN CASETĂ COLORATĂ */}
+      <div className="p-3">
+        <button
+          onClick={() => router.push("/my-account/messages")}
+          className="bg-[#00a884] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-[#029f78] transition"
+        >
+          ← Înapoi
+        </button>
+      </div>
 
       {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">

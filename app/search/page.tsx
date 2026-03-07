@@ -60,7 +60,7 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<p className="text-white p-6">Se caută...</p>}>
+    <Suspense fallback={null}>
       <SearchContent />
     </Suspense>
   );

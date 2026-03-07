@@ -35,7 +35,7 @@ export default function SellerProductPage() {
       });
   }, [id]);
 
-  // 🔥 EXACT CA PE OLX
+  // 🔥 FIX: folosim cookie-ul JWT, nu Bearer token
   const startConversation = async () => {
     const token = localStorage.getItem("token");
 
@@ -46,15 +46,15 @@ export default function SellerProductPage() {
     }
 
     try {
-      // 2️⃣ Creează conversația în backend
+      // 2️⃣ Creează conversația folosind cookie-ul httpOnly
       const res = await fetch(
         "https://electrohub-backend-1-10qa.onrender.com/conversations",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // 🔥 token trimis corect
           },
+          credentials: "include", // 🔥 OBLIGATORIU pentru cookie JWT
           body: JSON.stringify({ productId: product.id }),
         }
       );
@@ -66,7 +66,7 @@ export default function SellerProductPage() {
 
       const data = await res.json();
 
-      // 3️⃣ Trimite-l în chat cu conversationId VALID
+      // 3️⃣ Trimite-l în chat
       router.push(`/chat/${data.id}`);
     } catch (err) {
       console.error("Eroare creare conversație:", err);

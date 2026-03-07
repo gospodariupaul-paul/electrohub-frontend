@@ -88,12 +88,12 @@ export default function MessagesPage() {
       {/* 🔥 HEADER CU BUTON ÎNAPOI + TITLU + ⋮ */}
       <div className="flex items-center justify-between">
 
-        {/* 🔙 BUTON ÎNAPOI */}
+        {/* 🔙 BUTON ÎNAPOI ÎN CASETĂ COLORATĂ */}
         <button
           onClick={() => router.push("/my-account/profile")}
-          className="text-white text-xl px-3 py-1 hover:text-[#00a884] transition"
+          className="bg-[#00a884] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-[#029f78] transition"
         >
-          ←
+          ← Înapoi
         </button>
 
         <h1 className="text-3xl font-bold flex-1 text-center -ml-6">

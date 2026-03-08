@@ -72,6 +72,13 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // 🔥 Închide context menu la click oriunde pe ecran
+  useEffect(() => {
+    const closeMenu = () => setContextMenu(null);
+    window.addEventListener("click", closeMenu);
+    return () => window.removeEventListener("click", closeMenu);
+  }, []);
+
   const sendMessage = async () => {
     if (!text.trim() || !user) return;
 
@@ -154,7 +161,7 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
 
-      {/* HEADER CU BUTON ÎNAPOI */}
+      {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
 
         <button
@@ -205,16 +212,16 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* MESAJ */}
+      {/* MESAJE */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21] relative">
 
         {/* CONTEXT MENU */}
         {contextMenu && (
           <div
+            onClick={(e) => e.stopPropagation()} // 🔥 nu se închide când dai click pe meniu
             className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-[9999] w-40"
             style={{ top: contextMenu.y, left: contextMenu.x }}
           >
-            {/* ȘTERGE PENTRU TINE – apare mereu */}
             <button
               onClick={() => deleteForMe(contextMenu.msg.id)}
               className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
@@ -222,7 +229,6 @@ export default function ChatPage() {
               🗑️ Șterge pentru tine
             </button>
 
-            {/* ȘTERGE PENTRU TOȚI – apare DOAR pe mesajele tale */}
             {contextMenu.msg.senderId === user?.id && (
               <button
                 onClick={() => deleteForAll(contextMenu.msg.id)}

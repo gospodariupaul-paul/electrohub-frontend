@@ -183,7 +183,7 @@ export default function HomePage() {
             >
               <h3 className="text-xl font-bold mb-6">Meniu</h3>
 
-              {/* 🔥 Cont & Profil */}
+              {/* 🔥 Cont & Profil — AICI ESTE FIX‑UL */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Contul meu</p>
 

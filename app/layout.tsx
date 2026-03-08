@@ -48,23 +48,25 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
 
-      {/* 🔥 overlay-ul a fost scos */}
+      {/* overlay-ul care bloca click-urile a fost scos */}
 
       <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-        {/* 🔥 FIX: ridicăm butonul deasupra blur-ului */}
-        <div className="flex items-center gap-4 relative z-[9999]">
-          <button
-            onClick={() => {
-              console.log("CLICK HAMBURGER");
-              setMenuOpen(!menuOpen);
-            }}
-            className="text-2xl text-gray-300 hover:text-[#00eaff] transition"
-          >
-            <FiMenu />
-          </button>
+        {/* 🔥 FIX: butonul separat, cu z-index mare */}
+        <div className="flex items-center gap-4">
+          <div className="relative z-[9999]">
+            <button
+              onClick={() => {
+                console.log("CLICK HAMBURGER");
+                setMenuOpen(!menuOpen);
+              }}
+              className="text-2xl text-gray-300 hover:text-[#00eaff] transition cursor-pointer"
+            >
+              <FiMenu />
+            </button>
+          </div>
 
-          <Link href="/" className="text-2xl font-bold tracking-wide text-[#00eaff]">
+          <Link href="/" className="text-2xl font-bold tracking-wide text-[#00eaff] cursor-default">
             GOSPO <span className="text-white">Electro Hub</span>
           </Link>
         </div>
@@ -246,11 +248,10 @@ function Header() {
         </div>
       </div>
 
-      {/* 🔥 MENIU HAMBURGER — VARIANTA TA COMPLETĂ */}
+      {/* MENIU HAMBURGER */}
       {menuOpen && (
         <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4 md:hidden">
 
-          {/* Contul meu */}
           <div>
             <p className="text-xs text-gray-400 mb-1">Contul meu</p>
 
@@ -271,7 +272,6 @@ function Header() {
             </Link>
           </div>
 
-          {/* Navigare */}
           <div>
             <p className="text-xs text-gray-400 mb-1">Navigare</p>
 
@@ -288,7 +288,6 @@ function Header() {
             </Link>
           </div>
 
-          {/* Setări & Suport */}
           <div>
             <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
 
@@ -301,7 +300,6 @@ function Header() {
             </Link>
           </div>
 
-          {/* Logout */}
           <div className="pt-2 border-t border-white/10">
             <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
               Deconectare

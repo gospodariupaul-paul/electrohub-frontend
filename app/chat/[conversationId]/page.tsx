@@ -207,7 +207,30 @@ export default function ChatPage() {
       </div>
 
       {/* MESAJ */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21]">
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21] relative">
+
+        {/* 🔥 CONTEXT MENU (REPARAT) */}
+        {contextMenu && (
+          <div
+            className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-[9999] w-40"
+            style={{ top: contextMenu.y, left: contextMenu.x }}
+          >
+            <button
+              onClick={() => deleteForMe(contextMenu.msg.id)}
+              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
+            >
+              🗑️ Șterge pentru tine
+            </button>
+
+            <button
+              onClick={() => deleteForAll(contextMenu.msg.id)}
+              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
+            >
+              ❗ Șterge pentru toți
+            </button>
+          </div>
+        )}
+
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
 

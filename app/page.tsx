@@ -14,6 +14,7 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const router = useRouter();
@@ -27,7 +28,9 @@ export default function HomePage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data?.count !== undefined) setUnreadCount(data.count);
+        if (data?.count !== undefined) {
+          setUnreadCount(data.count);
+        }
       })
       .catch(() => {});
   }, []);
@@ -41,7 +44,7 @@ export default function HomePage() {
     axios
       .get("https://electrohub-backend-1-10qa.onrender.com/products")
       .then((res) => setProducts(res.data))
-      .catch(() => {});
+      .catch((err) => console.error("Eroare la încărcarea produselor:", err));
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -76,6 +79,7 @@ export default function HomePage() {
           loop
           muted
           playsInline
+          webkit-playsinline="true"
           className="earth-video"
         />
       </div>
@@ -117,6 +121,7 @@ export default function HomePage() {
             </Link>
 
             <div className="flex items-center gap-4 text-sm">
+
               {isLogged && (
                 <Link href="/chat" className="relative">
                   <FiMessageCircle size={24} className="text-cyan-300" />
@@ -256,44 +261,56 @@ export default function HomePage() {
         <main className="flex-1 relative z-10">
           <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
 
-            {/* 🔥 SECȚIUNEA RECONSTRUITĂ — BARA + CASETE */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            {/* 🔥 SEARCH + CASETE (SUB VIDEO, ÎNAINTE DE CATEGORII) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              {/* BARA DE CĂUTARE */}
-              <form onSubmit={handleSearch} className="flex gap-2">
+              {/* LEFT: SEARCH BAR */}
+              <form
+                onSubmit={handleSearch}
+                className="w-full flex flex-col md:flex-row items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-xl"
+              >
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Caută produse..."
-                  className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-cyan-400 outline-none"
+                  placeholder="Caută produse, modele, categorii..."
+                  className="flex-1 bg-black/20 border border-white/10 px-4 py-2 rounded-lg text-white placeholder-white/40 outline-none"
                 />
+
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold"
+                  className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition"
                 >
                   Caută
                 </button>
               </form>
 
-              {/* CASETELE DIN DREAPTA */}
+              {/* RIGHT: 4 BOXES */}
               <div className="grid grid-cols-2 gap-4">
-                {[
-                  "Reduceri exclusive",
-                  "Top vânzări",
-                  "Recomandate AI",
-                  "Noutăți 2026",
-                ].map((txt, i) => (
-                  <div
-                    key={i}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition"
-                  >
-                    <p className="text-sm font-semibold">{txt}</p>
-                  </div>
-                ))}
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                  <p className="text-xs text-white/50">Produse active</p>
+                  <p className="text-2xl font-bold text-cyan-300">124</p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                  <p className="text-xs text-white/50">Utilizatori online</p>
+                  <p className="text-2xl font-bold text-emerald-300">8</p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                  <p className="text-sm font-semibold">Vinde un produs</p>
+                  <p className="text-[11px] text-white/50">Publică un anunț rapid</p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                  <p className="text-sm font-semibold">Categorii populare</p>
+                  <p className="text-[11px] text-white/50">Vezi topul</p>
+                </div>
+
               </div>
 
-            </section>
+            </div>
 
             {/* CATEGORII */}
             <section>
@@ -303,7 +320,6 @@ export default function HomePage() {
                   Organizare de tip bento grid, cu focus pe ce te interesează
                 </span>
               </div>
-
               <div className="grid md:grid-cols-4 gap-4">
                 {[
                   { id: 1, name: "Telefoane", slug: "telefoane" },
@@ -404,7 +420,7 @@ export default function HomePage() {
               <h2 className="text-lg font-semibold mb-4">Produse recente</h2>
 
               {products.length === 0 ? (
-                <p className                <p className="text-white/50 text-sm">Nu există produse încă.</p>
+                <p className="text-white/50 text-sm">Nu există produse încă.</p>
               ) : (
                 <ProductsList products={products} />
               )}

@@ -14,8 +14,6 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-
-  // 🔥 MENIU HAMBURGER
   const [menuOpen, setMenuOpen] = useState(false);
 
   const router = useRouter();
@@ -29,9 +27,7 @@ export default function HomePage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data?.count !== undefined) {
-          setUnreadCount(data.count);
-        }
+        if (data?.count !== undefined) setUnreadCount(data.count);
       })
       .catch(() => {});
   }, []);
@@ -45,13 +41,12 @@ export default function HomePage() {
     axios
       .get("https://electrohub-backend-1-10qa.onrender.com/products")
       .then((res) => setProducts(res.data))
-      .catch((err) => console.error("Eroare la încărcarea produselor:", err));
+      .catch(() => {});
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!search.trim()) return;
-
     router.push(`/search?q=${encodeURIComponent(search)}`);
   };
 
@@ -81,18 +76,16 @@ export default function HomePage() {
           loop
           muted
           playsInline
-          webkit-playsinline="true"
           className="earth-video"
         />
       </div>
 
       <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
-        {/* 🔥 HEADER */}
+        {/* HEADER */}
         <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
           <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
 
-            {/* 🔥 BUTON HAMBURGER */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -103,7 +96,6 @@ export default function HomePage() {
               ☰
             </button>
 
-            {/* LOGO */}
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-600 flex items-center justify-center shadow-[0_0_25px_rgba(0,255,255,0.5)] group-hover:shadow-[0_0_40px_rgba(0,255,255,0.8)] transition-all duration-300">
@@ -124,13 +116,10 @@ export default function HomePage() {
               </div>
             </Link>
 
-            {/* ICONITE DREAPTA */}
             <div className="flex items-center gap-4 text-sm">
-
               {isLogged && (
                 <Link href="/chat" className="relative">
                   <FiMessageCircle size={24} className="text-cyan-300" />
-
                   {unreadCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
                       {unreadCount}
@@ -170,7 +159,7 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* 🔥 MENIU HAMBURGER (DRAWER) */}
+        {/* MENIU HAMBURGER */}
         {menuOpen && (
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
@@ -183,7 +172,6 @@ export default function HomePage() {
             >
               <h3 className="text-xl font-bold mb-6">Meniu</h3>
 
-              {/* 🔥 Cont & Profil — AICI ESTE FIX‑UL */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Contul meu</p>
 
@@ -216,7 +204,6 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Navigare */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Navigare</p>
 
@@ -239,7 +226,6 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Setări & Suport */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Setări & Suport</p>
 
@@ -252,7 +238,6 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Logout */}
               {isLogged && (
                 <div className="pt-4 border-t border-white/10">
                   <Link
@@ -267,9 +252,48 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* 🔥 MAIN CONTENT */}
+        {/* MAIN CONTENT */}
         <main className="flex-1 relative z-10">
           <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
+
+            {/* 🔥 SECȚIUNEA RECONSTRUITĂ — BARA + CASETE */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+
+              {/* BARA DE CĂUTARE */}
+              <form onSubmit={handleSearch} className="flex gap-2">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Caută produse..."
+                  className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 focus:border-cyan-400 outline-none"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold"
+                >
+                  Caută
+                </button>
+              </form>
+
+              {/* CASETELE DIN DREAPTA */}
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  "Reduceri exclusive",
+                  "Top vânzări",
+                  "Recomandate AI",
+                  "Noutăți 2026",
+                ].map((txt, i) => (
+                  <div
+                    key={i}
+                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition"
+                  >
+                    <p className="text-sm font-semibold">{txt}</p>
+                  </div>
+                ))}
+              </div>
+
+            </section>
 
             {/* CATEGORII */}
             <section>
@@ -380,7 +404,7 @@ export default function HomePage() {
               <h2 className="text-lg font-semibold mb-4">Produse recente</h2>
 
               {products.length === 0 ? (
-                <p className="text-white/50 text-sm">Nu există produse încă.</p>
+                <p className                <p className="text-white/50 text-sm">Nu există produse încă.</p>
               ) : (
                 <ProductsList products={products} />
               )}

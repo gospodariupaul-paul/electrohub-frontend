@@ -2,10 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function MyListingsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  // 🔥 REDIRECT DACĂ NU E LOGAT
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,7 +42,6 @@ export default function MyListingsPage() {
           data = null;
         }
 
-        // 🔥 FIX: asigură-te că e array
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data && Array.isArray(data.products)) {

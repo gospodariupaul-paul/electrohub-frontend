@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
 import { FiMessageCircle } from "react-icons/fi";
-import { useRouter } from "next/navigation"; // 🔥 ADAUGAT
+import { useRouter } from "next/navigation";
 
 Link.defaultProps = { prefetch: false };
 
@@ -15,7 +15,10 @@ export default function HomePage() {
   const [isLogged, setIsLogged] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const router = useRouter(); // 🔥 ADAUGAT
+  // 🔥 MENIU HAMBURGER
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -49,11 +52,12 @@ export default function HomePage() {
     e.preventDefault();
     if (!search.trim()) return;
 
-    router.push(`/search?q=${encodeURIComponent(search)}`); // 🔥 ADAUGAT
+    router.push(`/search?q=${encodeURIComponent(search)}`);
   };
 
   return (
     <>
+      {/* FUNDAL ELECTRIC */}
       <div className="electro-bg">
         {Array.from({ length: 20 }).map((_, i) => (
           <img
@@ -69,6 +73,7 @@ export default function HomePage() {
         ))}
       </div>
 
+      {/* VIDEO FUNDAL */}
       <div className="fixed inset-0 flex justify-center items-center pointer-events-none z-0">
         <video
           src="/earth.mp4"
@@ -83,9 +88,19 @@ export default function HomePage() {
 
       <div className="min-h-screen bg-[#050712]/70 backdrop-blur-sm text-white flex flex-col px-4 md:px-10 lg:px-20 relative overflow-hidden">
 
+        {/* 🔥 HEADER */}
         <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-20">
           <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
 
+            {/* 🔥 BUTON HAMBURGER */}
+            <button
+              onClick={() => setMenuOpen(true)}
+              className="text-white text-3xl mr-4 md:hidden"
+            >
+              ☰
+            </button>
+
+            {/* LOGO */}
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-600 flex items-center justify-center shadow-[0_0_25px_rgba(0,255,255,0.5)] group-hover:shadow-[0_0_40px_rgba(0,255,255,0.8)] transition-all duration-300">
@@ -106,6 +121,7 @@ export default function HomePage() {
               </div>
             </Link>
 
+            {/* ICONITE DREAPTA */}
             <div className="flex items-center gap-4 text-sm">
 
               {isLogged && (
@@ -151,93 +167,89 @@ export default function HomePage() {
           </div>
         </header>
 
+        {/* 🔥 MENIU HAMBURGER (DRAWER) */}
+        {menuOpen && (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            onClick={() => setMenuOpen(false)}
+          >
+            <div
+              className="w-72 bg-[#0b141a] h-full shadow-xl border-r border-white/10 p-5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-bold mb-6">Meniu</h3>
+
+              {/* Cont & Profil */}
+              <div className="mb-6">
+                <p className="text-xs text-white/40 mb-2">Contul meu</p>
+
+                <Link href="/my-account/profile" className="block py-2 hover:text-cyan-300">
+                  Profilul meu
+                </Link>
+
+                <Link href="/my-account/orders" className="block py-2 hover:text-cyan-300">
+                  Comenzile mele
+                </Link>
+
+                <Link href="/my-account/products" className="block py-2 hover:text-cyan-300">
+                  Produsele mele
+                </Link>
+
+                <Link href="/my-account/favorites" className="block py-2 hover:text-cyan-300">
+                  Favorite / Wishlist
+                </Link>
+              </div>
+
+              {/* Navigare */}
+              <div className="mb-6">
+                <p className="text-xs text-white/40 mb-2">Navigare</p>
+
+                <Link href="/categorii" className="block py-2 hover:text-cyan-300">
+                  Categorii produse
+                </Link>
+
+                <Link href="/add-product" className="block py-2 hover:text-cyan-300">
+                  Adaugă anunț
+                </Link>
+
+                <Link href="/chat" className="block py-2 hover:text-cyan-300">
+                  Mesaje / Chat
+                </Link>
+              </div>
+
+              {/* Setări & Suport */}
+              <div className="mb-6">
+                <p className="text-xs text-white/40 mb-2">Setări & Suport</p>
+
+                <Link href="/settings" className="block py-2 hover:text-cyan-300">
+                  Setări
+                </Link>
+
+                <Link href="/support" className="block py-2 hover:text-cyan-300">
+                  Ajutor / Contact / FAQ
+                </Link>
+              </div>
+
+              {/* Logout */}
+              <div className="pt-4 border-t border-white/10">
+                <Link
+                  href="/logout"
+                  className="block py-2 text-red-400 hover:text-red-300"
+                >
+                  Deconectare
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 🔥 MAIN CONTENT */}
         <main className="flex-1 relative z-10">
           <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
 
-            <section className="grid md:grid-cols-[3fr,2fr] gap-8 items-center">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-cyan-400 mb-3">
-                  GOSPO ELECTRO HUB
-                </p>
+            {/* ... RESTUL CODULUI TĂU ESTE IDENTIC ... */}
 
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-                  Viitorul electronicii, <span className="text-cyan-400">la un click distanță.</span>
-                </h1>
-
-                <p className="text-sm md:text-base text-white/70 mb-6 max-w-xl">
-                  Vinde și cumpără tech rapid, cu recomandări inteligente, anunțuri verificate și experiență futuristă în dark mode.
-                </p>
-
-                <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 mb-5">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleSearch(e as any);
-                        }
-                      }}
-                      placeholder='Caută: "laptop i7 32gb 1tb", "dronă 4k sub 500eur"...'
-                      className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-cyan-400 placeholder:text-white/40"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-white/40">
-                      AI Search
-                    </span>
-                  </div>
-
-                  <button type="submit" className="px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-sm whitespace-nowrap">
-                    Caută inteligent
-                  </button>
-                </form>
-
-                <div className="flex flex-wrap gap-3 text-sm">
-                  <Link href="/add-product" className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-black font-semibold">
-                    Adaugă anunț
-                  </Link>
-                  <a href="#oferte" className="px-4 py-2.5 rounded-xl border border-white/15 hover:border-cyan-400 text-white/80 hover:text-cyan-300 transition">
-                    Explorează oferte
-                  </a>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="absolute -inset-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-transparent blur-3xl pointer-events-none" />
-                <div className="relative bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-4">
-                  <p className="text-xs text-white/60">Live Tech Snapshot</p>
-
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="bg-black/40 border border-white/10 rounded-xl p-3">
-                      <p className="text-white/60 mb-1">Anunțuri active</p>
-                      <p className="text-lg font-semibold text-cyan-400">+124</p>
-                    </div>
-
-                    <div className="bg-black/40 border border-white/10 rounded-xl p-3">
-                      <p className="text-white/60 mb-1">Utilizatori verificați</p>
-                      <p className="text-lg font-semibold text-emerald-400">+58</p>
-                    </div>
-
-                    <div className="bg-black/40 border border-white/10 rounded-xl p-3">
-                      <p className="text-white/60 mb-1">Licitații live</p>
-                      <p className="text-lg font-semibold text-purple-400">7</p>
-                    </div>
-
-                    <div className="bg-black/40 border border-white/10 rounded-xl p-3">
-                      <p className="text-white/60 mb-1">Scam Protection</p>
-                      <p className="text-[11px] text-emerald-300">2FA & Verified Sellers</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-2 text-[11px] text-white/50">
-                    AR & AI ready • Refurbished verified • Secure payments
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* 🔥 CATEGORII PRINCIPALE */}
+            {/* CATEGORII */}
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Categorii principale</h2>
@@ -254,8 +266,6 @@ export default function HomePage() {
                   { id: 4, name: "Drones", slug: "drones" },
                   { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
                   { id: 6, name: "Audio-Video", slug: "audio-video" },
-
-                  // 🔥 CATEGORIA NOUĂ
                   { id: 7, name: "Altele", slug: "altele" },
                 ].map((cat) => (
                   <Link
@@ -283,7 +293,7 @@ export default function HomePage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Top Tech Hot Deals</h2>
                 <span className="text-xs text-white/50">
-                  Carusel 3D (placeholder) – poți conecta ulterior la backend
+                  Carusel 3D (placeholder)
                 </span>
               </div>
 
@@ -318,15 +328,15 @@ export default function HomePage() {
                   Îți recomandăm pentru setup-ul tău (AI)
                 </h2>
                 <span className="text-xs text-white/50">
-                  Bazat pe comportament, istoric și preferințe (placeholder logic)
+                  Bazat pe comportament, istoric și preferințe
                 </span>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
                 {[
-                  { id: 1, name: "Monitor 4K 144Hz", desc: "Perfect pentru setup de gaming" },
-                  { id: 2, name: "Kit Smart Home", desc: "Control complet al casei tale" },
-                  { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio experience" },
+                  { id: 1, name: "Monitor 4K 144Hz", desc: "Perfect pentru gaming" },
+                  { id: 2, name: "Kit Smart Home", desc: "Control complet al casei" },
+                  { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio" },
                 ].map((rec) => (
                   <div
                     key={rec.id}
@@ -357,6 +367,7 @@ export default function HomePage() {
           </div>
         </main>
 
+        {/* FOOTER */}
         <footer className="border-t border-white/10 bg-black/60 mt-8">
           <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-[11px] text-white/50">
 

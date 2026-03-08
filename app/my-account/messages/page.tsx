@@ -9,7 +9,6 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [headerMenu, setHeaderMenu] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
   const router = useRouter();
@@ -40,17 +39,6 @@ export default function MessagesPage() {
       console.error("Eroare la încărcarea conversațiilor:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const markAllAsRead = async () => {
-    try {
-      await axiosInstance.post("/messages/mark-all-read");
-      await load();
-      setHeaderMenu(false);
-      router.push("/my-account/profile");
-    } catch (err) {
-      console.error("Eroare la marcarea conversațiilor ca citite:", err);
     }
   };
 
@@ -85,10 +73,10 @@ export default function MessagesPage() {
   return (
     <div className="p-6 text-white space-y-6 bg-[#0b141a] min-h-screen relative">
 
-      {/* 🔥 HEADER CU BUTON ÎNAPOI + TITLU + ⋮ */}
+      {/* 🔥 HEADER FĂRĂ ⋮ */}
       <div className="flex items-center justify-between">
 
-        {/* 🔙 BUTON ÎNAPOI ÎN CASETĂ COLORATĂ */}
+        {/* 🔙 BUTON ÎNAPOI */}
         <button
           onClick={() => router.push("/my-account/profile")}
           className="bg-[#00a884] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-[#029f78] transition"
@@ -100,25 +88,8 @@ export default function MessagesPage() {
           Mesajele mele
         </h1>
 
-        {/* ⋮ BUTON HEADER */}
-        <button
-          onClick={() => setHeaderMenu((v) => !v)}
-          className="text-3xl px-2"
-        >
-          ⋮
-        </button>
-
-        {/* MENIU HEADER */}
-        {headerMenu && (
-          <div className="absolute right-6 top-20 bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-50 w-52">
-            <button
-              onClick={markAllAsRead}
-              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-[#00a884]"
-            >
-              ✔️ Marchează ca citit
-            </button>
-          </div>
-        )}
+        {/* ❌ AM SCOS COMPLET BUTONUL ⋮ */}
+        <div className="w-10"></div>
       </div>
 
       {loading ? (

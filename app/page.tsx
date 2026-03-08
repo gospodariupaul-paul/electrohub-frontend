@@ -124,6 +124,27 @@ export default function HomePage() {
               </div>
             </Link>
 
+            {/* 🔍 SEARCH BAR IN HEADER */}
+            <form
+              onSubmit={handleSearch}
+              className="hidden md:flex items-center bg-white/10 border border-white/20 rounded-lg px-3 py-1 ml-4"
+            >
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Caută produse..."
+                className="bg-transparent outline-none text-sm text-white placeholder-white/50 w-40"
+              />
+
+              <button
+                type="submit"
+                className="ml-2 px-3 py-1 bg-cyan-500 hover:bg-cyan-400 text-black rounded-md text-sm font-semibold transition"
+              >
+                Caută
+              </button>
+            </form>
+
             {/* ICONITE DREAPTA */}
             <div className="flex items-center gap-4 text-sm">
 
@@ -183,7 +204,7 @@ export default function HomePage() {
             >
               <h3 className="text-xl font-bold mb-6">Meniu</h3>
 
-              {/* 🔥 Cont & Profil — AICI ESTE FIX‑UL */}
+              {/* Cont & Profil */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Contul meu</p>
 

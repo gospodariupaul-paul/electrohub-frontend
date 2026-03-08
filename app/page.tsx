@@ -95,7 +95,7 @@ export default function HomePage() {
             {/* 🔥 BUTON HAMBURGER */}
             <button
               onClick={(e) => {
-                e.stopPropagation();   // 🔥 FIX: împiedică închiderea instant
+                e.stopPropagation();
                 setMenuOpen(true);
               }}
               className="text-white text-3xl mr-4 md:hidden"
@@ -179,27 +179,39 @@ export default function HomePage() {
             <div
               className="w-72 bg-[#0b141a] h-full shadow-xl border-r border-white/10 p-5"
               onClick={(e) => e.stopPropagation()}
-              onMouseLeave={() => setMenuOpen(false)}   // 🔥 FIX: închide meniul când ieși cu cursorul
+              onMouseLeave={() => setMenuOpen(false)}
             >
               <h3 className="text-xl font-bold mb-6">Meniu</h3>
 
-              {/* Cont & Profil */}
+              {/* 🔥 Cont & Profil — AICI ESTE FIX‑UL */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Contul meu</p>
 
-                <Link href="/my-account/profile" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/my-account/profile" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Profilul meu
                 </Link>
 
-                <Link href="/my-account/orders" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/my-account/orders" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Comenzile mele
                 </Link>
 
-                <Link href="/my-account/products" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/my-account/products" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Produsele mele
                 </Link>
 
-                <Link href="/my-account/favorites" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/my-account/favorites" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Favorite / Wishlist
                 </Link>
               </div>
@@ -212,11 +224,17 @@ export default function HomePage() {
                   Categorii produse
                 </Link>
 
-                <Link href="/add-product" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/add-product" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Adaugă anunț
                 </Link>
 
-                <Link href="/chat" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/chat" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Mesaje / Chat
                 </Link>
               </div>
@@ -235,14 +253,16 @@ export default function HomePage() {
               </div>
 
               {/* Logout */}
-              <div className="pt-4 border-t border-white/10">
-                <Link
-                  href="/logout"
-                  className="block py-2 text-red-400 hover:text-red-300"
-                >
-                  Deconectare
-                </Link>
-              </div>
+              {isLogged && (
+                <div className="pt-4 border-t border-white/10">
+                  <Link
+                    href="/logout"
+                    className="block py-2 text-red-400 hover:text-red-300"
+                  >
+                    Deconectare
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}

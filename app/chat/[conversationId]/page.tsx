@@ -157,7 +157,6 @@ export default function ChatPage() {
       {/* HEADER CU BUTON ÎNAPOI */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
 
-        {/* 🔥 BUTON ÎNAPOI ÎN CASETĂ COLORATĂ */}
         <button
           onClick={() => router.push("/my-account/messages")}
           className="bg-[#00a884] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-[#029f78] transition"
@@ -209,7 +208,7 @@ export default function ChatPage() {
       {/* MESAJ */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21] relative">
 
-        {/* 🔥 CONTEXT MENU (REPARAT) */}
+        {/* CONTEXT MENU */}
         {contextMenu && (
           <div
             className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-[9999] w-40"
@@ -226,7 +225,7 @@ export default function ChatPage() {
               onClick={() => deleteForAll(contextMenu.msg.id)}
               className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
             >
-              ❗ Șterge pentru toți
+              🗑️ Șterge pentru toți
             </button>
           </div>
         )}

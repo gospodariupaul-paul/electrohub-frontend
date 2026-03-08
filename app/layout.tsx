@@ -241,20 +241,68 @@ function Header() {
         </div>
       </div>
 
+      {/* 🔥 MENIU HAMBURGER — VARIANTA TA COMPLETĂ */}
       {menuOpen && (
-        <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-3 md:hidden">
-          <Link href="/category/componente" className="block text-gray-300 hover:text-[#00eaff] transition">
-            Componente
-          </Link>
-          <Link href="/category/electrocasnice" className="block text-gray-300 hover:text-[#00eaff] transition">
-            Electrocasnice
-          </Link>
-          <Link href="/category/it" className="block text-gray-300 hover:text-[#00eaff] transition">
-            IT
-          </Link>
-          <Link href="/category/gadgeturi" className="block text-gray-300 hover:text-[#00eaff] transition">
-            Gadgeturi
-          </Link>
+        <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4 md:hidden">
+
+          {/* Contul meu */}
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Contul meu</p>
+
+            <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Profilul meu
+            </Link>
+
+            <Link href="/my-account/orders" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Comenzile mele
+            </Link>
+
+            <Link href="/my-account/listings" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Produsele mele
+            </Link>
+
+            <Link href="/wishlist" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Favorite / Wishlist
+            </Link>
+          </div>
+
+          {/* Navigare */}
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Navigare</p>
+
+            <Link href="/categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Categorii produse
+            </Link>
+
+            <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Adaugă anunț
+            </Link>
+
+            <Link href="/chat" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Mesaje / Chat
+            </Link>
+          </div>
+
+          {/* Setări & Suport */}
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
+
+            <Link href="/account/settings" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Setări
+            </Link>
+
+            <Link href="/help" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Ajutor / Contact / FAQ
+            </Link>
+          </div>
+
+          {/* Logout */}
+          <div className="pt-2 border-t border-white/10">
+            <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
+              Deconectare
+            </Link>
+          </div>
+
         </div>
       )}
     </header>

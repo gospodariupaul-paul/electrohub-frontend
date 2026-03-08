@@ -65,6 +65,15 @@ export default function MyListingsPage() {
   if (products.length === 0) {
     return (
       <div className="p-6 text-white/60">
+
+        {/* 🔥 BUTON ÎNAPOI */}
+        <Link
+          href="/"
+          className="inline-block mb-4 px-3 py-1.5 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-300 transition text-sm"
+        >
+          ← Înapoi la homepage
+        </Link>
+
         <p>Nu ai încă produse publicate.</p>
         <Link
           href="/add-product"
@@ -78,6 +87,15 @@ export default function MyListingsPage() {
 
   return (
     <div className="p-6">
+
+      {/* 🔥 BUTON ÎNAPOI */}
+      <Link
+        href="/"
+        className="inline-block mb-4 px-3 py-1.5 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-300 transition text-sm"
+      >
+        ← Înapoi la homepage
+      </Link>
+
       <h1 className="text-xl font-bold mb-4">Produsele mele</h1>
 
       <div className="grid md:grid-cols-3 gap-4">

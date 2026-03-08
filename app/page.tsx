@@ -94,7 +94,10 @@ export default function HomePage() {
 
             {/* 🔥 BUTON HAMBURGER */}
             <button
-              onClick={() => setMenuOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();   // 🔥 FIX: împiedică închiderea instant
+                setMenuOpen(true);
+              }}
               className="text-white text-3xl mr-4 md:hidden"
             >
               ☰
@@ -176,7 +179,7 @@ export default function HomePage() {
             <div
               className="w-72 bg-[#0b141a] h-full shadow-xl border-r border-white/10 p-5"
               onClick={(e) => e.stopPropagation()}
-              onMouseLeave={() => setMenuOpen(false)}   // 🔥 FIX: închide meniul când ieși cu mouse-ul
+              onMouseLeave={() => setMenuOpen(false)}   // 🔥 FIX: închide meniul când ieși cu cursorul
             >
               <h3 className="text-xl font-bold mb-6">Meniu</h3>
 

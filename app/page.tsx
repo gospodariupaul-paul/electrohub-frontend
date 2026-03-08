@@ -176,6 +176,7 @@ export default function HomePage() {
             <div
               className="w-72 bg-[#0b141a] h-full shadow-xl border-r border-white/10 p-5"
               onClick={(e) => e.stopPropagation()}
+              onMouseLeave={() => setMenuOpen(false)}   // 🔥 FIX: închide meniul când ieși cu mouse-ul
             >
               <h3 className="text-xl font-bold mb-6">Meniu</h3>
 
@@ -246,8 +247,6 @@ export default function HomePage() {
         {/* 🔥 MAIN CONTENT */}
         <main className="flex-1 relative z-10">
           <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
-
-            {/* ... RESTUL CODULUI TĂU ESTE IDENTIC ... */}
 
             {/* CATEGORII */}
             <section>

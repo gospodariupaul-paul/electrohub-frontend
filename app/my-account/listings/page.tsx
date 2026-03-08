@@ -22,12 +22,30 @@ export default function MyListingsPage() {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data || []);
+      .then(async (res) => {
+        let data;
+
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
+
+        // 🔥 FIX: asigură-te că e array
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (data && Array.isArray(data.products)) {
+          setProducts(data.products);
+        } else {
+          setProducts([]);
+        }
+
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setProducts([]);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
@@ -59,7 +77,11 @@ export default function MyListingsPage() {
             className="bg-white/5 border border-white/10 rounded-xl p-4"
           >
             <img
-              src={p.images?.[0] || "/placeholder.png"}
+              src={
+                Array.isArray(p.images) && p.images.length > 0
+                  ? p.images[0]
+                  : "/placeholder.png"
+              }
               className="w-full h-40 object-cover rounded-lg mb-3"
             />
 

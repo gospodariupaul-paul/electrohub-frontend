@@ -214,6 +214,7 @@ export default function ChatPage() {
             className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-[9999] w-40"
             style={{ top: contextMenu.y, left: contextMenu.x }}
           >
+            {/* ȘTERGE PENTRU TINE – apare mereu */}
             <button
               onClick={() => deleteForMe(contextMenu.msg.id)}
               className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
@@ -221,12 +222,15 @@ export default function ChatPage() {
               🗑️ Șterge pentru tine
             </button>
 
-            <button
-              onClick={() => deleteForAll(contextMenu.msg.id)}
-              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
-            >
-              🗑️ Șterge pentru toți
-            </button>
+            {/* ȘTERGE PENTRU TOȚI – apare DOAR pe mesajele tale */}
+            {contextMenu.msg.senderId === user?.id && (
+              <button
+                onClick={() => deleteForAll(contextMenu.msg.id)}
+                className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
+              >
+                🗑️ Șterge pentru toți
+              </button>
+            )}
           </div>
         )}
 

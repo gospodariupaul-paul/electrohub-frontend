@@ -256,208 +256,210 @@ export default function HomePage() {
             </div>
           </div>
         )}
+{/* MAIN CONTENT */}
+<main className="flex-1 relative z-10">
+  <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
 
-        {/* MAIN CONTENT */}
-        <main className="flex-1 relative z-10">
-          <div className="max-w-6xl mx-auto px-4 py-8 space-y-10">
+    {/* 🔥 SEARCH + CASETE (SUB VIDEO, ÎNAINTE DE CATEGORII) */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {/* 🔥 SEARCH + CASETE (SUB VIDEO, ÎNAINTE DE CATEGORII) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* LEFT: SEARCH BAR */}
+      <form
+        onSubmit={handleSearch}
+        className="w-full flex flex-col md:flex-row items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-xl"
+      >
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Caută produse, modele, categorii..."
+          className="flex-1 bg-black/20 border border-white/10 px-4 py-2 rounded-lg text-white placeholder-white/40 outline-none"
+        />
 
-              {/* LEFT: SEARCH BAR */}
-              <form
-                onSubmit={handleSearch}
-                className="w-full flex flex-col md:flex-row items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-xl"
-              >
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Caută produse, modele, categorii..."
-                  className="flex-1 bg-black/20 border border-white/10 px-4 py-2 rounded-lg text-white placeholder-white/40 outline-none"
-                />
+        <button
+          type="submit"
+          className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition"
+        >
+          Caută
+        </button>
+      </form>
 
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition"
-                >
-                  Caută
-                </button>
-              </form>
+      {/* RIGHT: 4 BOXES */}
+      <div className="grid grid-cols-2 gap-4">
 
-              {/* RIGHT: 4 BOXES */}
-              <div className="grid grid-cols-2 gap-4">
-
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <p className="text-xs text-white/50">Produse active</p>
-                  <p className="text-2xl font-bold text-cyan-300">124</p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <p className="text-xs text-white/50">Utilizatori online</p>
-                  <p className="text-2xl font-bold text-emerald-300">8</p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <p className="text-sm font-semibold">Vinde un produs</p>
-                  <p className="text-[11px] text-white/50">Publică un anunț rapid</p>
-                </div>
-
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <p className="text-sm font-semibold">Categorii populare</p>
-                  <p className="text-[11px] text-white/50">Vezi topul</p>
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* CATEGORII */}
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Categorii principale</h2>
-                <span className="text-xs text-white/50">
-                  Organizare de tip bento grid, cu focus pe ce te interesează
-                </span>
-              </div>
-              <div className="grid md:grid-cols-4 gap-4">
-                {[
-                  { id: 1, name: "Telefoane", slug: "telefoane" },
-                  { id: 2, name: "Laptopuri", slug: "laptopuri" },
-                  { id: 3, name: "Componente PC", slug: "componente-pc" },
-                  { id: 4, name: "Drones", slug: "drones" },
-                  { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
-                  { id: 6, name: "Audio-Video", slug: "audio-video" },
-                  { id: 7, name: "Altele", slug: "altele" },
-                ].map((cat) => (
-                  <Link
-                    key={cat.id}
-                    href={`/categorie/${cat.slug}`}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition flex flex-col justify-between"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold mb-1">{cat.name}</p>
-                      <p className="text-[11px] text-white/50">
-                        Explorează cele mai noi produse din categoria {cat.name}.
-                      </p>
-                    </div>
-
-                    <span className="mt-3 text-[11px] text-cyan-300">
-                      Vezi produsele →
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </section>
-
-            {/* HOT DEALS */}
-            <section id="oferte" className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Top Tech Hot Deals</h2>
-                <span className="text-xs text-white/50">
-                  Carusel 3D (placeholder)
-                </span>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-4">
-                {[
-                  { id: 1, name: "Laptop UltraTech 15", price: "4999 lei", tag: "Hot Deal" },
-                  { id: 2, name: "Telefon X Pro 2026", price: "2999 lei", tag: "Nou" },
-                  { id: 3, name: "Căști Wireless Pro", price: "499 lei", tag: "Best Seller" },
-                ].map((deal) => (
-                  <div
-                    key={deal.id}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col justify-between"
-                  >
-                    <div>
-                      <p className="text-xs text-cyan-300 mb-1">{deal.tag}</p>
-                      <p className="text-sm font-semibold mb-1">{deal.name}</p>
-                      <p className="text-sm text-emerald-300">{deal.price}</p>
-                    </div>
-
-                    <button className="mt-3 text-xs px-3 py-1.5 rounded-lg bg-cyan-500 text-black font-semibold hover:bg-cyan-400">
-                      Adaugă în coș
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* AI RECOMMENDATIONS */}
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">
-                  Îți recomandăm pentru setup-ul tău (AI)
-                </h2>
-                <span className="text-xs text-white/50">
-                  Bazat pe comportament, istoric și preferințe
-                </span>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-4">
-                {[
-                  { id: 1, name: "Monitor 4K 144Hz", desc: "Perfect pentru gaming" },
-                  { id: 2, name: "Kit Smart Home", desc: "Control complet al casei" },
-                  { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio" },
-                ].map((rec) => (
-                  <div
-                    key={rec.id}
-                    className="bg-gradient-to-br from-white/5 to-cyan-500/5 border border-white/10 rounded-xl p-4"
-                  >
-                    <p className="text-sm font-semibold mb-1">{rec.name}</p>
-                    <p className="text-[12px] text-white/60 mb-2">{rec.desc}</p>
-
-                    <button className="text-[11px] px-3 py-1.5 rounded-lg border border-cyan-400 text-cyan-300 hover:bg-cyan-500/10">
-                      Vezi detalii
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* PRODUSE REALE */}
-            <section className="mt-10">
-              <h2 className="text-lg font-semibold mb-4">Produse recente</h2>
-
-              {products.length === 0 ? (
-                <p className="text-white/50 text-sm">Nu există produse încă.</p>
-              ) : (
-                <ProductsList products={products} />
-              )}
-            </section>
-
+        {/* 🔥 FIXED: PRODUSE ACTIVE */}
+        <Link href="/produse">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-cyan-400 transition">
+            <p className="text-xs text-white/50">Produse active</p>
+            <p className="text-2xl font-bold text-cyan-300">{products.length}</p>
           </div>
-        </main>
+        </Link>
 
-        {/* FOOTER */}
-        <footer className="border-t border-white/10 bg-black/60 mt-8">
-          <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-[11px] text-white/50">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <p className="text-xs text-white/50">Utilizatori online</p>
+          <p className="text-2xl font-bold text-emerald-300">8</p>
+        </div>
 
-            <div className="space-x-3">
-              <Link href="/security" className="hover:text-cyan-300">
-                Securitate
-              </Link>
-              <Link href="/warranty" className="hover:text-cyan-300">
-                Politica de garanție
-              </Link>
-              <Link href="/support" className="hover:text-cyan-300">
-                Suport Chatbot AI
-              </Link>
-            </div>
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <p className="text-sm font-semibold">Vinde un produs</p>
+          <p className="text-[11px] text-white/50">Publică un anunț rapid</p>
+        </div>
 
-            <div className="flex gap-2">
-              <button className="px-3 py-1.5 rounded-lg border border-white/15 hover:border-white/40">
-                Download on App Store
-              </button>
-              <button className="px-3 py-1.5 rounded-lg border border-white/15 hover:border-white/40">
-                Get it on Google Play
-              </button>
-            </div>
-
-          </div>
-        </footer>
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <p className="text-sm font-semibold">Categorii populare</p>
+          <p className="text-[11px] text-white/50">Vezi topul</p>
+        </div>
 
       </div>
-    </>
-  );
+
+    </div>
+
+    {/* CATEGORII */}
+    <section>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">Categorii principale</h2>
+        <span className="text-xs text-white/50">
+          Organizare de tip bento grid, cu focus pe ce te interesează
+        </span>
+      </div>
+      <div className="grid md:grid-cols-4 gap-4">
+        {[
+          { id: 1, name: "Telefoane", slug: "telefoane" },
+          { id: 2, name: "Laptopuri", slug: "laptopuri" },
+          { id: 3, name: "Componente PC", slug: "componente-pc" },
+          { id: 4, name: "Drones", slug: "drones" },
+          { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
+          { id: 6, name: "Audio-Video", slug: "audio-video" },
+          { id: 7, name: "Altele", slug: "altele" },
+        ].map((cat) => (
+          <Link
+            key={cat.id}
+            href={`/categorie/${cat.slug}`}
+            className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition flex flex-col justify-between"
+          >
+            <div>
+              <p className="text-sm font-semibold mb-1">{cat.name}</p>
+              <p className="text-[11px] text-white/50">
+                Explorează cele mai noi produse din categoria {cat.name}.
+              </p>
+            </div>
+
+            <span className="mt-3 text-[11px] text-cyan-300">
+              Vezi produsele →
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+
+    {/* HOT DEALS */}
+    <section id="oferte" className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Top Tech Hot Deals</h2>
+        <span className="text-xs text-white/50">
+          Carusel 3D (placeholder)
+        </span>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {[
+          { id: 1, name: "Laptop UltraTech 15", price: "4999 lei", tag: "Hot Deal" },
+          { id: 2, name: "Telefon X Pro 2026", price: "2999 lei", tag: "Nou" },
+          { id: 3, name: "Căști Wireless Pro", price: "499 lei", tag: "Best Seller" },
+        ].map((deal) => (
+          <div
+            key={deal.id}
+            className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col justify-between"
+          >
+            <div>
+              <p className="text-xs text-cyan-300 mb-1">{deal.tag}</p>
+              <p className="text-sm font-semibold mb-1">{deal.name}</p>
+              <p className="text-sm text-emerald-300">{deal.price}</p>
+            </div>
+
+            <button className="mt-3 text-xs px-3 py-1.5 rounded-lg bg-cyan-500 text-black font-semibold hover:bg-cyan-400">
+              Adaugă în coș
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* AI RECOMMENDATIONS */}
+    <section className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">
+          Îți recomandăm pentru setup-ul tău (AI)
+        </h2>
+        <span className="text-xs text-white/50">
+          Bazat pe comportament, istoric și preferințe
+        </span>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {[
+          { id: 1, name: "Monitor 4K 144Hz", desc: "Perfect pentru gaming" },
+          { id: 2, name: "Kit Smart Home", desc: "Control complet al casei" },
+          { id: 3, name: "Soundbar Dolby Atmos", desc: "Cinematic audio" },
+        ].map((rec) => (
+          <div
+            key={rec.id}
+            className="bg-gradient-to-br from-white/5 to-cyan-500/5 border border-white/10 rounded-xl p-4"
+          >
+            <p className="text-sm font-semibold mb-1">{rec.name}</p>
+            <p className="text-[12px] text-white/60 mb-2">{rec.desc}</p>
+
+            <button className="text-[11px] px-3 py-1.5 rounded-lg border border-cyan-400 text-cyan-300 hover:bg-cyan-500/10">
+              Vezi detalii
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* PRODUSE REALE */}
+    <section className="mt-10">
+      <h2 className="text-lg font-semibold mb-4">Produse recente</h2>
+
+      {products.length === 0 ? (
+        <p className="text-white/50 text-sm">Nu există produse încă.</p>
+      ) : (
+        <ProductsList products={products} />
+      )}
+    </section>
+
+  </div>
+</main>
+
+{/* FOOTER */}
+<footer className="border-t border-white/10 bg-black/60 mt-8">
+  <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-[11px] text-white/50">
+
+    <div className="space-x-3">
+      <Link href="/security" className="hover:text-cyan-300">
+        Securitate
+      </Link>
+      <Link href="/warranty" className="hover:text-cyan-300">
+        Politica de garanție
+      </Link>
+      <Link href="/support" className="hover:text-cyan-300">
+        Suport Chatbot AI
+      </Link>
+    </div>
+
+    <div className="flex gap-2">
+      <button className="px-3 py-1.5 rounded-lg border border-white/15 hover:border-white/40">
+        Download on App Store
+      </button>
+      <button className="px-3 py-1.5 rounded-lg border border-white/15 hover:border-white/40">
+        Get it on Google Play
+      </button>
+    </div>
+
+  </div>
+</footer>
+
+</div>
+</>
+);
 }

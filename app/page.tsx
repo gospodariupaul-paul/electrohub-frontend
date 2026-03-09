@@ -38,7 +38,7 @@ export default function HomePage() {
   useEffect(() => {
   axios
     .get("https://electrohub-backend-1-10qa.onrender.com/users/online")
-    .then((res) => setOnlineUsers(res.data.online))
+    .then((res) => setOnlineUsers(res.data.length))
     .catch(() => {});
   }, []);
 

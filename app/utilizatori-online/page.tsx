@@ -9,10 +9,18 @@ export default function UtilizatoriOnlinePage() {
   const router = useRouter();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     axios
-      .get("https://electrohub-backend-1-10qa.onrender.com/users/online")
+      .get("https://electrohub-backend-1-10qa.onrender.com/users/online", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => setUsers(res.data))
-      .catch(() => {});
+      .catch((err) => {
+        console.log("Eroare la fetch:", err);
+      });
   }, []);
 
   return (
@@ -32,8 +40,12 @@ export default function UtilizatoriOnlinePage() {
       ) : (
         <ul className="space-y-2">
           {users.map((u) => (
-            <li key={u.id} className="bg-white/5 border border-white/10 p-3 rounded-lg">
-              {u.username}
+            <li
+              key={u.id}
+              className="bg-white/5 border border-white/10 p-3 rounded-lg"
+            >
+              <p className="font-semibold">{u.name}</p>
+              <p className="text-white/50 text-sm">{u.email}</p>
             </li>
           ))}
         </ul>

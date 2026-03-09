@@ -35,12 +35,21 @@ export default function HomePage() {
       })
       .catch(() => {});
   }, []);
+
+  // 🔥 AICI ESTE BUCATA MODIFICATĂ CORECT
   useEffect(() => {
-  axios
-    .get("https://electrohub-backend-1-10qa.onrender.com/users/online")
-    .then((res) => setOnlineUsers(res.data.length))
-    .catch(() => {});
+    const token = localStorage.getItem("token");
+
+    axios
+      .get("https://electrohub-backend-1-10qa.onrender.com/users/online", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => setOnlineUsers(res.data.length))
+      .catch(() => {});
   }, []);
+}
 
   useEffect(() => {
     if (typeof window !== "undefined") {

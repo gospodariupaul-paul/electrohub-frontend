@@ -14,16 +14,11 @@ export default function UserProfilePage() {
   const [tab, setTab] = useState("active");
   const [products, setProducts] = useState([]);
 
-  // 🔥 Slider index pentru fiecare produs
   const [sliderIndex, setSliderIndex] = useState<any>({});
-
-  // 🔥 Mesaje necitite
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // 🔥 Notificări necitite
   const notificationCount = user ? getUnreadCount(user.id) : 0;
 
-  // 🔥 Fetch mesaje necitite — FIXAT
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -32,7 +27,7 @@ export default function UserProfilePage() {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/conversations/user/${user.id}`,
           {
-            credentials: "include", // 🔥 FIX AICI
+            credentials: "include",
           }
         );
 
@@ -52,19 +47,16 @@ export default function UserProfilePage() {
     fetchUnread();
   }, [user]);
 
+  // 🔥 FIX: DELETE PRODUCT — folosește cookie JWT, nu localStorage
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
 
     try {
-      const token = localStorage.getItem("token");
-
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
         {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include",
         }
       );
 
@@ -79,19 +71,16 @@ export default function UserProfilePage() {
     }
   };
 
+  // 🔥 FIX: FETCH PRODUCTS — folosește cookie JWT
   useEffect(() => {
     if (!user || !user.id) return;
 
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem("token");
-
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/products/user/${user.id}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
           }
         );
 
@@ -162,7 +151,6 @@ export default function UserProfilePage() {
         <nav className="space-y-3">
           <SidebarItem label="Anunțuri" active />
 
-          {/* 🔥 CHAT CU BADGE */}
           <Link href="/my-account/messages" className="relative block">
             <SidebarItem label="Chat" />
             {unreadCount > 0 && (
@@ -172,7 +160,6 @@ export default function UserProfilePage() {
             )}
           </Link>
 
-          {/* 🔥 NOTIFICĂRI CU BADGE */}
           <Link href="/my-account/notifications" className="relative block">
             <SidebarItem label="Notificări" />
             {notificationCount > 0 && (
@@ -256,7 +243,6 @@ export default function UserProfilePage() {
                       key={p.id}
                       className="bg-[#070a20] border border-white/10 rounded-xl p-4"
                     >
-                      {/* 🔥 SLIDER IMAGINI */}
                       <div className="relative w-full h-40 mb-3">
                         <img
                           src={

@@ -9,13 +9,9 @@ export default function UtilizatoriOnlinePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
     axios
       .get("https://electrohub-backend-1-10qa.onrender.com/users/online", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       })
       .then((res) => setUsers(res.data))
       .catch((err) => {

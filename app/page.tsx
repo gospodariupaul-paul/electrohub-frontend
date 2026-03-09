@@ -16,6 +16,7 @@ export default function HomePage() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState(0);
 
   const router = useRouter();
 
@@ -33,6 +34,12 @@ export default function HomePage() {
         }
       })
       .catch(() => {});
+  }, []);
+  useEffect(() => {
+  axios
+    .get("https://electrohub-backend-1-10qa.onrender.com/users/online")
+    .then((res) => setOnlineUsers(res.data.online))
+    .catch(() => {});
   }, []);
 
   useEffect(() => {

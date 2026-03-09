@@ -49,8 +49,8 @@ export default function HomePage() {
       .then((res) => setOnlineUsers(res.data.length))
       .catch(() => {});
   }, []);
-}
 
+  // 🔥 A TREIA BUCATĂ — MUTATĂ LA LOCUL EI CORECT
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");

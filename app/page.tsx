@@ -36,19 +36,16 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  // 🔥 AICI ESTE BUCATA MODIFICATĂ CORECT
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+ // 🔥 AICI ESTE BUCATA MODIFICATĂ CORECT
+useEffect(() => {
+  axios
+    .get("https://electrohub-backend-1-10qa.onrender.com/users/online", {
+      withCredentials: true,
+    })
+    .then((res) => setOnlineUsers(res.data.length))
+    .catch(() => {});
+}, []);
 
-    axios
-      .get("https://electrohub-backend-1-10qa.onrender.com/users/online", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => setOnlineUsers(res.data.length))
-      .catch(() => {});
-  }, []);
 
   // 🔥 A TREIA BUCATĂ — MUTATĂ LA LOCUL EI CORECT
   useEffect(() => {

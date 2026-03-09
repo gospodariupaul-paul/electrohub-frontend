@@ -287,7 +287,7 @@ export default function HomePage() {
       {/* RIGHT: 4 BOXES */}
       <div className="grid grid-cols-2 gap-4">
 
-        {/* 🔥 FIXED: PRODUSE ACTIVE */}
+        {/* 🔥 PRODUSE ACTIVE */}
         <Link href="/produse">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-cyan-400 transition">
             <p className="text-xs text-white/50">Produse active</p>
@@ -295,10 +295,13 @@ export default function HomePage() {
           </div>
         </Link>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-          <p className="text-xs text-white/50">Utilizatori online</p>
-          <p className="text-2xl font-bold text-emerald-300">8</p>
-        </div>
+        {/* 🔥 UTILIZATORI ONLINE — MODIFICAT */}
+        <Link href="/utilizatori-online">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-emerald-400 transition">
+            <p className="text-xs text-white/50">Utilizatori online</p>
+            <p className="text-2xl font-bold text-emerald-300">{onlineUsers}</p>
+          </div>
+        </Link>
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
           <p className="text-sm font-semibold">Vinde un produs</p>

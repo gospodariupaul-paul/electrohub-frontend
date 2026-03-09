@@ -10,7 +10,7 @@ export default function UtilizatoriOnlinePage() {
 
   useEffect(() => {
     axios
-      .get("https://electrohub-backend-1-10qa.onrender.com/users/online/list")
+      .get("https://electrohub-backend-1-10qa.onrender.com/users/online")
       .then((res) => setUsers(res.data))
       .catch(() => {});
   }, []);

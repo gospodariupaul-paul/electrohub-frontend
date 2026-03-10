@@ -12,7 +12,7 @@ export default function ProductsList({ products }: { products: any[] }) {
       {products.map((product) => (
         <Link
           key={product.id}
-          href={`/products/${product.id}`}   // 🔥 RUTA CORECTĂ
+          href={`/product/${product.id}`}   // 🔥 RUTA CORECTĂ
           className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition"
         >
           <img

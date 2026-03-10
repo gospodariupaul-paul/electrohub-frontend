@@ -15,14 +15,16 @@ export default function DashboardPage() {
     const load = async () => {
       try {
         if (user) {
-          const res = await axiosInstance.get("/products/all");
+          // 🔥 AICI AM REPARAT
+          const res = await axiosInstance.get("/products");
           setProducts(res.data || []);
           return;
         }
 
         const token = localStorage.getItem("token");
         if (token) {
-          const res = await axiosInstance.get("/products/all", {
+          // 🔥 AICI AM REPARAT
+          const res = await axiosInstance.get("/products", {
             headers: {
               Authorization: `Bearer ${token}`,
             },

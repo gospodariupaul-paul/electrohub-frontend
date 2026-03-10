@@ -14,26 +14,9 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        if (user) {
-          // 🔥 AICI AM REPARAT
-          const res = await axiosInstance.get("/products");
-          setProducts(res.data || []);
-          return;
-        }
-
-        const token = localStorage.getItem("token");
-        if (token) {
-          // 🔥 AICI AM REPARAT
-          const res = await axiosInstance.get("/products", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setProducts(res.data || []);
-          return;
-        }
-
-        setProducts([]);
+        // 🔥 Cookie trimite tokenul automat
+        const res = await axiosInstance.get("/products");
+        setProducts(res.data || []);
       } catch (e) {
         console.error("Eroare:", e);
       } finally {
@@ -48,7 +31,9 @@ export default function DashboardPage() {
     if (!confirm("Sigur vrei să ștergi acest produs?")) return;
 
     try {
+      // 🔥 Cookie trimite tokenul automat
       await axiosInstance.delete(`/products/${id}`);
+
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (e) {
       console.error("Eroare la ștergere:", e);

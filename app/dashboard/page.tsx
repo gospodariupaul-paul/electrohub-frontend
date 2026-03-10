@@ -15,16 +15,14 @@ export default function DashboardPage() {
     const load = async () => {
       try {
         if (user) {
-          // 🔥 MODIFICARE AICI
-          const res = await axiosInstance.get("/products/all");
+          const res = await axiosInstance.get("/products");
           setProducts(res.data || []);
           return;
         }
 
         const token = localStorage.getItem("token");
         if (token) {
-          // 🔥 MODIFICARE AICI
-          const res = await axiosInstance.get("/products/all", {
+          const res = await axiosInstance.get("/products", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -49,8 +47,6 @@ export default function DashboardPage() {
 
     try {
       await axiosInstance.delete(`/products/${id}`);
-
-      // 🔥 ȘTERGERE DIN LISTĂ
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (e) {
       console.error("Eroare la ștergere:", e);

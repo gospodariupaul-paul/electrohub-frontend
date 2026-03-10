@@ -15,14 +15,16 @@ export default function DashboardPage() {
     const load = async () => {
       try {
         if (user) {
-          const res = await axiosInstance.get("/products");
+          // 🔥 MODIFICARE AICI
+          const res = await axiosInstance.get("/products/all");
           setProducts(res.data || []);
           return;
         }
 
         const token = localStorage.getItem("token");
         if (token) {
-          const res = await axiosInstance.get("/products", {
+          // 🔥 MODIFICARE AICI
+          const res = await axiosInstance.get("/products/all", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -47,6 +49,8 @@ export default function DashboardPage() {
 
     try {
       await axiosInstance.delete(`/products/${id}`);
+
+      // 🔥 ȘTERGERE DIN LISTĂ
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (e) {
       console.error("Eroare la ștergere:", e);
@@ -67,7 +71,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* 🔥 AICI ESTE BUTONUL DE CHAT */}
         <div className="flex gap-3">
           <Link
             href="/dashboard/products/add"

@@ -15,14 +15,14 @@ export default function DashboardPage() {
     const load = async () => {
       try {
         if (user) {
-          const res = await axiosInstance.get("/products");
+          const res = await axiosInstance.get("/products/all");
           setProducts(res.data || []);
           return;
         }
 
         const token = localStorage.getItem("token");
         if (token) {
-          const res = await axiosInstance.get("/products", {
+          const res = await axiosInstance.get("/products/all", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -56,7 +56,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">
@@ -79,7 +78,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* STATISTICI */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard title="Produse active" value={products.length} />
         <StatCard title="Vizualizări totale" value="—" />
@@ -87,7 +85,6 @@ export default function DashboardPage() {
         <StatCard title="Anunțuri expirate" value="0" />
       </div>
 
-      {/* LISTA PRODUSE */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Produsele tale</h2>
 

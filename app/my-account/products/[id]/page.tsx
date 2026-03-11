@@ -87,7 +87,7 @@ export default function EditProductPage() {
     setSaving(true);
 
     try {
-      await axiosInstance.put(`/products/${productId}`, {
+      await axiosInstance.patch(`/products/${productId}`, {
         name,
         price: Number(price),
         description,

@@ -17,8 +17,10 @@ function SearchContent() {
     const load = async () => {
       setLoading(true);
 
+      const API = process.env.NEXT_PUBLIC_API_URL;
+
       const res = await axios.get(
-        `https://electrohub-backend-1-10qa.onrender.com/products/search?q=${q}`
+        `${API}/products/search?q=${q}`
       );
 
       setResults(res.data);

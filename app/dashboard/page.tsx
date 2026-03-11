@@ -31,8 +31,10 @@ export default function DashboardPage() {
     if (!confirm("Sigur vrei să ștergi acest produs?")) return;
 
     try {
-      // 🔥 Cookie trimite tokenul automat
-      await axiosInstance.delete(`/products/${id}`);
+      // 🔥 FIX: trimitem cookie-ul cu tokenul
+      await axiosInstance.delete(`/products/${id}`, {
+        withCredentials: true,
+      });
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (e) {

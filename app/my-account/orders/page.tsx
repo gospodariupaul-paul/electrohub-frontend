@@ -26,12 +26,11 @@ export default function OrdersPage() {
   useEffect(() => {
     async function loadOrders() {
       try {
-        const res = await fetch(
-          "https://electrohub-backend-1-10qa.onrender.com/orders/user/1",
-          {
-            credentials: "include",
-          }
-        );
+        const API = process.env.NEXT_PUBLIC_API_URL;
+
+        const res = await fetch(`${API}/orders/user/1`, {
+          credentials: "include",
+        });
 
         if (!res.ok) {
           throw new Error("Eroare la încărcarea comenzilor");

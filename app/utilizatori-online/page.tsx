@@ -9,8 +9,10 @@ export default function UtilizatoriOnlinePage() {
   const router = useRouter();
 
   useEffect(() => {
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
     axios
-      .get("https://electrohub-backend-1-10qa.onrender.com/users/online", {
+      .get(`${API}/users/online`, {
         withCredentials: true,
       })
       .then((res) => setUsers(res.data))

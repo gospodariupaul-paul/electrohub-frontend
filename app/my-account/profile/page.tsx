@@ -19,6 +19,7 @@ export default function UserProfilePage() {
 
   const notificationCount = user ? getUnreadCount(user.id) : 0;
 
+  // FETCH UNREAD MESSAGES
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -47,7 +48,7 @@ export default function UserProfilePage() {
     fetchUnread();
   }, [user]);
 
-  // 🔥 FIX: DELETE PRODUCT — folosește cookie JWT, nu localStorage
+  // DELETE PRODUCT
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
 
@@ -71,7 +72,7 @@ export default function UserProfilePage() {
     }
   };
 
-  // 🔥 FIX: FETCH PRODUCTS — folosește cookie JWT
+  // FETCH PRODUCTS
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -94,16 +95,14 @@ export default function UserProfilePage() {
     fetchProducts();
   }, [user]);
 
+  // REDIRECT LOGIC (CORECT)
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    if (loading) return;
 
-    if (!token) {
+    if (!user) {
       router.push("/login");
       return;
     }
-
-    if (loading) return;
-    if (!user) return;
 
     if (user.role === "admin") {
       router.push("/dashboard");
@@ -111,7 +110,8 @@ export default function UserProfilePage() {
     }
   }, [loading, user]);
 
-  if (loading || !user) {
+  // LOADING STATE
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
         Se încarcă...
@@ -119,6 +119,16 @@ export default function UserProfilePage() {
     );
   }
 
+  // NOT LOGGED IN
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Trebuie să fii logat
+      </div>
+    );
+  }
+
+  // PRODUCT COUNTS
   const activeCount = products.filter((p: any) => p.status === "active").length;
   const pendingCount = products.filter((p: any) => p.status === "pending").length;
   const toPayCount = products.filter((p: any) => p.status === "topay").length;

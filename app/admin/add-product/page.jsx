@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function AddProductPage() {
-  const API = "https://electrohub-backend-1-10qa.onrender.com";
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -24,7 +24,7 @@ export default function AddProductPage() {
       .get(`${API}/categories`)
       .then((res) => setCategories(res.data))
       .catch((err) => console.error("Eroare categorii:", err));
-  }, []);
+  }, [API]);
 
   // 🔥 2. Preview imagini înainte de upload
   const handleImageChange = (e) => {
@@ -60,7 +60,7 @@ export default function AddProductPage() {
       setName("");
       setPrice("");
       setStock("");
-      setDescription("");
+        setDescription("");
       setCategoryId("");
       setImages([]);
       setPreviewImages([]);

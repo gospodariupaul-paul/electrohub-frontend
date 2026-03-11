@@ -23,7 +23,9 @@ export default function SellerProductPage() {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`https://electrohub-backend-1-10qa.onrender.com/products/${id}`)
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
+    fetch(`${API}/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -46,18 +48,17 @@ export default function SellerProductPage() {
     }
 
     try {
+      const API = process.env.NEXT_PUBLIC_API_URL;
+
       // 2️⃣ Creează conversația folosind cookie-ul httpOnly
-      const res = await fetch(
-        "https://electrohub-backend-1-10qa.onrender.com/conversations",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // 🔥 OBLIGATORIU pentru cookie JWT
-          body: JSON.stringify({ productId: product.id }),
-        }
-      );
+      const res = await fetch(`${API}/conversations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // 🔥 OBLIGATORIU pentru cookie JWT
+        body: JSON.stringify({ productId: product.id }),
+      });
 
       if (!res.ok) {
         console.error("Eroare backend:", await res.text());

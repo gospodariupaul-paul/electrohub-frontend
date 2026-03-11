@@ -25,7 +25,9 @@ export default function MyListingsPage() {
       return;
     }
 
-    fetch("https://electrohub-backend-1-10qa.onrender.com/products/my", {
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
+    fetch(`${API}/products/my`, {
       method: "GET",
       credentials: "include",
       headers: {

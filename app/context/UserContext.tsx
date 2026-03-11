@@ -11,10 +11,10 @@ export function UserProvider({ children }: any) {
 
   const loadUser = async () => {
     try {
-      const res = await axiosInstance.get("/auth/me"); // 🔥 user din cookie JWT
+      const res = await axiosInstance.get("/auth/me");
       setUser(res.data);
       console.log("USER LOGAT (REAL):", res.data);
-    } catch (err) {
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);

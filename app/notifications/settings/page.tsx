@@ -13,13 +13,12 @@ export default function NotificationSettingsPage() {
     price_alerts: false,
   });
 
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
   // 🔥 Încarcă setările utilizatorului
   useEffect(() => {
     axios
-      .get(
-        "https://electrohub-backend-1-10qa.onrender.com/notifications/settings/me",
-        { withCredentials: true }
-      )
+      .get(`${API}/notifications/settings/me`, { withCredentials: true })
       .then((res) => {
         setSettings(res.data);
         setLoading(false);
@@ -29,18 +28,15 @@ export default function NotificationSettingsPage() {
 
   // 🔥 Salvează setările
   const saveSettings = () => {
-    axios.post(
-      "https://electrohub-backend-1-10qa.onrender.com/notifications/settings",
-      settings,
-      {
+    axios
+      .post(`${API}/notifications/settings`, settings, {
         withCredentials: true,
         headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    )
-    .then(() => alert("Setările au fost salvate"))
-    .catch(() => alert("Eroare la salvare"));
+          "Content-Type": "application/json",
+        },
+      })
+      .then(() => alert("Setările au fost salvate"))
+      .catch(() => alert("Eroare la salvare"));
   };
 
   const toggle = (key) => {

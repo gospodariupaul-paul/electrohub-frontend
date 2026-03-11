@@ -29,8 +29,10 @@ export default function SettingsPage() {
     formData.append("image", image);
 
     try {
+      const API = process.env.NEXT_PUBLIC_API_URL;
+
       const res = await axios.post(
-        "https://electrohub-backend-1-10qa.onrender.com/products/create",
+        `${API}/products/create`,
         formData,
         {
           headers: {

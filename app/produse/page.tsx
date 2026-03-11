@@ -12,8 +12,10 @@ export default function ProdusePage() {
   const router = useRouter();
 
   useEffect(() => {
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
     axios
-      .get("https://electrohub-backend-1-10qa.onrender.com/products")
+      .get(`${API}/products`)
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Eroare la încărcarea produselor:", err))
       .finally(() => setLoading(false));

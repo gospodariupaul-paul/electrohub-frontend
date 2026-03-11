@@ -72,7 +72,6 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 🔥 Închide context menu la click oriunde pe ecran
   useEffect(() => {
     const closeMenu = () => setContextMenu(null);
     window.addEventListener("click", closeMenu);
@@ -140,8 +139,11 @@ export default function ChatPage() {
     }
   };
 
+  // 🔥 SINGURA MODIFICARE DIN TOT FIȘIERUL
   useEffect(() => {
-    fetch("https://electrohub-backend-1-10qa.onrender.com/conversations/unread", {
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
+    fetch(`${API}/conversations/unread`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -215,10 +217,9 @@ export default function ChatPage() {
       {/* MESAJE */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21] relative">
 
-        {/* CONTEXT MENU */}
         {contextMenu && (
           <div
-            onClick={(e) => e.stopPropagation()} // 🔥 nu se închide când dai click pe meniu
+            onClick={(e) => e.stopPropagation()}
             className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-[9999] w-40"
             style={{ top: contextMenu.y, left: contextMenu.x }}
           >

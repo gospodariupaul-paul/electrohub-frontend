@@ -5,18 +5,30 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function CategoryPage({ params }) {
-  const { slug } = params;
+  const { slug } = params; // slug = categoryId (1,2,3,4)
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     async function loadProducts() {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/category/${slug}`,
-        { cache: "no-store" }
-      );
-      const data = await res.json();
-      setProducts(data);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/category/${slug}`,
+          { cache: "no-store" }
+        );
+
+        if (!res.ok) {
+          console.error("API ERROR:", res.status);
+          setProducts([]); // prevenim crash-ul
+          return;
+        }
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("FETCH ERROR:", err);
+        setProducts([]); // prevenim crash-ul
+      }
     }
 
     loadProducts();
@@ -33,7 +45,7 @@ export default function CategoryPage({ params }) {
         ← Înapoi
       </button>
 
-      <h1 className="text-3xl font-bold mb-6 capitalize">{slug}</h1>
+      <h1 className="text-3xl font-bold mb-6 capitalize">Categoria {slug}</h1>
 
       {products.length === 0 ? (
         <p>Nu există produse în această categorie.</p>

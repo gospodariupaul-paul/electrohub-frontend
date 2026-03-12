@@ -20,7 +20,8 @@ export default function ProductPage() {
   }, []);
 
   useEffect(() => {
-    if (!id) return;
+    // 🔥 FIX REAL — oprește request-ul dacă id este undefined, null sau NaN
+    if (!id || isNaN(Number(id))) return;
 
     axiosInstance
       .get(`/products/${id}`, { withCredentials: true })

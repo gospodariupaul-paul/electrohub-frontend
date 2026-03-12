@@ -348,13 +348,11 @@ export default function HomePage() {
                   { id: 1, name: "Telefoane" },
                   { id: 2, name: "Laptopuri" },
                   { id: 3, name: "Componente PC" },
-                  { id: 4, name: "Drones" },
-                  { id: 5, name: "IoT & Smart Home" },
-                  { id: 6, name: "Audio-Video" },
-                  { id: 7, name: "Altele" },
+                  { id: 4, name: "Audio-Video" },
+                  { id: 3, name: "Altele" }, // ← aici sunt produsele tale diverse
                 ].map((cat) => (
                   <Link
-                    key={cat.id}
+                    key={cat.name}
                     href={`/categorie/${cat.id}`}
                     className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition flex flex-col justify-between"
                   >
@@ -438,7 +436,7 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* PRODUSE REALE */}
+             {/* PRODUSE REALE */}
             <section className="mt-10">
               <h2 className="text-lg font-semibold mb-4">Produse recente</h2>
 

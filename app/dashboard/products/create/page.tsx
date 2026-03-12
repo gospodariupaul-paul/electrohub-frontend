@@ -1,36 +1,53 @@
-import Link from "next/link";
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useState } from "react";
+import axiosInstance from "@/lib/axios";
+import { useEffect, useState } from "react";
+import ProductsList from "@/components/ProductsList";
 import { useRouter } from "next/navigation";
-import { createCategory } from "@/lib/categories";
 
-export default function CreateCategoryPage() {
+export default function ProdusePage() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const router = useRouter();
-  const [name, setName] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    await createCategory({ name });
-    router.push("/dashboard/categories");
+  useEffect(() => {
+    axiosInstance
+      .get("/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Eroare la încărcarea produselor:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Se încarcă produsele...
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>Create Category</h1>
+    <div className="min-h-screen bg-[#0b141a] text-white px-4 py-8">
+      <div className="max-w-6xl mx-auto">
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Category name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {/* 🔙 BUTON ÎNAPOI */}
+        <button
+          onClick={() => router.push("/")}
+          className="mb-6 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
+        >
+          ← Înapoi la homepage
+        </button>
 
-        <button type="submit">Create</button>
-      </form>
+        <h1 className="text-2xl font-bold mb-6">Toate produsele active</h1>
+
+        {products.length === 0 ? (
+          <p className="text-white/50">Nu există produse active.</p>
+        ) : (
+          <ProductsList products={products} />
+        )}
+
+      </div>
     </div>
   );
 }

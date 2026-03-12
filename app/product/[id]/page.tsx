@@ -20,8 +20,8 @@ export default function ProductPage() {
   }, []);
 
   useEffect(() => {
-    // 🔥 FIX REAL — oprește request-ul dacă id este undefined, null sau NaN
-    if (!id || isNaN(Number(id))) return;
+    // 🔥 FIX FINAL — NU MAI TRIMITE NICIODATĂ /products/undefined
+    if (!id || typeof id !== "string" || !/^\d+$/.test(id)) return;
 
     axiosInstance
       .get(`/products/${id}`, { withCredentials: true })
@@ -30,7 +30,6 @@ export default function ProductPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // 🔥 FIX 401 Unauthorized — adăugat withCredentials: true
   const startConversation = async () => {
     if (!user) {
       router.push("/login");
@@ -41,7 +40,7 @@ export default function ProductPage() {
       const res = await axiosInstance.post(
         "/conversations",
         { productId: Number(id) },
-        { withCredentials: true } // 🔥 OBLIGATORIU pentru cookie JWT
+        { withCredentials: true }
       );
 
       const conversationId = res.data.id;

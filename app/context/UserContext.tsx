@@ -21,12 +21,22 @@ export function UserProvider({ children }: any) {
     }
   };
 
+  const logout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+
+    setUser(null); // 🔥 UI-ul se actualizează instant
+  };
+
   useEffect(() => {
     loadUser();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading, reloadUser: loadUser }}>
+    <UserContext.Provider value={{ user, setUser, loading, reloadUser: loadUser, logout }}>
       {children}
     </UserContext.Provider>
   );

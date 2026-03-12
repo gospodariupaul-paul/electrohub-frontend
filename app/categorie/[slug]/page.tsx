@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function CategoryPage({ params }) {
-  const { slug } = params; // slug = categoryId (1,2,3,4)
+  const { slug } = params; // slug = categoryId (1,2,3,4,5,8)
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
@@ -14,7 +14,9 @@ export default function CategoryPage({ params }) {
     1: "Telefoane",
     2: "Laptopuri",
     3: "Componente PC",
-    4: "Altele", // ← modificarea necesară
+    4: "Audio-Video",
+    5: "Altele",
+    8: "Drones",
   };
 
   const categoryName = categoryNames[slug] || "Categorie necunoscută";
@@ -55,7 +57,7 @@ export default function CategoryPage({ params }) {
         ← Înapoi
       </button>
 
-      {/* 🔥 AFIȘĂM NUMELE CATEGORIEI, NU ID-UL */}
+      {/* 🔥 AFIȘĂM NUMELE CATEGORIEI */}
       <h1 className="text-3xl font-bold mb-6 capitalize">
         Categoria {categoryName}
       </h1>

@@ -5,7 +5,9 @@ import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 
 export default function ProductPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id;
+
   const router = useRouter();
 
   const [product, setProduct] = useState<any>(null);
@@ -21,7 +23,9 @@ export default function ProductPage() {
 
   useEffect(() => {
     // 🔥 FIX FINAL — NU MAI TRIMITE NICIODATĂ /products/undefined
-    if (!id || typeof id !== "string" || !/^\d+$/.test(id)) return;
+    if (!id) return;
+    if (typeof id !== "string") return;
+    if (!/^\d+$/.test(id)) return;
 
     axiosInstance
       .get(`/products/${id}`, { withCredentials: true })

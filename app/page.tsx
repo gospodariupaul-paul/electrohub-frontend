@@ -349,7 +349,8 @@ export default function HomePage() {
                   { id: 2, name: "Laptopuri" },
                   { id: 3, name: "Componente PC" },
                   { id: 4, name: "Audio-Video" },
-                  { id: 3, name: "Altele" }, // ← aici sunt produsele tale diverse
+                  { id: 4, name: "Altele" },
+                  { id: 5, name: "Drones" },
                 ].map((cat) => (
                   <Link
                     key={cat.name}
@@ -404,7 +405,7 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* AI RECOMMENDATIONS */}
+             {/* AI RECOMMENDATIONS */}
             <section className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">

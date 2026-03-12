@@ -342,19 +342,20 @@ export default function HomePage() {
                   Organizare de tip bento grid, cu focus pe ce te interesează
                 </span>
               </div>
+
               <div className="grid md:grid-cols-4 gap-4">
                 {[
-                  { id: 1, name: "Telefoane", slug: "telefoane" },
-                  { id: 2, name: "Laptopuri", slug: "laptopuri" },
-                  { id: 3, name: "Componente PC", slug: "componente-pc" },
-                  { id: 4, name: "Drones", slug: "drones" },
-                  { id: 5, name: "IoT & Smart Home", slug: "smart-home" },
-                  { id: 6, name: "Audio-Video", slug: "audio-video" },
-                  { id: 7, name: "Altele", slug: "altele" },
+                  { id: 1, name: "Telefoane" },
+                  { id: 2, name: "Laptopuri" },
+                  { id: 3, name: "Componente PC" },
+                  { id: 4, name: "Drones" },
+                  { id: 5, name: "IoT & Smart Home" },
+                  { id: 6, name: "Audio-Video" },
+                  { id: 7, name: "Altele" },
                 ].map((cat) => (
                   <Link
                     key={cat.id}
-                    href={`/categorie/${cat.slug}`}
+                    href={`/categorie/${cat.id}`}
                     className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 hover:bg-white/10 transition flex flex-col justify-between"
                   >
                     <div>

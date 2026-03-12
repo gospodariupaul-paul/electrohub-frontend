@@ -17,13 +17,17 @@ function SearchContent() {
     const load = async () => {
       setLoading(true);
 
-      const API = process.env.NEXT_PUBLIC_API_URL;
+      try {
+        const API = process.env.NEXT_PUBLIC_API_URL;
 
-      const res = await axios.get(
-        `${API}/products/search?q=${q}`
-      );
+        const res = await axios.get(`${API}/products/search?q=${q}`);
 
-      setResults(res.data);
+        setResults(res.data);
+      } catch (err) {
+        console.error("EROARE LA SEARCH:", err);
+        setResults([]);
+      }
+
       setLoading(false);
     };
 

@@ -3,8 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
+import { useRouter } from "next/navigation"; // 🔥 ADĂUGAT
 
 export default function RegisterPage() {
+  const router = useRouter(); // 🔥 ADĂUGAT
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,6 +46,10 @@ export default function RegisterPage() {
       }
 
       alert("Cont creat cu succes!");
+
+      // 🔥 REDIRECT DIRECT ÎN HOMEPAGE
+      router.push("/");
+
     } catch (err) {
       console.error(err);
       setError("Eroare de server");

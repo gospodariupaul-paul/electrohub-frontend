@@ -349,8 +349,8 @@ export default function HomePage() {
                   { id: 2, name: "Laptopuri" },
                   { id: 3, name: "Componente PC" },
                   { id: 4, name: "Audio-Video" },
-                  { id: 4, name: "Altele" },
-                  { id: 5, name: "Drones" },
+                  { id: 5, name: "Altele" },
+                  { id: 8, name: "Drones" },
                 ].map((cat) => (
                   <Link
                     key={cat.name}

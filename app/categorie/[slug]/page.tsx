@@ -9,6 +9,16 @@ export default function CategoryPage({ params }) {
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
+  // 🔥 MAPARE CORECTĂ ID → NUME CATEGORIE
+  const categoryNames = {
+    1: "Telefoane",
+    2: "Laptopuri",
+    3: "Componente PC / Altele",
+    4: "Audio-Video",
+  };
+
+  const categoryName = categoryNames[slug] || "Categorie necunoscută";
+
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -19,7 +29,7 @@ export default function CategoryPage({ params }) {
 
         if (!res.ok) {
           console.error("API ERROR:", res.status);
-          setProducts([]); // prevenim crash-ul
+          setProducts([]);
           return;
         }
 
@@ -27,7 +37,7 @@ export default function CategoryPage({ params }) {
         setProducts(data);
       } catch (err) {
         console.error("FETCH ERROR:", err);
-        setProducts([]); // prevenim crash-ul
+        setProducts([]);
       }
     }
 
@@ -45,7 +55,10 @@ export default function CategoryPage({ params }) {
         ← Înapoi
       </button>
 
-      <h1 className="text-3xl font-bold mb-6 capitalize">Categoria {slug}</h1>
+      {/* 🔥 AFIȘĂM NUMELE CATEGORIEI, NU ID-UL */}
+      <h1 className="text-3xl font-bold mb-6 capitalize">
+        Categoria {categoryName}
+      </h1>
 
       {products.length === 0 ? (
         <p>Nu există produse în această categorie.</p>

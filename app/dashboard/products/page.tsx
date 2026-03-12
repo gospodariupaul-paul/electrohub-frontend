@@ -1,136 +1,51 @@
-import Link from "next/link";
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 
-export default function AddProductPage() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [images, setImages] = useState<File[]>([]);
-  const [loading, setLoading] = useState(false);
+export default function DashboardProductsPage() {
+  const [products, setProducts] = useState([]);
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("price", price);
-    formData.append("stock", stock);
-    formData.append("description", description);
-    formData.append("categoryId", categoryId);
-
-    images.forEach((img) => {
-      formData.append("images", img);
-    });
-
-    try {
-      // 🔥 RUTA CORECTĂ
-      await axiosInstance.post("/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      alert("Produs creat cu succes!");
-
-      setName("");
-      setPrice("");
-      setStock("");
-      setDescription("");
-      setCategoryId("");
-      setImages([]);
-    } catch (err) {
-      console.error("Eroare la creare produs:", err);
-      alert("Eroare la creare produs!");
-    } finally {
-      setLoading(false);
-    }
+  const loadProducts = async () => {
+    const res = await axiosInstance.get("/products");
+    setProducts(res.data);
   };
 
+  const deleteProduct = async (id: number) => {
+    if (!confirm("Sigur vrei să ștergi produsul?")) return;
+
+    await axiosInstance.delete(`/products/${id}`);
+    loadProducts();
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Adaugă produs</h1>
+    <div className="p-10 text-white">
+      <h1 className="text-2xl font-bold mb-6">Produsele tale</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-4">
+        {products.map((p: any) => (
+          <div
+            key={p.id}
+            className="p-4 bg-[#0a0d25] border border-white/10 rounded flex justify-between"
+          >
+            <div>
+              <h2 className="text-lg font-semibold">{p.name}</h2>
+              <p className="opacity-70">{p.price} €</p>
+            </div>
 
-        <input
-          type="text"
-          placeholder="Nume produs"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
-          required
-        />
-
-        <input
-          type="number"
-          placeholder="Preț"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
-          required
-        />
-
-        <input
-          type="number"
-          placeholder="Stoc"
-          value={stock}
-          onChange={(e) => setStock(e.target.value)}
-          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
-          required
-        />
-
-        <textarea
-          placeholder="Descriere produs"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full h-24"
-          required
-        />
-
-        <input
-          type="number"
-          placeholder="ID categorie"
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
-          required
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={(e) => setImages(Array.from(e.target.files || []))}
-          className="px-3 py-2 rounded bg-[#0a0d25] border border-white/10 w-full"
-        />
-
-        {images.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 mt-4">
-            {images.map((img, i) => (
-              <img
-                key={i}
-                src={URL.createObjectURL(img)}
-                alt="Preview"
-                className="w-24 h-24 object-cover rounded border border-white/10"
-              />
-            ))}
+            <button
+              onClick={() => deleteProduct(p.id)}
+              className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded"
+            >
+              Șterge
+            </button>
           </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded disabled:opacity-50"
-        >
-          {loading ? "Se încarcă..." : "Creează"}
-        </button>
-      </form>
+        ))}
+      </div>
     </div>
   );
 }

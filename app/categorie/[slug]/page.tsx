@@ -13,8 +13,8 @@ export default function CategoryPage({ params }) {
   const categoryNames = {
     1: "Telefoane",
     2: "Laptopuri",
-    3: "Componente PC / Altele",
-    4: "Audio-Video",
+    3: "Componente PC",
+    4: "Altele", // ← modificarea necesară
   };
 
   const categoryName = categoryNames[slug] || "Categorie necunoscută";

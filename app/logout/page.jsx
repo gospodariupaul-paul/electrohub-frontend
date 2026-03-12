@@ -6,7 +6,7 @@ import { useUser } from "@/app/context/UserContext";
 
 export default function LogoutPage() {
   const router = useRouter();
-  const { setUser, reloadUser } = useUser();
+  const { setUser } = useUser();
 
   useEffect(() => {
     // Ștergem token-urile
@@ -17,12 +17,8 @@ export default function LogoutPage() {
     // Resetăm contextul
     setUser(null);
 
-    // 🔥 IMPORTANT: așteptăm ca React să proceseze setUser(null)
-    setTimeout(() => {
-      reloadUser(); // acum se execută SIGUR
-      console.log("USER LOGAT după logout:", null);
-      router.push("/");
-    }, 50);
+    // Redirect fără reloadUser()
+    router.push("/");
   }, []);
 
   return (

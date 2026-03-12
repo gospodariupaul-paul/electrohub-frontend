@@ -33,7 +33,9 @@ function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
 
-  const { user } = useUser();
+  // 🔥 MODIFICAREA IMPORTANTĂ
+  const { user, loading } = useUser();
+
   const {
     getUnreadCount,
     getUserNotifications,
@@ -41,6 +43,13 @@ function Header() {
     deleteNotification,
     emptyState
   } = useNotifications();
+
+  // 🔥 FIX: NU randa meniul până nu știm dacă userul e logat
+  if (loading) {
+    return (
+      <header className="h-16 bg-[#0d1117]/90 border-b border-white/10"></header>
+    );
+  }
 
   const unread = user ? getUnreadCount() : 0;
   const userNotifications = user ? getUserNotifications() : [];

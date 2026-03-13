@@ -1,30 +1,24 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { useUser } from "./UserContext";
 
 const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [settings, setSettings] = useState(null);
-  const [userId, setUserId] = useState(null);
+
+  // 🔥 PRELUĂM USERUL REAL DIN UserContext
+  const { user } = useUser();
 
   const API = process.env.NEXT_PUBLIC_API_URL;
-
-  // 🔥 Preluăm userId din localStorage
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      const parsed = JSON.parse(savedUser);
-      setUserId(parsed.id);
-    }
-  }, []);
 
   // 🔥 Încarcă notificările
   const loadNotifications = async (uid) => {
     try {
       const res = await fetch(`${API}/notifications/${uid}`, {
-        credentials: "include", // 🔥 SINGURA MODIFICARE NECESARĂ
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -62,34 +56,13 @@ export function NotificationProvider({ children }) {
     }
   };
 
-  // 🔥 Salvează setările
-  const saveSettings = async (newSettings) => {
-    try {
-      const res = await fetch(`${API}/notifications/settings`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(newSettings),
-      });
-
-      if (!res.ok) throw new Error("Eroare la salvare");
-
-      const data = await res.json();
-      setSettings(data);
-      return true;
-    } catch (err) {
-      console.error("Eroare salvare setări:", err);
-      return false;
-    }
-  };
-
-  // 🔥 Când avem userId → încărcăm notificările și setările
+  // 🔥 Când userul este disponibil → încărcăm notificările
   useEffect(() => {
-    if (userId) {
-      loadNotifications(userId);
+    if (user?.id) {
+      loadNotifications(user.id);
       loadSettings();
     }
-  }, [userId]);
+  }, [user]);
 
   const markAsRead = async (id) => {
     await fetch(`${API}/notifications/read/${id}`, { method: "PATCH" });
@@ -113,15 +86,32 @@ export function NotificationProvider({ children }) {
     return notifications;
   };
 
-  // 🔥 FUNCȚIA CARE LIPSEA — cauza erorii
   const refreshNotifications = () => {
-    if (userId) loadNotifications(userId);
+    if (user?.id) loadNotifications(user.id);
   };
 
   const value = {
     notifications,
     settings,
-    saveSettings,
+    saveSettings: async (newSettings) => {
+      try {
+        const res = await fetch(`${API}/notifications/settings`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(newSettings),
+        });
+
+        if (!res.ok) throw new Error("Eroare la salvare");
+
+        const data = await res.json();
+        setSettings(data);
+        return true;
+      } catch (err) {
+        console.error("Eroare salvare setări:", err);
+        return false;
+      }
+    },
     getUnreadCount,
     getUserNotifications,
     markAsRead,

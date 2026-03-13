@@ -9,16 +9,14 @@ export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [settings, setSettings] = useState(null);
 
-  // 🔥 PRELUĂM USERUL REAL DIN UserContext
   const { user } = useUser();
-
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  // 🔥 Încarcă notificările — FIXAT (fără /:userId)
   const loadNotifications = async () => {
     try {
       const res = await fetch(`${API}/notifications`, {
         credentials: "include",
+        cache: "no-store", // 🔥 FIX CRUCIAL
       });
 
       if (!res.ok) {
@@ -40,11 +38,11 @@ export function NotificationProvider({ children }) {
     }
   };
 
-  // 🔥 Încarcă setările utilizatorului
   const loadSettings = async () => {
     try {
       const res = await fetch(`${API}/notifications/settings/me`, {
         credentials: "include",
+        cache: "no-store", // 🔥 FIX CRUCIAL
       });
 
       if (!res.ok) return;
@@ -56,7 +54,6 @@ export function NotificationProvider({ children }) {
     }
   };
 
-  // 🔥 Când userul este disponibil → încărcăm notificările
   useEffect(() => {
     if (user?.id) {
       loadNotifications();

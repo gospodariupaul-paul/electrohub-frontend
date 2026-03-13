@@ -14,7 +14,6 @@ export default function NotificationsPage() {
 
   const notifications = getUserNotifications();
 
-  // 🔥 index pentru fiecare slider
   const [currentIndex, setCurrentIndex] = useState({});
 
   return (
@@ -44,7 +43,7 @@ export default function NotificationsPage() {
               n.read ? "bg-white/5" : "bg-white/10 border border-cyan-500/40"
             }`}
           >
-            {/* 🔥 SLIDER IMAGINI */}
+            {/* SLIDER IMAGINI */}
             {n.images && n.images.length > 0 && (
               <div className="relative w-32 h-32 overflow-hidden rounded-lg mr-4">
                 <img
@@ -52,42 +51,40 @@ export default function NotificationsPage() {
                   className="w-full h-full object-cover"
                 />
 
-                {/* Săgeată stânga */}
                 {n.images.length > 1 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentIndex((prev) => ({
-                        ...prev,
-                        [n.id]:
-                          prev[n.id] > 0
-                            ? prev[n.id] - 1
-                            : n.images.length - 1,
-                      }));
-                    }}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
-                  >
-                    ‹
-                  </button>
-                )}
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIndex((prev) => ({
+                          ...prev,
+                          [n.id]:
+                            prev[n.id] > 0
+                              ? prev[n.id] - 1
+                              : n.images.length - 1,
+                        }));
+                      }}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
+                    >
+                      ‹
+                    </button>
 
-                {/* Săgeată dreapta */}
-                {n.images.length > 1 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentIndex((prev) => ({
-                        ...prev,
-                        [n.id]:
-                          prev[n.id] < n.images.length - 1
-                            ? prev[n.id] + 1
-                            : 0,
-                      }));
-                    }}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
-                  >
-                    ›
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIndex((prev) => ({
+                          ...prev,
+                          [n.id]:
+                            prev[n.id] < n.images.length - 1
+                              ? prev[n.id] + 1
+                              : 0,
+                        }));
+                      }}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
+                    >
+                      ›
+                    </button>
+                  </>
                 )}
               </div>
             )}
@@ -99,7 +96,7 @@ export default function NotificationsPage() {
                 onClick={async (e) => {
                   e.preventDefault();
                   await markAsRead(n.id);
-                  window.location.href = n.link;
+                  window.location.href = n.link; // 🔥 navigare corectă
                 }}
                 className={`text-lg ${
                   n.read ? "opacity-70" : "font-bold text-cyan-300"

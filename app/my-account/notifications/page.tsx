@@ -29,7 +29,6 @@ export default function NotificationsPage() {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-[#0f172a] rounded-xl border border-white/10">
 
-      {/* 🔙 BUTON ÎNAPOI */}
       <button
         onClick={() => window.history.back()}
         className="mb-6 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
@@ -65,7 +64,6 @@ export default function NotificationsPage() {
             }`}
           >
 
-            {/* SLIDER IMAGINI */}
             {n.images && n.images.length > 0 && (
               <div className="relative w-32 h-32 overflow-hidden rounded-lg mr-4">
                 <img
@@ -73,7 +71,6 @@ export default function NotificationsPage() {
                   className="w-full h-full object-cover"
                 />
 
-                {/* Săgeată stânga */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -90,7 +87,6 @@ export default function NotificationsPage() {
                   ‹
                 </button>
 
-                {/* Săgeată dreapta */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -109,14 +105,13 @@ export default function NotificationsPage() {
               </div>
             )}
 
-            {/* TEXT + LINK */}
             <div className="flex flex-col flex-1">
               <Link
-                href={n.link}
+                href={n.link || "#"}   // 🔥 FIX
                 onClick={async (e) => {
                   e.preventDefault();
                   await markAsRead(n.id);
-                  window.location.href = n.link;
+                  if (n.link) window.location.href = n.link; // 🔥 FIX
                 }}
                 className={`text-lg ${
                   n.read ? "opacity-70" : "font-bold text-cyan-300"
@@ -130,7 +125,6 @@ export default function NotificationsPage() {
               </span>
             </div>
 
-            {/* BUTON ȘTERGERE */}
             <button
               onClick={() => deleteNotification(n.id)}
               className="text-red-400 text-sm hover:text-red-300 ml-4"

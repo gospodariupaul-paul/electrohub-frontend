@@ -184,6 +184,7 @@ export default function AddProductPage() {
             <option value="Laptopuri">Laptopuri</option>
             <option value="Componente PC">Componente PC</option>
             <option value="Audio-Video">Audio-Video</option>
+            <option value="Drones">Drones</option>
 
             {/* 🔥 CATEGORIA NOUĂ */}
             <option value="Altele">Altele</option>

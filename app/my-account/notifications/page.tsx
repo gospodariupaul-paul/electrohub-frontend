@@ -14,7 +14,7 @@ export default function NotificationsPage() {
     emptyState
   } = useNotifications();
 
-  const [currentIndex, setCurrentIndex] = useState({});
+  const [currentIndex, setCurrentIndex] = useState<{ [key: number]: number }>({});
 
   if (!user) {
     return (
@@ -64,54 +64,64 @@ export default function NotificationsPage() {
             }`}
           >
 
+            {/* SLIDER IMAGINI */}
             {n.images && n.images.length > 0 && (
-              <div className="relative w-32 h-32 overflow-hidden rounded-lg mr-4">
+              <div className="relative w-32 h-32 overflow-hidden rounded-lg mr-4 cursor-pointer"
+                   onClick={() => {
+                     if (n.link) window.location.href = n.link;
+                   }}
+              >
                 <img
                   src={n.images[currentIndex[n.id] || 0]}
                   className="w-full h-full object-cover"
                 />
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCurrentIndex((prev) => ({
-                      ...prev,
-                      [n.id]:
-                        prev[n.id] > 0
-                          ? prev[n.id] - 1
-                          : n.images.length - 1,
-                    }));
-                  }}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
-                >
-                  ‹
-                </button>
+                {n.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIndex((prev) => ({
+                          ...prev,
+                          [n.id]:
+                            prev[n.id] > 0
+                              ? prev[n.id] - 1
+                              : n.images.length - 1,
+                        }));
+                      }}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
+                    >
+                      ‹
+                    </button>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCurrentIndex((prev) => ({
-                      ...prev,
-                      [n.id]:
-                        prev[n.id] < n.images.length - 1
-                          ? prev[n.id] + 1
-                          : 0,
-                    }));
-                  }}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
-                >
-                  ›
-                </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIndex((prev) => ({
+                          ...prev,
+                          [n.id]:
+                            prev[n.id] < n.images.length - 1
+                              ? prev[n.id] + 1
+                              : 0,
+                        }));
+                      }}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 py-1"
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
               </div>
             )}
 
+            {/* TEXT + LINK */}
             <div className="flex flex-col flex-1">
               <Link
-                href={n.link || "#"}   // 🔥 FIX
+                href={n.link || "#"}
                 onClick={async (e) => {
                   e.preventDefault();
                   await markAsRead(n.id);
-                  if (n.link) window.location.href = n.link; // 🔥 FIX
+                  if (n.link) window.location.href = n.link; // 🔥 TE DUCE LA PRODUS
                 }}
                 className={`text-lg ${
                   n.read ? "opacity-70" : "font-bold text-cyan-300"
@@ -125,6 +135,7 @@ export default function NotificationsPage() {
               </span>
             </div>
 
+            {/* ȘTERGE */}
             <button
               onClick={() => deleteNotification(n.id)}
               className="text-red-400 text-sm hover:text-red-300 ml-4"

@@ -12,11 +12,12 @@ export function NotificationProvider({ children }) {
   const { user } = useUser();
   const API = process.env.NEXT_PUBLIC_API_URL;
 
+  // 🔵 ÎNCARCĂ NOTIFICĂRILE
   const loadNotifications = async () => {
     try {
       const res = await fetch(`${API}/notifications`, {
         credentials: "include",
-        cache: "no-store", // 🔥 OBLIGATORIU
+        cache: "no-store",
       });
 
       if (!res.ok) {
@@ -43,6 +44,7 @@ export function NotificationProvider({ children }) {
     }
   };
 
+  // 🔵 ÎNCARCĂ SETĂRILE
   const loadSettings = async () => {
     try {
       const res = await fetch(`${API}/notifications/settings/me`, {
@@ -59,6 +61,7 @@ export function NotificationProvider({ children }) {
     }
   };
 
+  // 🔵 ÎNCARCĂ LA LOGIN
   useEffect(() => {
     if (user?.id) {
       loadNotifications();
@@ -66,54 +69,82 @@ export function NotificationProvider({ children }) {
     }
   }, [user]);
 
+  // 🔵 MARCHEAZĂ CA CITITĂ
   const markAsRead = async (id) => {
-    await fetch(`${API}/notifications/read/${id}`, { method: "PATCH" });
+    try {
+      await fetch(`${API}/notifications/read/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+      });
 
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+      );
+    } catch (err) {
+      console.error("Eroare markAsRead:", err);
+    }
   };
 
+  // 🔥🔥🔥 ȘTERGEREA REALĂ A NOTIFICĂRII (BACKEND + FRONTEND)
   const deleteNotification = async (id) => {
-    await fetch(`${API}/notifications/${id}`, { method: "DELETE" });
+    try {
+      const res = await fetch(`${API}/notifications/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+      if (!res.ok) {
+        console.error("Backend nu a șters notificarea!");
+        return;
+      }
+
+      // 🔥 Șterge din state doar după confirmarea backend-ului
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (err) {
+      console.error("Eroare deleteNotification:", err);
+    }
   };
 
+  // 🔵 NUMĂR NECITITE
   const getUnreadCount = () => {
     return notifications.filter((n) => !n.read).length;
   };
 
+  // 🔵 RETURNARE LISTĂ
   const getUserNotifications = () => {
     return notifications;
   };
 
+  // 🔵 REFRESH MANUAL
   const refreshNotifications = () => {
     if (user?.id) loadNotifications();
+  };
+
+  // 🔵 SALVARE SETĂRI
+  const saveSettings = async (newSettings) => {
+    try {
+      const res = await fetch(`${API}/notifications/settings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(newSettings),
+      });
+
+      if (!res.ok) throw new Error("Eroare la salvare");
+
+      const data = await res.json();
+      setSettings(data);
+      return true;
+    } catch (err) {
+      console.error("Eroare salvare setări:", err);
+      return false;
+    }
   };
 
   const value = {
     notifications,
     settings,
-    saveSettings: async (newSettings) => {
-      try {
-        const res = await fetch(`${API}/notifications/settings`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(newSettings),
-        });
-
-        if (!res.ok) throw new Error("Eroare la salvare");
-
-        const data = await res.json();
-        setSettings(data);
-        return true;
-      } catch (err) {
-        console.error("Eroare salvare setări:", err);
-        return false;
-      }
-    },
+    saveSettings,
     getUnreadCount,
     getUserNotifications,
     markAsRead,

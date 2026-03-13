@@ -14,10 +14,10 @@ export function NotificationProvider({ children }) {
 
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  // 🔥 Încarcă notificările
-  const loadNotifications = async (uid) => {
+  // 🔥 Încarcă notificările — FIXAT (fără /:userId)
+  const loadNotifications = async () => {
     try {
-      const res = await fetch(`${API}/notifications/${uid}`, {
+      const res = await fetch(`${API}/notifications`, {
         credentials: "include",
       });
 
@@ -59,7 +59,7 @@ export function NotificationProvider({ children }) {
   // 🔥 Când userul este disponibil → încărcăm notificările
   useEffect(() => {
     if (user?.id) {
-      loadNotifications(user.id);
+      loadNotifications();
       loadSettings();
     }
   }, [user]);
@@ -87,7 +87,7 @@ export function NotificationProvider({ children }) {
   };
 
   const refreshNotifications = () => {
-    if (user?.id) loadNotifications(user.id);
+    if (user?.id) loadNotifications();
   };
 
   const value = {

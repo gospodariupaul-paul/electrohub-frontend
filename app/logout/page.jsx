@@ -9,16 +9,30 @@ export default function LogoutPage() {
   const { setUser } = useUser();
 
   useEffect(() => {
-    // Ștergem token-urile
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
+    const doLogout = async () => {
+      try {
+        // Trimitem logout la backend ca să marcheze userul OFFLINE
+        await fetch("https://electrohub-backend-production.up.railway.app/auth/logout", {
+          method: "POST",
+          credentials: "include", // IMPORTANT pentru cookies
+        });
+      } catch (error) {
+        console.log("Eroare la logout backend:", error);
+      }
 
-    // Resetăm contextul
-    setUser(null);
+      // Ștergem token-urile locale
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
 
-    // Redirect fără reloadUser()
-    router.push("/");
+      // Resetăm contextul
+      setUser(null);
+
+      // Redirect
+      router.push("/");
+    };
+
+    doLogout();
   }, []);
 
   return (

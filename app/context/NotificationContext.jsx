@@ -16,7 +16,7 @@ export function NotificationProvider({ children }) {
     try {
       const res = await fetch(`${API}/notifications`, {
         credentials: "include",
-        cache: "no-store", // 🔥 FIX CRUCIAL
+        cache: "no-store", // 🔥 OBLIGATORIU
       });
 
       if (!res.ok) {
@@ -26,9 +26,14 @@ export function NotificationProvider({ children }) {
 
       const data = await res.json();
 
+      // 🔥 NORMALIZARE IMAGINI CORECTĂ
       const normalized = data.map((n) => ({
         ...n,
-        images: n.images || (n.image ? [n.image] : []),
+        images: Array.isArray(n.images)
+          ? n.images
+          : n.images
+          ? [n.images]
+          : [],
       }));
 
       setNotifications(normalized);
@@ -42,7 +47,7 @@ export function NotificationProvider({ children }) {
     try {
       const res = await fetch(`${API}/notifications/settings/me`, {
         credentials: "include",
-        cache: "no-store", // 🔥 FIX CRUCIAL
+        cache: "no-store",
       });
 
       if (!res.ok) return;

@@ -33,7 +33,6 @@ function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
 
-  // 🔥 MODIFICAREA IMPORTANTĂ
   const { user, loading } = useUser();
 
   const {
@@ -44,7 +43,6 @@ function Header() {
     emptyState
   } = useNotifications();
 
-  // 🔥 FIX: NU randa meniul până nu știm dacă userul e logat
   if (loading) {
     return (
       <header className="h-16 bg-[#0d1117]/90 border-b border-white/10"></header>
@@ -59,14 +57,11 @@ function Header() {
 
       <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-        {/* 🔥 FIX: butonul separat, cu z-index mare */}
+        {/* 🔥 HAMBURGER */}
         <div className="flex items-center gap-4">
           <div className="relative z-[9999]">
             <button
-              onClick={() => {
-                console.log("CLICK HAMBURGER");
-                setMenuOpen(!menuOpen);
-              }}
+              onClick={() => setMenuOpen(!menuOpen)}
               className="text-2xl text-gray-300 hover:text-[#00eaff] transition cursor-pointer"
             >
               <FiMenu />
@@ -78,6 +73,7 @@ function Header() {
           </Link>
         </div>
 
+        {/* 🔍 SEARCH */}
         <div className="hidden md:flex flex-1 mx-6">
           <div className="flex items-center w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-2 shadow-inner">
             <IoSearch className="text-xl text-gray-400" />
@@ -89,6 +85,7 @@ function Header() {
           </div>
         </div>
 
+        {/* 🔥 ICONIȚE */}
         <div className="flex items-center gap-5 text-xl">
 
           <Link href="/" className="hover:text-[#00eaff] transition">
@@ -106,24 +103,31 @@ function Header() {
             <FiHeart />
           </Link>
 
+          {/* 🔔 CLOPOȚEL — MODIFICAT */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}
           >
             <button
-              onClick={() => setNotifOpen(!notifOpen)}
+              onClick={() => {
+                if (!user) {
+                  window.location.href = "/login";
+                  return;
+                }
+                setNotifOpen(!notifOpen);
+              }}
               className="relative hover:opacity-80 transition"
             >
               <FiBell className="w-7 h-7 text-gray-300 hover:text-[#00eaff] transition" />
 
-              {unread > 0 && (
+              {user && unread > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                   {unread}
                 </span>
               )}
             </button>
 
-            {notifOpen && (
+            {notifOpen && user && (
               <div
                 className="absolute right-0 mt-1 w-80 bg-[#0f172a] border border-white/10 rounded-xl shadow-xl p-3 z-50"
                 onMouseEnter={() => setNotifOpen(true)}
@@ -189,6 +193,7 @@ function Header() {
             )}
           </div>
 
+          {/* 👤 PROFIL */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setProfileOpen(false)}
@@ -255,7 +260,7 @@ function Header() {
         </div>
       </div>
 
-      {/* 🔥 MENIU HAMBURGER VIZIBIL ȘI PE LAPTOP */}
+      {/* 🔥 MENIU HAMBURGER */}
       {menuOpen && (
         <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4">
 

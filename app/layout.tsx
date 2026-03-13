@@ -16,13 +16,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
-        <NotificationProvider>
-          <UserProvider>
+
+        {/* 🔥 FIX: UserProvider trebuie să fie ÎNAINTE de NotificationProvider */}
+        <UserProvider>
+          <NotificationProvider>
             <Header />
             <main className="pt-4">{children}</main>
             <CookieConsent />
-          </UserProvider>
-        </NotificationProvider>
+          </NotificationProvider>
+        </UserProvider>
+
       </body>
     </html>
   );
@@ -103,7 +106,7 @@ function Header() {
             <FiHeart />
           </Link>
 
-          {/* 🔔 CLOPOȚEL — MODIFICAT */}
+          {/* 🔔 CLOPOȚEL */}
           <div
             className="relative inline-block"
             onMouseLeave={() => setNotifOpen(false)}

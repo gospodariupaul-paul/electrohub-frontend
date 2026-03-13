@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductsList from "@/components/ProductsList";
-import { FiMessageCircle } from "react-icons/fi";
+import { FiMessageCircle, FiBell } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import { useNotifications } from "./context/NotificationContext"; // 🔥 ADĂUGAT
 
 Link.defaultProps = { prefetch: false };
 
@@ -21,6 +22,10 @@ export default function HomePage() {
   const [onlineUsers, setOnlineUsers] = useState(0);
 
   const router = useRouter();
+
+  // 🔥 NOTIFICĂRI DIN CONTEXT
+  const { getUserNotifications } = useNotifications();
+  const notifications = getUserNotifications();
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -138,12 +143,26 @@ export default function HomePage() {
 
             <div className="flex items-center gap-4 text-sm">
 
+              {/* 🔥 CHAT */}
               {isLogged && (
                 <Link href="/chat" className="relative">
                   <FiMessageCircle size={24} className="text-cyan-300" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
                       {unreadCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+
+              {/* 🔥 NOTIFICĂRI */}
+              {isLogged && (
+                <Link href="/notifications" className="relative">
+                  <FiBell size={24} className="text-cyan-300" />
+
+                  {notifications.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                      {notifications.length}
                     </span>
                   )}
                 </Link>
@@ -405,7 +424,7 @@ export default function HomePage() {
               </div>
             </section>
 
-             {/* AI RECOMMENDATIONS */}
+              {/* AI RECOMMENDATIONS */}
             <section className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">

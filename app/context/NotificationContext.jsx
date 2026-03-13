@@ -23,7 +23,9 @@ export function NotificationProvider({ children }) {
   // 🔥 Încarcă notificările
   const loadNotifications = async (uid) => {
     try {
-      const res = await fetch(`${API}/notifications/${uid}`);
+      const res = await fetch(`${API}/notifications/${uid}`, {
+        credentials: "include", // 🔥 SINGURA MODIFICARE NECESARĂ
+      });
 
       if (!res.ok) {
         setNotifications([]);

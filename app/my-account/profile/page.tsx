@@ -48,6 +48,29 @@ export default function UserProfilePage() {
     fetchUnread();
   }, [user]);
 
+  // 🔥 FETCH NOTIFICATIONS (SINGURA MODIFICARE)
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/notifications/${user.id}`,
+          { credentials: "include" }
+        );
+
+        const data = await res.json();
+
+        // actualizează notificările în localStorage (folosit de NotificationContext)
+        localStorage.setItem("notifications", JSON.stringify(data));
+      } catch (err) {
+        console.error("Eroare la fetch notificări:", err);
+      }
+    };
+
+    fetchNotifications();
+  }, [user]);
+
   // DELETE PRODUCT
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
@@ -95,7 +118,7 @@ export default function UserProfilePage() {
     fetchProducts();
   }, [user]);
 
-  // REDIRECT LOGIC (CORECT)
+  // REDIRECT LOGIC
   useEffect(() => {
     if (loading) return;
 

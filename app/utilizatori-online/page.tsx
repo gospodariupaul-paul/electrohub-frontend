@@ -11,14 +11,22 @@ export default function UtilizatoriOnlinePage() {
   useEffect(() => {
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    axios
-      .get(`${API}/users/online`, {
-        withCredentials: true,
-      })
-      .then((res) => setUsers(res.data))
-      .catch((err) => {
-        console.log("Eroare la fetch:", err);
-      });
+    const fetchUsers = () => {
+      axios
+        .get(`${API}/users/online`, {
+          withCredentials: true,
+        })
+        .then((res) => setUsers(res.data))
+        .catch((err) => {
+          console.log("Eroare la fetch:", err);
+        });
+    };
+
+    fetchUsers(); // prima încărcare
+
+    const interval = setInterval(fetchUsers, 3000); // refetch la 3 secunde
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

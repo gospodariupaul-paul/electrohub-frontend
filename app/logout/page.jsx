@@ -14,11 +14,15 @@ export default function LogoutPage() {
         // Trimitem logout la backend ca să marcheze userul OFFLINE
         await fetch("https://electrohub-backend-production.up.railway.app/auth/logout", {
           method: "POST",
-          credentials: "include", // IMPORTANT pentru cookies
+          credentials: "include",
         });
       } catch (error) {
         console.log("Eroare la logout backend:", error);
       }
+
+      // 🔥 ȘTERGEM COOKIE-URILE JWT + REFRESH TOKEN
+      document.cookie = "jwt=; Max-Age=0; path=/; secure; samesite=None";
+      document.cookie = "refreshToken=; Max-Age=0; path=/; secure; samesite=None";
 
       // Ștergem token-urile locale
       localStorage.removeItem("token");

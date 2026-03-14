@@ -10,7 +10,7 @@ export default function FavoritesPage() {
 
   useEffect(() => {
     axiosInstance
-      .get("/favorites/me")
+      .get("/favorites") // 🔥 ruta corectă din backend
       .then((res) => setFavorites(res.data))
       .finally(() => setLoading(false));
   }, []);

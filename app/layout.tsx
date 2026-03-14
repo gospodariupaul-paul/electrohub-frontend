@@ -102,7 +102,7 @@ function Header() {
             Vinde
           </Link>
 
-          <Link href="/wishlist" className="hover:text-[#00eaff] transition">
+          <Link href="/favorites" className="hover:text-[#00eaff] transition">
             <FiHeart />
           </Link>
 

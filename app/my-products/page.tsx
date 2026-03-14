@@ -11,7 +11,18 @@ export default function MyProductsPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await axiosInstance.get("/products/my");
+        // 🔥 Luăm user-ul din localStorage
+        const u = localStorage.getItem("user");
+        if (!u) {
+          setLoading(false);
+          return;
+        }
+
+        const user = JSON.parse(u);
+
+        // 🔥 Endpoint-ul CORECT din backend
+        const res = await axiosInstance.get(`/products/user/${user.id}`);
+
         setProducts(res.data);
       } catch (err) {
         console.error("Eroare la încărcarea produselor mele:", err);

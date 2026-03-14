@@ -18,7 +18,12 @@ export default function UtilizatoriOnlinePage() {
       axios
         .get(`${API}/users/online`, { withCredentials: true })
         .then((res) => setUsers(res.data))
-        .catch((err) => console.log("Eroare la fetch:", err));
+        .catch((err) => {
+          // 🔥 Dacă userul e delogat → backend trimite 401
+          if (err.response?.status === 401) {
+            setUsers([]); // golește lista
+          }
+        });
     };
 
     fetchUsers();

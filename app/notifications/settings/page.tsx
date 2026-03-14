@@ -23,11 +23,11 @@ export default function NotificationSettingsPage() {
         const data = res.data || {};
 
         setSettings({
-          email_notifications: data.email ?? false,
-          push_notifications: data.push ?? false,
-          product_alerts: data.newProducts ?? false,
-          message_alerts: data.messages ?? false,
-          price_alerts: data.priceAlerts ?? false,
+          email_notifications: data.email_notifications ?? false,
+          push_notifications: data.push_notifications ?? false,
+          product_alerts: data.product_alerts ?? false,
+          message_alerts: data.message_alerts ?? false,
+          price_alerts: data.price_alerts ?? false,
         });
 
         setLoading(false);
@@ -38,11 +38,11 @@ export default function NotificationSettingsPage() {
   // 🔥 Salvează setările
   const saveSettings = () => {
     const payload = {
-      email: settings.email_notifications,
-      push: settings.push_notifications,
-      newProducts: settings.product_alerts,
-      messages: settings.message_alerts,
-      priceAlerts: settings.price_alerts,
+      email_notifications: settings.email_notifications,
+      push_notifications: settings.push_notifications,
+      product_alerts: settings.product_alerts,
+      message_alerts: settings.message_alerts,
+      price_alerts: settings.price_alerts,
     };
 
     axios

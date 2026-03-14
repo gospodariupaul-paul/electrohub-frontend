@@ -232,7 +232,7 @@ export default function HomePage() {
                 <<Link
                   href={isLogged ? "/my-account/listings" : "/login"}
                   className="block py-2 hover:text-cyan-300"
->
+                >
                   Produsele mele
                 </Link>
 

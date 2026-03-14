@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -13,25 +16,19 @@ export default function UtilizatoriOnlinePage() {
 
     const fetchUsers = () => {
       axios
-        .get(`${API}/users/online`, {
-          withCredentials: true,
-        })
+        .get(`${API}/users/online`, { withCredentials: true })
         .then((res) => setUsers(res.data))
-        .catch((err) => {
-          console.log("Eroare la fetch:", err);
-        });
+        .catch((err) => console.log("Eroare la fetch:", err));
     };
 
-    fetchUsers(); // prima încărcare
-
-    const interval = setInterval(fetchUsers, 3000); // refetch la 3 secunde
+    fetchUsers();
+    const interval = setInterval(fetchUsers, 3000);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
-      
       <button
         onClick={() => router.push("/")}
         className="mb-6 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"

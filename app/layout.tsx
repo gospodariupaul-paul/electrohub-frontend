@@ -279,7 +279,7 @@ function Header() {
               Comenzile mele
             </Link>
 
-            <Link href="/account/listings" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+            <Link href="/my-products" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
               Produsele mele
             </Link>
 

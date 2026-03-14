@@ -230,7 +230,7 @@ export default function HomePage() {
                 </Link>
 
                 <Link
-                  href={isLogged ? "/my-account/listings" : "/login"}
+                  href={isLogged ? "/account/listings" : "/login"}
                   className="block py-2 hover:text-cyan-300"
                 >
                   Produsele mele

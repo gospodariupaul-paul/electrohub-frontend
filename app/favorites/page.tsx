@@ -52,7 +52,11 @@ export default function FavoritesPage() {
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {favorites.map((fav: any) => (
-          <ProductCard key={fav.id} product={fav.product} />
+          <ProductCard
+            key={fav.id}
+            product={fav.product}
+            hideActions={true}   // 🔥 AICI e magia
+          />
         ))}
       </div>
     </div>

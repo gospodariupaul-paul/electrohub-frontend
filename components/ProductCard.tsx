@@ -3,7 +3,7 @@
 import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, hideActions = false }) {
   return (
     <div className="relative bg-[#111] border border-[#222] rounded-xl p-4 hover:border-cyan-500 transition">
 
@@ -23,21 +23,24 @@ export default function ProductCard({ product }) {
         {product.price} lei
       </p>
 
-      <div className="flex gap-3">
-        <Link
-          href={`/edit/${product.id}`}
-          className="px-3 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-sm"
-        >
-          Editează
-        </Link>
+      {/* 🔥 Ascundem Editare/Ștergere dacă suntem în Favorite */}
+      {!hideActions && (
+        <div className="flex gap-3">
+          <Link
+            href={`/edit/${product.id}`}
+            className="px-3 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-sm"
+          >
+            Editează
+          </Link>
 
-        <Link
-          href={`/delete/${product.id}`}
-          className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm"
-        >
-          Șterge
-        </Link>
-      </div>
+          <Link
+            href={`/delete/${product.id}`}
+            className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm"
+          >
+            Șterge
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

@@ -243,7 +243,7 @@ function Header() {
                     <Link href="/favorites" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Favorite
                     </Link>
-                    <Link href="/account/searches" className="block px-4 py-2 hover:bg-white/10 rounded">
+                    <Link href="/saved-searches" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Căutări salvate
                     </Link>
                     <Link href="/notifications" className="block px-4 py-2 hover:bg-white/10 rounded">

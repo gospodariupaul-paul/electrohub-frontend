@@ -27,8 +27,8 @@ export default function MyListingsPage() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    // 🔥 ENDPOINT CORECTAT: /me/products
-    fetch(`${API}/me/products`, {
+    // 🔥 ENDPOINT CORECT: /me
+    fetch(`${API}/me`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -45,9 +45,8 @@ export default function MyListingsPage() {
           data = null;
         }
 
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else if (data && Array.isArray(data.products)) {
+        // 🔥 PRODUSELE SUNT ÎN /me → data.products
+        if (data && Array.isArray(data.products)) {
           setProducts(data.products);
         } else {
           setProducts([]);

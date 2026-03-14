@@ -20,7 +20,16 @@ export default function NotificationSettingsPage() {
     axios
       .get(`${API}/notifications/settings/me`, { withCredentials: true })
       .then((res) => {
-        setSettings(res.data);
+        const data = res.data || {};
+
+        setSettings({
+          email_notifications: data.email ?? false,
+          push_notifications: data.push ?? false,
+          product_alerts: data.newProducts ?? false,
+          message_alerts: data.messages ?? false,
+          price_alerts: data.priceAlerts ?? false,
+        });
+
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -28,8 +37,16 @@ export default function NotificationSettingsPage() {
 
   // 🔥 Salvează setările
   const saveSettings = () => {
+    const payload = {
+      email: settings.email_notifications,
+      push: settings.push_notifications,
+      newProducts: settings.product_alerts,
+      messages: settings.message_alerts,
+      priceAlerts: settings.price_alerts,
+    };
+
     axios
-      .post(`${API}/notifications/settings`, settings, {
+      .post(`${API}/notifications/settings`, payload, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",

@@ -16,6 +16,10 @@ export default function FavoritesPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const removeFromList = (productId: number) => {
+    setFavorites((prev) => prev.filter((f: any) => f.product.id !== productId));
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
@@ -55,7 +59,9 @@ export default function FavoritesPage() {
           <ProductCard
             key={fav.id}
             product={fav.product}
-            hideActions={true}   // 🔥 AICI e magia
+            hideActions={true}
+            isFavoritePage={true}
+            onRemove={removeFromList}
           />
         ))}
       </div>

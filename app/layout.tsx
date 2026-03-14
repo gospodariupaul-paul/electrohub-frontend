@@ -233,7 +233,8 @@ function Header() {
                     <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Profilul meu
                     </Link>
-                    <Link href="/my-account/listings" className="block px-4 py-2 hover:bg-white/10 rounded">
+                    <Link href="/account/listings" className="block px-4 py-2 hover:bg-white/10 rounded">
+
                       Anunțurile mele
                     </Link>
                     <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">
@@ -278,7 +279,7 @@ function Header() {
               Comenzile mele
             </Link>
 
-            <Link href="/my-account/listings" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+            <Link href="/account/listings" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
               Produsele mele
             </Link>
 

@@ -27,7 +27,8 @@ export default function MyListingsPage() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    fetch(`${API}/products/my`, {
+    // 🔥 ENDPOINT CORECTAT: /me/products
+    fetch(`${API}/me/products`, {
       method: "GET",
       credentials: "include",
       headers: {

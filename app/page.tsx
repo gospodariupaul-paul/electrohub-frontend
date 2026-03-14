@@ -229,7 +229,7 @@ export default function HomePage() {
                   Comenzile mele
                 </Link>
 
-                <<Link
+                <Link
                   href={isLogged ? "/my-account/listings" : "/login"}
                   className="block py-2 hover:text-cyan-300"
                 >

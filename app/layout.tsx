@@ -240,7 +240,7 @@ function Header() {
                     <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Adaugă anunț
                     </Link>
-                    <Link href="/wishlist" className="block px-4 py-2 hover:bg-white/10 rounded">
+                    <Link href="/favorites" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Favorite
                     </Link>
                     <Link href="/account/searches" className="block px-4 py-2 hover:bg-white/10 rounded">

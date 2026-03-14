@@ -11,16 +11,23 @@ export default function MyProductsPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 Luăm user-ul din localStorage
         const u = localStorage.getItem("user");
+
         if (!u) {
+          console.warn("User nu este logat sau localStorage este gol.");
           setLoading(false);
           return;
         }
 
         const user = JSON.parse(u);
 
-        // 🔥 Endpoint-ul CORECT din backend
+        if (!user.id) {
+          console.error("User ID lipsă sau invalid:", user);
+          setLoading(false);
+          return;
+        }
+
+        // 🔥 AICI ESTE RUTA CORECTĂ
         const res = await axiosInstance.get(`/products/user/${user.id}`);
 
         setProducts(res.data);

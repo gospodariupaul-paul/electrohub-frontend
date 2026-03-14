@@ -1,76 +1,129 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import clientPromise from "@/lib/mongodb";
-import Image from "next/image";
+"use client";
 
-export default async function ListingsPage() {
-  // 🔥 Luăm userul logat prin NextAuth
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-  if (!user) {
-    return <div className="text-gray-400">Trebuie să fii autentificat.</div>;
+export default function MyListingsPage() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  // 🔥 REDIRECT DACĂ NU E LOGAT
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
+    // 🔥 ENDPOINT CORECT: /me
+    fetch(`${API}/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async (res) => {
+        let data;
+
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
+
+        // 🔥 PRODUSELE SUNT ÎN /me → data.products
+        if (data && Array.isArray(data.products)) {
+          setProducts(data.products);
+        } else {
+          setProducts([]);
+        }
+
+        setLoading(false);
+      })
+      .catch(() => {
+        setProducts([]);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p className="text-white/60 p-6">Se încarcă produsele tale...</p>;
   }
 
-  // 🔥 Conectare la MongoDB
-  const client = await clientPromise;
-  const db = client.db("electrohub");
+  if (products.length === 0) {
+    return (
+      <div className="p-6 text-white/60">
 
-  // 🔥 Luăm produsele userului
-  const listings = await db
-    .collection("products")
-    .find({ userId: user.id })
-    .sort({ createdAt: -1 })
-    .toArray();
+        {/* 🔥 BUTON ÎNAPOI */}
+        <Link
+          href="/"
+          className="inline-block mb-4 px-3 py-1.5 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-300 transition text-sm"
+        >
+          ← Înapoi la homepage
+        </Link>
+
+        <p>Nu ai încă produse publicate.</p>
+        <Link
+          href="/add-product"
+          className="text-cyan-400 underline mt-2 inline-block"
+        >
+          Adaugă primul tău produs →
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Anunțurile mele</h1>
+    <div className="p-6">
 
-      {listings.length === 0 && (
-        <p className="text-gray-400">Nu ai publicat încă niciun anunț.</p>
-      )}
+      {/* 🔥 BUTON ÎNAPOI */}
+      <Link
+        href="/"
+        className="inline-block mb-4 px-3 py-1.5 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-300 transition text-sm"
+      >
+        ← Înapoi la homepage
+      </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {listings.map((item: any) => (
+      <h1 className="text-xl font-bold mb-4">Produsele mele</h1>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {products.map((p) => (
           <div
-            key={item._id}
-            className="bg-[#111] border border-[#222] rounded-xl p-4 hover:border-cyan-500 transition"
+            key={p.id}
+            className="bg-white/5 border border-white/10 rounded-xl p-4"
           >
-            <div className="w-full h-48 relative mb-4">
-              <Image
-                src={item.images?.[0] || "/placeholder.png"}
-                alt={item.title}
-                fill
-                className="object-cover rounded-lg"
-              />
-            </div>
+            <img
+              src={
+                Array.isArray(p.images) && p.images.length > 0
+                  ? p.images[0]
+                  : "/placeholder.png"
+              }
+              className="w-full h-40 object-cover rounded-lg mb-3"
+            />
 
-            <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+            <h3 className="font-semibold">{p.title}</h3>
+            <p className="text-cyan-300">{p.price} lei</p>
 
-            <p className="text-cyan-400 text-lg font-bold mb-2">
-              {item.price} RON
-            </p>
-
-            <p className="text-gray-500 text-sm mb-4">
-              Publicat la: {new Date(item.createdAt).toLocaleDateString("ro-RO")}
-            </p>
-
-            <div className="flex gap-3">
-              <a
-                href={`/edit/${item._id}`}
-                className="px-3 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-sm"
-              >
-                Editează
-              </a>
-
-              <a
-                href={`/delete/${item._id}`}
-                className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm"
-              >
-                Șterge
-              </a>
-            </div>
+            <Link
+              href={`/product/${p.id}`}
+              className="text-xs text-cyan-400 underline mt-2 inline-block"
+            >
+              Vezi detalii →
+            </Link>
           </div>
         ))}
       </div>

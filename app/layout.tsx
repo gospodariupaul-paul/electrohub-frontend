@@ -249,7 +249,7 @@ function Header() {
                     <Link href="/notifications" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Notificări
                     </Link>
-                    <Link href="/account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
+                    <Link href="/my-account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Setări cont
                     </Link>
                     <Link href="/logout" className="block px-4 py-2 text-red-400 hover:bg-white/10 rounded">
@@ -307,7 +307,7 @@ function Header() {
           <div>
             <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
 
-            <Link href="/account/settings" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+            <Link href="/my-account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
               Setări
             </Link>
 

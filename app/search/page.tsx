@@ -7,11 +7,19 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 
+// 🔥 Importăm funcția de salvare
+import { saveSearch } from "@/lib/savedSearches";
+
 function SearchContent() {
   const params = useSearchParams();
   const q = params.get("q") || "";
+
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Dacă ai filtre, le poți lua din URL:
+  const filtersParam = params.get("filters");
+  const filters = filtersParam ? JSON.parse(filtersParam) : {};
 
   useEffect(() => {
     const load = async () => {
@@ -45,7 +53,17 @@ function SearchContent() {
         ← Înapoi la Home
       </Link>
 
-      <h1 className="text-3xl font-bold">Rezultate pentru: "{q}"</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Rezultate pentru: "{q}"</h1>
+
+        {/* 🔥 Buton Salvează căutarea */}
+        <button
+          onClick={() => saveSearch(q, filters)}
+          className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition"
+        >
+          ⭐ Salvează căutarea
+        </button>
+      </div>
 
       {loading ? (
         <p>Se caută...</p>

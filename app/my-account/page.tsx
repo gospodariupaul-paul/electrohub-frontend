@@ -3,7 +3,11 @@
 import { useUser } from "@/app/context/UserContext";
 
 export default function ProfilePage() {
-  const { user } = useUser();
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return null; // sau un loader
+  }
 
   if (!user) {
     return (

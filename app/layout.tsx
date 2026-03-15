@@ -299,7 +299,7 @@ function Header() {
               Adaugă anunț
             </Link>
 
-            <Link href="/chat" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+            <Link href="/my-account/messages" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
               Mesaje / Chat
             </Link>
           </div>

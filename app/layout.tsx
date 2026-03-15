@@ -291,7 +291,7 @@ function Header() {
           <div>
             <p className="text-xs text-gray-400 mb-1">Navigare</p>
 
-            <Link href="/categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+            <Link href="/#categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
               Categorii produse
             </Link>
 

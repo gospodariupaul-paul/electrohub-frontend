@@ -210,13 +210,17 @@ export default function UserProfilePage() {
         </nav>
 
         <div className="pt-6 border-t border-white/10">
-          <SidebarItem label="Favorite" />
+         <SidebarItem label="Favorite" />
+
+         <Link href="/saved-searches" className="block">
           <SidebarItem label="Căutări salvate" />
-          <Link href="/logout" className="text-red-400 hover:text-red-300">
-            Ieșire din cont
-          </Link>
+         </Link>
+
+         <Link href="/logout" className="text-red-400 hover:text-red-300">
+          Ieșire din cont
+         </Link>
         </div>
-      </aside>
+        </aside>
 
       {/* CONTENT */}
       <main className="flex-1 p-10">

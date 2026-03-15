@@ -18,7 +18,7 @@ export default function EditProfilePage() {
     setSuccess(false);
 
     try {
-      await axiosInstance.put(`/users/${user.id}`, {
+      await axiosInstance.put(`/api/users/${user.id}`, {
         name: fullName,
         email,
         phone,

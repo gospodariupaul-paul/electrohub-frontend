@@ -246,8 +246,7 @@ export default function HomePage() {
 
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">Navigare</p>
-
-                <Link href="/categorii" className="block py-2 hover:text-cyan-300">
+                <Link href="/#categories" className="block py-2 hover:text-cyan-300">
                   Categorii produse
                 </Link>
 
@@ -354,7 +353,7 @@ export default function HomePage() {
             </div>
 
             {/* CATEGORII */}
-            <section>
+            <section id="categories">
               <div className="flex items-center justify_between mb-4">
                 <h2 className="text-lg font-semibold">Categorii principale</h2>
                 <span className="text-xs text-white/50">

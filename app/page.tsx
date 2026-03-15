@@ -145,7 +145,7 @@ export default function HomePage() {
 
               {/* 🔥 CHAT */}
               {isLogged && (
-                <Link href="/chat" className="relative">
+                <Link href="/my-account/messages" className="relative">
                   <FiMessageCircle size={24} className="text-cyan-300" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">

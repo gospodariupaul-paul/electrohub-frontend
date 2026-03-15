@@ -1,100 +1,95 @@
 "use client";
+export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import Link from "next/link";
-import { deleteSearch, deleteAllSearches } from "@/lib/savedSearches";
+import { saveSearch } from "@/lib/savedSearches";
 
-export default function SavedSearchesPage() {
-  const [items, setItems] = useState<any[]>([]);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+function SearchContent() {
+  const params = useSearchParams();
+  const q = params.get("q") || "";
+
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const filtersParam = params.get("filters");
+  const filters = filtersParam ? JSON.parse(filtersParam) : {};
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/saved-searches");
-      const data = await res.json();
-      setItems(data);
+      setLoading(true);
+
+      try {
+        const API = process.env.NEXT_PUBLIC_API_URL;
+        const res = await axios.get(`${API}/products/search?q=${q}`);
+        setResults(res.data);
+      } catch (err) {
+        console.error("EROARE LA SEARCH:", err);
+        setResults([]);
+      }
+
+      setLoading(false);
     };
+
     load();
-  }, []);
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Ești sigur că vrei să ștergi această căutare?")) return;
-
-    setDeletingId(id);
-    await deleteSearch(id);
-
-    setTimeout(() => {
-      setItems(items.filter((i) => i.id !== id));
-      setDeletingId(null);
-    }, 300);
-  };
-
-  const handleDeleteAll = async () => {
-    if (!confirm("Ești sigur că vrei să ștergi TOATE căutările salvate?")) return;
-
-    await deleteAllSearches();
-    setItems([]);
-  };
+  }, [q]);
 
   return (
     <div className="p-6 text-white space-y-6">
       <Link
         href="/"
-        className="inline-block px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg"
+        className="inline-block px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition"
       >
         ← Înapoi la Home
       </Link>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Căutări salvate</h1>
+        <h1 className="text-3xl font-bold">Rezultate pentru: "{q}"</h1>
 
-        {items.length > 0 && (
-          <button
-            onClick={handleDeleteAll}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg"
-          >
-            🗑️ Șterge TOT
-          </button>
-        )}
+        <button
+          onClick={async () => {
+            await saveSearch(q, filters);
+            alert("Căutarea a fost salvată!");
+          }}
+          className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition"
+        >
+          ⭐ Salvează căutarea
+        </button>
       </div>
 
-      {items.length === 0 ? (
-        <p className="opacity-70">Nu ai nicio căutare salvată.</p>
+      {loading ? (
+        <p>Se caută...</p>
+      ) : results.length === 0 ? (
+        <p className="opacity-70">Niciun produs găsit.</p>
       ) : (
-        <div className="space-y-4">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className={`flex items-center justify-between bg-[#111] p-4 rounded-xl border border-[#222] transition-all duration-300 ${
-                deletingId === item.id ? "opacity-0 translate-x-10" : ""
-              }`}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {results.map((p) => (
+            <Link
+              key={p.id}
+              href={`/product/${p.id}`}
+              className="bg-[#111] p-4 rounded-xl border border-[#222] hover:border-cyan-600 transition"
             >
-              <div>
-                <p className="font-semibold text-lg">{item.query}</p>
-                <p className="text-sm opacity-60">
-                  {new Date(item.createdAt).toLocaleString("ro-RO")}
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <Link
-                  href={`/search?q=${item.query}`}
-                  className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 rounded-lg"
-                >
-                  Vezi rezultate
-                </Link>
-
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg flex items-center gap-1"
-                >
-                  🗑️ Șterge
-                </button>
-              </div>
-            </div>
+              <img
+                src={p.images?.[0] || "/placeholder.png"}
+                className="w-full h-40 object-cover rounded-lg"
+              />
+              <h2 className="mt-3 font-semibold">{p.name}</h2>
+              <p className="text-cyan-400 font-bold">{p.price} RON</p>
+            </Link>
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchContent />
+    </Suspense>
   );
 }

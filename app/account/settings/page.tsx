@@ -1,24 +1,29 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import connectDB from "@/lib/mongodb";
-import SettingsForm from "./SettingsForm";
-import { ObjectId } from "mongodb"; // 🔥 ADĂUGAT
+"use client";
 
-export default async function SettingsPage() {
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
+import { useUser } from "@/app/context/UserContext";
+import SettingsForm from "./SettingsForm";
+import { useEffect, useState } from "react";
+import axiosInstance from "@/lib/axios";
+
+export default function SettingsPage() {
+  const { user, loading } = useUser();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      axiosInstance.get(`/users/${user.id}`).then(res => {
+        setUserData(res.data);
+      });
+    }
+  }, [user]);
+
+  if (loading) return null;
 
   if (!user) {
     return <div className="text-gray-400">Trebuie să fii autentificat.</div>;
   }
 
-  const mongoose = await connectDB();
-  const db = mongoose.connection.db;
-
-  // 🔥 FIX CRITIC — convertim user.id în ObjectId
-  const userData = await db
-    .collection("users")
-    .findOne({ _id: new ObjectId(user.id) });
+  if (!userData) return null;
 
   return (
     <div className="max-w-3xl">

@@ -210,7 +210,9 @@ export default function UserProfilePage() {
         </nav>
 
         <div className="pt-6 border-t border-white/10">
-         <SidebarItem label="Favorite" />
+         <Link href="/favorites" className="block">
+          <SidebarItem label="Favorite" />
+         </Link>
 
          <Link href="/saved-searches" className="block">
           <SidebarItem label="Căutări salvate" />

@@ -205,8 +205,15 @@ export default function UserProfilePage() {
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
-          <SidebarItem label="Profil" />
-          <SidebarItem label="Setări" />
+
+          <Link href="/my-account/profile" className="block">
+           <SidebarItem label="Profil" />
+          </Link>
+
+          <Link href="/my-account/settings" className="block">
+           <SidebarItem label="Setări" />
+          </Link>
+
         </nav>
 
         <div className="pt-6 border-t border-white/10">

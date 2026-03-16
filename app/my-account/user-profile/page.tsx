@@ -1,0 +1,56 @@
+"use client";
+
+import { useUser } from "@/app/context/UserContext";
+
+export default function UserProfileView() {
+  const { user, loading } = useUser();
+
+  if (loading) return null;
+
+  if (!user) {
+    return (
+      <div className="p-6 text-white">
+        <h1 className="text-xl font-bold">Trebuie să fii logat</h1>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto p-6 text-white">
+      <h1 className="text-3xl font-bold mb-6">Profilul meu</h1>
+
+      <div className="space-y-4 bg-[#0d1117] p-6 rounded-xl border border-white/10">
+
+        <div>
+          <p className="text-sm opacity-70">Nume complet</p>
+          <p className="text-lg font-semibold">{user.name}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Email</p>
+          <p className="text-lg font-semibold">{user.email}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Telefon</p>
+          <p className="text-lg font-semibold">{user.phone || "Nespecificat"}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Creat la</p>
+          <p className="text-lg font-semibold">
+            {new Date(user.createdAt).toLocaleDateString("ro-RO")}
+          </p>
+        </div>
+
+      </div>
+
+      <a
+        href="/my-account/settings/profile"
+        className="inline-block mt-6 px-6 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
+      >
+        Editează profilul
+      </a>
+    </div>
+  );
+}

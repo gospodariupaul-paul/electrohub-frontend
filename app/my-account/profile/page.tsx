@@ -206,7 +206,7 @@ export default function UserProfilePage() {
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
 
-          <Link href="/my-account/profile" className="block">
+          <Link href="/my-account/user-profile" className="block">
            <SidebarItem label="Profil" />
           </Link>
 

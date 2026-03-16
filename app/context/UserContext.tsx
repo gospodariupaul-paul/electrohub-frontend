@@ -28,7 +28,7 @@ export function UserProvider({ children }: any) {
       console.error("Logout error:", err);
     }
 
-    setUser(null); // 🔥 UI-ul se actualizează instant
+    setUser(null);
   };
 
   useEffect(() => {
@@ -36,7 +36,15 @@ export function UserProvider({ children }: any) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading, reloadUser: loadUser, logout }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        reloadUser: loadUser, // 🔥 AICI E IMPORTANT
+        logout,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

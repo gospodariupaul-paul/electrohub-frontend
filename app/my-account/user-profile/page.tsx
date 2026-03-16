@@ -44,6 +44,14 @@ export default function UserProfileView() {
     <div className="max-w-2xl mx-auto p-6 text-white">
       <h1 className="text-3xl font-bold mb-6">Profilul meu</h1>
 
+      {/* 🔙 BUTON ÎNAPOI */}
+      <a
+        href="/my-account/profile"
+        className="inline-block mb-6 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+      >
+        ← Înapoi
+      </a>
+
       <div className="space-y-4 bg-[#0d1117] p-6 rounded-xl border border-white/10">
 
         {/* 🔥 Avatar */}

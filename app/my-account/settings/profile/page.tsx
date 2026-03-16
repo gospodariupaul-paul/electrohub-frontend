@@ -42,7 +42,7 @@ export default function EditProfilePage() {
         avatarUrl,
       });
 
-      await reloadUser(); // 🔥 AICI SE REZOLVĂ TOT
+      await reloadUser(); // 🔥 Reîncarcă user-ul după salvare
 
       setSuccess(true);
     } catch (err) {
@@ -54,7 +54,17 @@ export default function EditProfilePage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-6 space-y-6">
+
       <h1 className="text-3xl font-bold mb-4">Editare profil</h1>
+
+      {/* 🔙 BUTON ÎNAPOI */}
+      <a
+        href="/my-account/user-profile"
+        className="inline-block mb-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+      >
+        ← Înapoi la profil
+      </a>
+
       <p className="text-gray-400 mb-6">
         Modifică informațiile personale ale contului tău.
       </p>

@@ -5,7 +5,6 @@ import { useUser } from "@/app/context/UserContext";
 export default function UserProfileView() {
   const { user, loading } = useUser();
 
-  // 🔥 Logăm user-ul în consolă ca să vedem ce date vin
   console.log("USER DATA:", user);
 
   if (loading) return null;
@@ -18,19 +17,26 @@ export default function UserProfileView() {
     );
   }
 
-  // 🔥 Asigurăm date valide
-  const fullName =
-    user.name && user.name.trim() !== "" ? user.name : "Nespecificat";
+  const fullName = user.name?.trim() || "Nespecificat";
+  const phone = user.phone?.trim() || "Nespecificat";
+  const city = user.city?.trim() || "Nespecificat";
+  const county = user.county?.trim() || "Nespecificat";
+  const address = user.address?.trim() || "Nespecificat";
+  const gender = user.gender?.trim() || "Nespecificat";
 
-  const phone =
-    user.phone && user.phone.trim() !== "" ? user.phone : "Nespecificat";
+  let birthDate = "Nespecificată";
+  if (user.birthDate) {
+    const d = new Date(user.birthDate);
+    if (!isNaN(d.getTime())) {
+      birthDate = d.toLocaleDateString("ro-RO");
+    }
+  }
 
-  // 🔥 Formatăm data în siguranță
   let createdAt = "Nespecificat";
   if (user.createdAt) {
-    const date = new Date(user.createdAt);
-    if (!isNaN(date.getTime())) {
-      createdAt = date.toLocaleDateString("ro-RO");
+    const d = new Date(user.createdAt);
+    if (!isNaN(d.getTime())) {
+      createdAt = d.toLocaleDateString("ro-RO");
     }
   }
 
@@ -39,6 +45,21 @@ export default function UserProfileView() {
       <h1 className="text-3xl font-bold mb-6">Profilul meu</h1>
 
       <div className="space-y-4 bg-[#0d1117] p-6 rounded-xl border border-white/10">
+
+        {/* 🔥 Avatar */}
+        <div className="flex items-center gap-4">
+          <img
+            src={user.avatarUrl || "/default-avatar.png"}
+            alt="Avatar"
+            className="w-20 h-20 rounded-full object-cover border border-white/20"
+          />
+          <div>
+            <p className="text-sm opacity-70">Avatar</p>
+            <p className="text-lg font-semibold">
+              {user.avatarUrl ? "Setat" : "Nespecificat"}
+            </p>
+          </div>
+        </div>
 
         <div>
           <p className="text-sm opacity-70">Nume complet</p>
@@ -53,6 +74,31 @@ export default function UserProfileView() {
         <div>
           <p className="text-sm opacity-70">Telefon</p>
           <p className="text-lg font-semibold">{phone}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Localitate</p>
+          <p className="text-lg font-semibold">{city}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Județ</p>
+          <p className="text-lg font-semibold">{county}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Adresă</p>
+          <p className="text-lg font-semibold">{address}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Data nașterii</p>
+          <p className="text-lg font-semibold">{birthDate}</p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-70">Gen</p>
+          <p className="text-lg font-semibold">{gender}</p>
         </div>
 
         <div>

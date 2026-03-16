@@ -11,6 +11,14 @@ export default function SettingsPage() {
 
       <h1 className="text-3xl font-bold mb-6">Setări</h1>
 
+      {/* 🔙 BUTON ÎNAPOI */}
+      <a
+        href="/my-account/profile"
+        className="inline-block mb-6 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+      >
+        ← Înapoi la profil
+      </a>
+
       {/* 1. Cont și Profil */}
       <section>
         <h2 className="text-xl font-semibold mb-3">Cont și Profil</h2>

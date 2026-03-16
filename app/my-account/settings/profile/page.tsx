@@ -5,7 +5,7 @@ import axiosInstance from "@/lib/axios";
 import { useUser } from "@/app/context/UserContext";
 
 export default function EditProfilePage() {
-  const { user } = useUser();
+  const { user, reloadUser } = useUser();
 
   const [fullName, setFullName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -30,7 +30,7 @@ export default function EditProfilePage() {
     setSuccess(false);
 
     try {
-      await axiosInstance.put(`/api/users/${user.id}`, {
+      await axiosInstance.put(`/users/${user.id}`, {
         name: fullName,
         email,
         phone,
@@ -42,6 +42,8 @@ export default function EditProfilePage() {
         avatarUrl,
       });
 
+      await reloadUser(); // 🔥 AICI SE REZOLVĂ TOT
+
       setSuccess(true);
     } catch (err) {
       console.error("Eroare la salvare:", err);
@@ -52,7 +54,6 @@ export default function EditProfilePage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-6 space-y-6">
-
       <h1 className="text-3xl font-bold mb-4">Editare profil</h1>
       <p className="text-gray-400 mb-6">
         Modifică informațiile personale ale contului tău.

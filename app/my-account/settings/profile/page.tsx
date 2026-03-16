@@ -1,29 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/axios";
 import { useUser } from "@/app/context/UserContext";
 
 export default function EditProfilePage() {
   const { user, reloadUser } = useUser();
 
-  const [fullName, setFullName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [phone, setPhone] = useState(user?.phone || "");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
-  const [city, setCity] = useState(user?.city || "");
-  const [county, setCounty] = useState(user?.county || "");
-  const [address, setAddress] = useState(user?.address || "");
-  const [gender, setGender] = useState(user?.gender || "");
+  const [city, setCity] = useState("");
+  const [county, setCounty] = useState("");
+  const [address, setAddress] = useState("");
+  const [gender, setGender] = useState("");
 
-  const [birthDate, setBirthDate] = useState(
-    user?.birthDate ? user.birthDate.split("T")[0] : ""
-  );
-
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
+  const [birthDate, setBirthDate] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  // 🔥 SINCRONIZARE AUTOMATĂ CU USER-UL
+  useEffect(() => {
+    if (!user) return;
+
+    setFullName(user.name || "");
+    setEmail(user.email || "");
+    setPhone(user.phone || "");
+    setCity(user.city || "");
+    setCounty(user.county || "");
+    setAddress(user.address || "");
+    setGender(user.gender || "");
+    setAvatarUrl(user.avatarUrl || "");
+
+    setBirthDate(
+      user.birthDate ? user.birthDate.split("T")[0] : ""
+    );
+  }, [user]);
 
   const handleSave = async () => {
     setLoading(true);
@@ -42,7 +57,7 @@ export default function EditProfilePage() {
         avatarUrl,
       });
 
-      await reloadUser(); // 🔥 Reîncarcă user-ul după salvare
+      await reloadUser(); // 🔥 Actualizează UserContext
 
       setSuccess(true);
     } catch (err) {

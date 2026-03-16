@@ -5,6 +5,9 @@ import { useUser } from "@/app/context/UserContext";
 export default function UserProfileView() {
   const { user, loading } = useUser();
 
+  // 🔥 Logăm user-ul în consolă ca să vedem ce date vin
+  console.log("USER DATA:", user);
+
   if (loading) return null;
 
   if (!user) {
@@ -15,6 +18,22 @@ export default function UserProfileView() {
     );
   }
 
+  // 🔥 Asigurăm date valide
+  const fullName =
+    user.name && user.name.trim() !== "" ? user.name : "Nespecificat";
+
+  const phone =
+    user.phone && user.phone.trim() !== "" ? user.phone : "Nespecificat";
+
+  // 🔥 Formatăm data în siguranță
+  let createdAt = "Nespecificat";
+  if (user.createdAt) {
+    const date = new Date(user.createdAt);
+    if (!isNaN(date.getTime())) {
+      createdAt = date.toLocaleDateString("ro-RO");
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-6 text-white">
       <h1 className="text-3xl font-bold mb-6">Profilul meu</h1>
@@ -23,7 +42,7 @@ export default function UserProfileView() {
 
         <div>
           <p className="text-sm opacity-70">Nume complet</p>
-          <p className="text-lg font-semibold">{user.name}</p>
+          <p className="text-lg font-semibold">{fullName}</p>
         </div>
 
         <div>
@@ -33,14 +52,12 @@ export default function UserProfileView() {
 
         <div>
           <p className="text-sm opacity-70">Telefon</p>
-          <p className="text-lg font-semibold">{user.phone || "Nespecificat"}</p>
+          <p className="text-lg font-semibold">{phone}</p>
         </div>
 
         <div>
           <p className="text-sm opacity-70">Creat la</p>
-          <p className="text-lg font-semibold">
-            {new Date(user.createdAt).toLocaleDateString("ro-RO")}
-          </p>
+          <p className="text-lg font-semibold">{createdAt}</p>
         </div>
 
       </div>

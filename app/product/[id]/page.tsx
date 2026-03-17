@@ -169,11 +169,11 @@ export default function Page() {
         <h2 className="text-lg font-semibold mb-3">Informații despre vânzător</h2>
 
         <p className="text-gray-300 font-semibold">
-          {product.sellerName || "Vânzător necunoscut"}
+          {product.user?.name || "Vânzător necunoscut"}
         </p>
 
         <p className="text-gray-500 text-sm">
-          S-a înscris în {product.sellerJoinYear || "2015"}
+          S-a înscris în {product.user ? new Date(product.user.createdAt).getFullYear() : "2015"}
         </p>
       </div>
 

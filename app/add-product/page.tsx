@@ -18,6 +18,11 @@ export default function AddProductPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // 🔥 ADĂUGAT — câmpuri noi pentru Detalii produs
+  const [condition, setCondition] = useState("");
+  const [storage, setStorage] = useState("");
+  const [location, setLocation] = useState("");
+
   // Upload în Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
@@ -90,6 +95,12 @@ export default function AddProductPage() {
         description,
         images,
         category, // 🔥 MODIFICAT
+
+        // 🔥 ADĂUGAT — câmpuri noi
+        condition,
+        storage,
+        location,
+
         userId: user.id,
       };
 
@@ -185,10 +196,55 @@ export default function AddProductPage() {
             <option value="Componente PC">Componente PC</option>
             <option value="Audio-Video">Audio-Video</option>
             <option value="Drones">Drones</option>
-
-            {/* 🔥 CATEGORIA NOUĂ */}
             <option value="Altele">Altele</option>
           </select>
+        </label>
+
+        {/* 🔥 STARE PRODUS — ADĂUGAT */}
+        <label className="block mb-4">
+          <span className="text-sm opacity-80">Stare produs</span>
+          <select
+            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none text-white"
+            value={condition}
+            onChange={(e) => setCondition(e.target.value)}
+            required
+          >
+            <option value="">Selectează</option>
+            <option value="Nou">Nou</option>
+            <option value="Ca nou">Ca nou</option>
+            <option value="Folosit - stare bună">Folosit - stare bună</option>
+            <option value="Folosit - stare acceptabilă">Folosit - stare acceptabilă</option>
+          </select>
+        </label>
+
+        {/* 🔥 CAPACITATE — ADĂUGAT */}
+        <label className="block mb-4">
+          <span className="text-sm opacity-80">Capacitate / Specificații</span>
+          <select
+            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none text-white"
+            value={storage}
+            onChange={(e) => setStorage(e.target.value)}
+            required
+          >
+            <option value="">Selectează</option>
+            <option value="64GB">64GB</option>
+            <option value="128GB">128GB</option>
+            <option value="256GB">256GB</option>
+            <option value="512GB">512GB</option>
+            <option value="1TB">1TB</option>
+          </select>
+        </label>
+
+        {/* 🔥 LOCAȚIE — ADĂUGAT */}
+        <label className="block mb-4">
+          <span className="text-sm opacity-80">Locație</span>
+          <input
+            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Ex: Iași, România"
+            required
+          />
         </label>
 
         {/* IMAGINI */}

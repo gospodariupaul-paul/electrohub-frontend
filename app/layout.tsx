@@ -324,7 +324,10 @@ function Header() {
       <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
         Deconectare
       </Link>
-    </div>
+          </div>
 
-  </div>
-)}
+        </div>
+      )}
+    </header>
+  );
+}

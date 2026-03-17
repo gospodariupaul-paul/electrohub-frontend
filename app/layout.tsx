@@ -266,65 +266,65 @@ function Header() {
       </div>
 
       {/* 🔥 MENIU HAMBURGER */}
-      {menuOpen && (
-        <div className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4">
+{menuOpen && (
+  <div
+    className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4"
+    onMouseLeave={() => setMenuOpen(false)}   // 🔥 SE ÎNCHIDE CÂND IEȘI CU MOUSE-UL
+  >
 
-          <div>
-            <p className="text-xs text-gray-400 mb-1">Contul meu</p>
+    <div>
+      <p className="text-xs text-gray-400 mb-1">Contul meu</p>
 
-            <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Profilul meu
-            </Link>
+      <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Profilul meu
+      </Link>
 
-            <Link href="/my-account/orders" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Comenzile mele
-            </Link>
+      <Link href="/my-account/orders" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Comenzile mele
+      </Link>
 
-            <Link href="/my-products" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Produsele mele
-            </Link>
+      <Link href="/my-products" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Produsele mele
+      </Link>
 
-            <Link href="/favorites" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Favorite / Wishlist
-            </Link>
-          </div>
+      <Link href="/favorites" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Favorite / Wishlist
+      </Link>
+    </div>
 
-          <div>
-            <p className="text-xs text-gray-400 mb-1">Navigare</p>
+    <div>
+      <p className="text-xs text-gray-400 mb-1">Navigare</p>
 
-            <Link href="/#categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Categorii produse
-            </Link>
+      <Link href="/#categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Categorii produse
+      </Link>
 
-            <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Adaugă anunț
-            </Link>
+      <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Adaugă anunț
+      </Link>
 
-            <Link href="/my-account/messages" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Mesaje / Chat
-            </Link>
-          </div>
+      <Link href="/my-account/messages" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Mesaje / Chat
+      </Link>
+    </div>
 
-          <div>
-            <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
+    <div>
+      <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
 
-            <Link href="/my-account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
-              Setări
-            </Link>
+      <Link href="/my-account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
+        Setări
+      </Link>
 
-            <Link href="/help" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-              Ajutor / Contact / FAQ
-            </Link>
-          </div>
+      <Link href="/help" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+        Ajutor / Contact / FAQ
+      </Link>
+    </div>
 
-          <div className="pt-2 border-t border-white/10">
-            <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
-              Deconectare
-            </Link>
-          </div>
+    <div className="pt-2 border-t border-white/10">
+      <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
+        Deconectare
+      </Link>
+    </div>
 
-        </div>
-      )}
-    </header>
-  );
-}
+  </div>
+)}

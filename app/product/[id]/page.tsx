@@ -141,10 +141,13 @@ export default function Page() {
           {product.condition || "Folosit - stare bună"}
         </p>
 
-        <p className="text-gray-300 mt-2">
-          <span className="font-semibold">Capacitate:</span>{" "}
-          {product.storage || "512GB"}
-        </p>
+        {/* 🔥 Capacitate apare DOAR dacă există */}
+        {product.storage && (
+          <p className="text-gray-300 mt-2">
+            <span className="font-semibold">Capacitate:</span>{" "}
+            {product.storage}
+          </p>
+        )}
       </div>
 
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">

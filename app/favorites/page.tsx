@@ -2,22 +2,28 @@
 
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
-import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     axiosInstance
-      .get("/favorites")
-      .then((res) => setFavorites(res.data))
+      .get("/favorites", { withCredentials: true })
+      .then((res) => {
+        const safeData = res.data.filter((f: any) => f?.product);
+        setFavorites(safeData);
+      })
       .finally(() => setLoading(false));
   }, []);
 
   const removeFromList = (productId: number) => {
-    setFavorites((prev) => prev.filter((f: any) => f.product.id !== productId));
+    setFavorites((prev) =>
+      prev.filter((f: any) => f.product?.id !== productId)
+    );
   };
 
   if (loading) {
@@ -55,15 +61,49 @@ export default function FavoritesPage() {
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {favorites.map((fav: any) => (
-          <ProductCard
-            key={fav.id}
-            product={fav.product}
-            hideActions={true}
-            isFavoritePage={true}
-            onRemove={removeFromList}
-          />
-        ))}
+        {favorites.map((fav: any) => {
+          const product = fav.product;
+          const image = product?.images?.[0] || "/placeholder.png";
+
+          return (
+            <div
+              key={fav.id}
+              className="bg-[#111b21] p-4 rounded-lg border border-white/10 hover:bg-[#15232b] transition cursor-pointer"
+              onClick={() => router.push(`/product/${product.id}`)}
+            >
+              <img
+                src={image}
+                className="w-full h-40 object-cover rounded mb-3"
+                alt={product.name}
+              />
+
+              <h3 className="text-lg font-semibold">{product.name}</h3>
+              <p className="text-[#00eaff] font-bold">{product.price} lei</p>
+
+              {/* 🔥 Buton detalii produs */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/product/${product.id}`);
+                }}
+                className="mt-3 px-4 py-2 bg-[#00aaff] text-black rounded-lg font-semibold hover:bg-[#008fcc] transition"
+              >
+                Vezi detalii produs
+              </button>
+
+              {/* ❤️ Buton ȘTERGERE — funcționează EXACT ca înainte */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeFromList(product.id);
+                }}
+                className="mt-2 text-red-400 underline"
+              >
+                Șterge din favorite
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

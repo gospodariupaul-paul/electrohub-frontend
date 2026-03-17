@@ -78,18 +78,10 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
 
-      {/* 🔥 BUTON ÎNAPOI */}
-      <button
-        onClick={() => router.back()}
-        className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
-      >
-        ← Înapoi
-      </button>
-
-      {/* 🔥 BUTON NOU: ÎNAPOI LA HOMEPAGE */}
+      {/* 🔥 BUTON UNIC: ÎNAPOI LA HOMEPAGE */}
       <button
         onClick={() => router.push("/")}
-        className="mb-4 ml-3 px-4 py-2 bg-[#00aaff] text-black rounded-lg font-semibold hover:bg-[#008fcc] transition"
+        className="mb-4 px-4 py-2 bg-[#00aaff] text-black rounded-lg font-semibold hover:bg-[#008fcc] transition"
       >
         🏠 Înapoi la homepage
       </button>

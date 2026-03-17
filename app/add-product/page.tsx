@@ -3,27 +3,25 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import { useNotifications } from "@/app/context/NotificationContext"; // 🔥 ADĂUGAT
+import { useNotifications } from "@/app/context/NotificationContext";
 
 export default function AddProductPage() {
   const router = useRouter();
-  const { refreshNotifications } = useNotifications(); // 🔥 ADĂUGAT
+  const { refreshNotifications } = useNotifications();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(1);
-  const [category, setCategory] = useState("Telefoane"); // 🔥 MODIFICAT
+  const [category, setCategory] = useState("Telefoane");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 ADĂUGAT — câmpuri noi pentru Detalii produs
   const [condition, setCondition] = useState("");
   const [storage, setStorage] = useState("");
   const [location, setLocation] = useState("");
 
-  // Upload în Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
@@ -38,11 +36,9 @@ export default function AddProductPage() {
     );
 
     const data = await res.json();
-    console.log("CLOUDINARY RESPONSE:", data);
     return data.secure_url;
   };
 
-  // Upload + PREVIEW
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
 
@@ -55,25 +51,18 @@ export default function AddProductPage() {
 
     for (const file of files) {
       const url = await uploadToCloudinary(file);
-      console.log("URL CLOUDINARY:", url);
       uploaded.push(url);
     }
 
-    setImages((prev) => {
-      const finalImages = [...prev, ...uploaded];
-      console.log("IMAGINI IN STATE:", finalImages);
-      return finalImages;
-    });
+    setImages((prev) => [...prev, ...uploaded]);
   };
 
-  // ȘTERGERE IMAGINE
   const removeImage = (index: number) => {
     const updated = images.filter((_, i) => i !== index);
     setImages(updated);
     setCurrentIndex(0);
   };
 
-  // SUBMIT FORM
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -94,33 +83,23 @@ export default function AddProductPage() {
         stock,
         description,
         images,
-        category, // 🔥 MODIFICAT
-
-        // 🔥 ADĂUGAT — câmpuri noi
+        category,
         condition,
-        storage,
+        storage: storage || null, // 🔥 NU MAI ESTE OBLIGATORIU
         location,
-
         userId: user.id,
       };
 
-      console.log("DATA TRIMISA CATRE BACKEND:", payload);
-
       const res = await axiosInstance.post("/products", payload);
-      const createdProduct = res.data;
 
-      // 🔥 REFRESH NOTIFICĂRI DUPĂ PUBLICARE
       refreshNotifications();
 
       alert("Anunț publicat cu succes!");
       router.push("/my-account/profile");
-
     } catch (err: any) {
       if (err.response) {
-        console.error("BACKEND ERROR:", err.response.data);
         alert("Eroare backend: " + JSON.stringify(err.response.data));
       } else {
-        console.error("UNKNOWN ERROR:", err);
         alert("Eroare necunoscută");
       }
     } finally {
@@ -200,7 +179,7 @@ export default function AddProductPage() {
           </select>
         </label>
 
-        {/* 🔥 STARE PRODUS — ADĂUGAT */}
+        {/* STARE PRODUS */}
         <label className="block mb-4">
           <span className="text-sm opacity-80">Stare produs</span>
           <select
@@ -217,25 +196,26 @@ export default function AddProductPage() {
           </select>
         </label>
 
-        {/* 🔥 CAPACITATE — ADĂUGAT */}
-        <label className="block mb-4">
-          <span className="text-sm opacity-80">Capacitate / Specificații</span>
-          <select
-            className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none text-white"
-            value={storage}
-            onChange={(e) => setStorage(e.target.value)}
-            required
-          >
-            <option value="">Selectează</option>
-            <option value="64GB">64GB</option>
-            <option value="128GB">128GB</option>
-            <option value="256GB">256GB</option>
-            <option value="512GB">512GB</option>
-            <option value="1TB">1TB</option>
-          </select>
-        </label>
+        {/* CAPACITATE — DOAR PENTRU TELEFOANE ȘI LAPTOPURI */}
+        {(category === "Telefoane" || category === "Laptopuri") && (
+          <label className="block mb-4">
+            <span className="text-sm opacity-80">Capacitate / Specificații</span>
+            <select
+              className="w-full mt-1 p-3 rounded-lg bg-white/10 border border-white/20 outline-none text-white"
+              value={storage}
+              onChange={(e) => setStorage(e.target.value)}
+            >
+              <option value="">Selectează</option>
+              <option value="64GB">64GB</option>
+              <option value="128GB">128GB</option>
+              <option value="256GB">256GB</option>
+              <option value="512GB">512GB</option>
+              <option value="1TB">1TB</option>
+            </select>
+          </label>
+        )}
 
-        {/* 🔥 LOCAȚIE — ADĂUGAT */}
+        {/* LOCAȚIE */}
         <label className="block mb-4">
           <span className="text-sm opacity-80">Locație</span>
           <input

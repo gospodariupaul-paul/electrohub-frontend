@@ -61,20 +61,36 @@ function Header() {
       <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* 🔥 HAMBURGER */}
-        <div className="flex items-center gap-4">
-          <div className="relative z-[9999]">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-2xl text-gray-300 hover:text-[#00eaff] transition cursor-pointer"
-            >
-              <FiMenu />
-            </button>
-          </div>
+<div className="flex items-center gap-4">
 
-          <Link href="/" className="text-2xl font-bold tracking-wide text-[#00eaff] cursor-default">
-            GOSPO <span className="text-white">Electro Hub</span>
-          </Link>
-        </div>
+  {/* Buton hamburger */}
+  <div className="relative z-[9999]">
+    <button
+      onClick={() => setMenuOpen(!menuOpen)}
+      className="text-2xl text-gray-300 hover:text-[#00eaff] transition cursor-pointer"
+    >
+      <FiMenu />
+    </button>
+
+    {/* 🔽 MENIU DROPDOWN */}
+    {menuOpen && (
+      <div
+        className="absolute right-0 mt-3 bg-[#0f172a] border border-white/10 rounded-xl p-4 w-48 shadow-xl"
+        onMouseLeave={() => setMenuOpen(false)}   // 🔥 SE ÎNCHIDE CÂND IEȘI CU MOUSE-UL
+      >
+        <a href="/my-account/profile" className="block py-2 hover:text-[#00eaff]">Profilul meu</a>
+        <a href="/my-account/settings" className="block py-2 hover:text-[#00eaff]">Setări</a>
+        <a href="/logout" className="block py-2 hover:text-[#00eaff]">Deconectare</a>
+      </div>
+    )}
+  </div>
+
+  {/* Logo */}
+  <Link href="/" className="text-2xl font-bold tracking-wide text-[#00eaff] cursor-default">
+    GOSPO <span className="text-white">Electro Hub</span>
+  </Link>
+</div>
+
 
         {/* 🔍 SEARCH */}
         <div className="hidden md:flex flex-1 mx-6">

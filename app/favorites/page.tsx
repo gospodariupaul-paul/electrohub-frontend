@@ -10,14 +10,20 @@ export default function ProductCard({
 }: any) {
   const router = useRouter();
 
+  // 🔥 Protecție totală împotriva undefined
+  if (!product) return null;
+
+  const image = product.images?.[0] || "/placeholder.png";
+
   return (
     <div
       className="bg-[#111b21] p-4 rounded-lg border border-white/10 hover:bg-[#15232b] transition cursor-pointer"
       onClick={() => router.push(`/product/${product.id}`)}
     >
       <img
-        src={product.images?.[0] || "/placeholder.png"}
+        src={image}
         className="w-full h-40 object-cover rounded mb-3"
+        alt={product.name}
       />
 
       <h3 className="text-lg font-semibold">{product.name}</h3>
@@ -27,7 +33,7 @@ export default function ProductCard({
       {isFavoritePage && (
         <button
           onClick={(e) => {
-            e.stopPropagation(); // NU declanșează click pe card
+            e.stopPropagation();
             router.push(`/product/${product.id}`);
           }}
           className="mt-3 px-4 py-2 bg-[#00aaff] text-black rounded-lg font-semibold hover:bg-[#008fcc] transition"
@@ -36,12 +42,12 @@ export default function ProductCard({
         </button>
       )}
 
-      {/* ❤️ Buton ȘTERGERE — NU îl ating, doar îl protejez de click pe card */}
+      {/* ❤️ Buton ȘTERGERE — NU îl ating, doar îl protejez */}
       {isFavoritePage && (
         <button
           onClick={(e) => {
-            e.stopPropagation(); // protejează click-ul
-            onRemove(product.id); // funcționează EXACT ca înainte
+            e.stopPropagation();
+            onRemove(product.id);
           }}
           className="mt-2 text-red-400 underline"
         >

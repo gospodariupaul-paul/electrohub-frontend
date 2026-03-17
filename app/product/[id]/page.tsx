@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 
-export default function ProductPage() {
+export default function Page() {
   const params = useParams();
   const id = params?.id;
 
@@ -22,7 +22,6 @@ export default function ProductPage() {
   }, []);
 
   useEffect(() => {
-    // 🔥 FIX FINAL — NU MAI TRIMITE NICIODATĂ /products/undefined
     if (!id) return;
     if (typeof id !== "string") return;
     if (!/^\d+$/.test(id)) return;
@@ -127,6 +126,57 @@ export default function ProductPage() {
 
       <p className="text-lg font-semibold mb-2">{product.price} RON</p>
       <p className="text-gray-300 mb-6">{product.description}</p>
+
+      {/* 📍 Locație + timp listare */}
+      <p className="text-gray-400 text-sm mb-4">
+        Listat acum {product.daysListed || "câteva zile"} în{" "}
+        {product.location || "România"}
+      </p>
+
+      {/* 🛠 Detalii produs */}
+      <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
+        <h2 className="text-lg font-semibold mb-3">Detalii</h2>
+
+        <p className="text-gray-300">
+          <span className="font-semibold">Stare:</span>{" "}
+          {product.condition || "Folosit - stare bună"}
+        </p>
+
+        <p className="text-gray-300 mt-2">
+          <span className="font-semibold">Capacitate:</span>{" "}
+          {product.storage || "512GB"}
+        </p>
+      </div>
+
+      {/* 📝 Descriere */}
+      <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
+        <h2 className="text-lg font-semibold mb-3">Descriere</h2>
+        <p className="text-gray-300 whitespace-pre-line">
+          {product.description}
+        </p>
+      </div>
+
+      {/* 📍 Locație aproximativă */}
+      <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
+        <h2 className="text-lg font-semibold mb-3">Locație</h2>
+        <p className="text-gray-300 mb-2">
+          {product.location || "Iași, România"}
+        </p>
+        <p className="text-gray-500 text-sm">Locația este aproximativă</p>
+      </div>
+
+      {/* 👤 Informații vânzător */}
+      <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
+        <h2 className="text-lg font-semibold mb-3">Informații despre vânzător</h2>
+
+        <p className="text-gray-300 font-semibold">
+          {product.sellerName || "Vânzător necunoscut"}
+        </p>
+
+        <p className="text-gray-500 text-sm">
+          S-a înscris în {product.sellerJoinYear || "2015"}
+        </p>
+      </div>
 
       <button
         onClick={startConversation}

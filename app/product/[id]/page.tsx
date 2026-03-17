@@ -125,7 +125,6 @@ export default function Page() {
       </div>
 
       <p className="text-lg font-semibold mb-2">{product.price} RON</p>
-      <p className="text-gray-300 mb-6">{product.description}</p>
 
       {/* 📍 Locație + timp listare */}
       <p className="text-gray-400 text-sm mb-4">

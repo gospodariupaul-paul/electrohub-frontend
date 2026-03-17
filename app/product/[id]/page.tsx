@@ -173,8 +173,18 @@ export default function Page() {
         </p>
 
         <p className="text-gray-500 text-sm">
-          S-a înscris în {product.user ? new Date(product.user.createdAt).getFullYear() : "2015"}
+          S-a înscris în{" "}
+          {product.user
+            ? new Date(product.user.createdAt).getFullYear()
+            : "2015"}
         </p>
+
+        <button
+          onClick={() => router.push(`/seller/${product.user.id}`)}
+          className="text-[#00eaff] font-semibold underline mt-2"
+        >
+          Vezi profilul vânzătorului
+        </button>
       </div>
 
       <button

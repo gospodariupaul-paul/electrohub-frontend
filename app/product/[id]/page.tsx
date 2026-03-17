@@ -77,11 +77,21 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
+
+      {/* 🔥 BUTON ÎNAPOI */}
       <button
         onClick={() => router.back()}
         className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
       >
         ← Înapoi
+      </button>
+
+      {/* 🔥 BUTON NOU: ÎNAPOI LA HOMEPAGE */}
+      <button
+        onClick={() => router.push("/")}
+        className="mb-4 ml-3 px-4 py-2 bg-[#00aaff] text-black rounded-lg font-semibold hover:bg-[#008fcc] transition"
+      >
+        🏠 Înapoi la homepage
       </button>
 
       <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
@@ -126,13 +136,11 @@ export default function Page() {
 
       <p className="text-lg font-semibold mb-2">{product.price} RON</p>
 
-      {/* 📍 Locație + timp listare */}
       <p className="text-gray-400 text-sm mb-4">
         Listat acum {product.daysListed || "câteva zile"} în{" "}
         {product.location || "România"}
       </p>
 
-      {/* 🛠 Detalii produs */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Detalii</h2>
 
@@ -147,7 +155,6 @@ export default function Page() {
         </p>
       </div>
 
-      {/* 📝 Descriere */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Descriere</h2>
         <p className="text-gray-300 whitespace-pre-line">
@@ -155,7 +162,6 @@ export default function Page() {
         </p>
       </div>
 
-      {/* 📍 Locație aproximativă */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Locație</h2>
         <p className="text-gray-300 mb-2">
@@ -164,7 +170,6 @@ export default function Page() {
         <p className="text-gray-500 text-sm">Locația este aproximativă</p>
       </div>
 
-      {/* 👤 Informații vânzător */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Informații despre vânzător</h2>
 

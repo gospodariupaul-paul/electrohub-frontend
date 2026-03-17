@@ -63,7 +63,6 @@ function Header() {
         {/* 🔥 HAMBURGER */}
 <div className="flex items-center gap-4">
 
-  {/* Buton hamburger */}
   <div className="relative z-[9999]">
     <button
       onClick={() => setMenuOpen(!menuOpen)}
@@ -72,15 +71,38 @@ function Header() {
       <FiMenu />
     </button>
 
-    {/* 🔽 MENIU DROPDOWN */}
+    {/* 🔽 MENIU COMPLET */}
     {menuOpen && (
       <div
-        className="absolute right-0 mt-3 bg-[#0f172a] border border-white/10 rounded-xl p-4 w-48 shadow-xl"
+        className="absolute right-0 mt-3 bg-[#0f172a] border border-white/10 rounded-xl p-4 w-64 shadow-xl"
         onMouseLeave={() => setMenuOpen(false)}   // 🔥 SE ÎNCHIDE CÂND IEȘI CU MOUSE-UL
       >
+        {/* Titlu */}
+        <p className="text-gray-400 text-sm mb-2">Contul meu</p>
+
         <a href="/my-account/profile" className="block py-2 hover:text-[#00eaff]">Profilul meu</a>
+        <a href="/my-account/orders" className="block py-2 hover:text-[#00eaff]">Comenzile mele</a>
+        <a href="/my-account/products" className="block py-2 hover:text-[#00eaff]">Produsele mele</a>
+        <a href="/my-account/favorites" className="block py-2 hover:text-[#00eaff]">Favorite / Wishlist</a>
+
+        <hr className="my-3 border-white/10" />
+
+        <p className="text-gray-400 text-sm mb-2">Navigare</p>
+
+        <a href="/categories" className="block py-2 hover:text-[#00eaff]">Categorii produse</a>
+        <a href="/add-product" className="block py-2 hover:text-[#00eaff]">Adaugă anunț</a>
+        <a href="/messages" className="block py-2 hover:text-[#00eaff]">Mesaje / Chat</a>
+
+        <hr className="my-3 border-white/10" />
+
+        <p className="text-gray-400 text-sm mb-2">Setări & Suport</p>
+
         <a href="/my-account/settings" className="block py-2 hover:text-[#00eaff]">Setări</a>
-        <a href="/logout" className="block py-2 hover:text-[#00eaff]">Deconectare</a>
+        <a href="/support" className="block py-2 hover:text-[#00eaff]">Ajutor / Contact / FAQ</a>
+
+        <hr className="my-3 border-white/10" />
+
+        <a href="/logout" className="block py-2 text-red-400 hover:text-red-300">Deconectare</a>
       </div>
     )}
   </div>
@@ -90,6 +112,7 @@ function Header() {
     GOSPO <span className="text-white">Electro Hub</span>
   </Link>
 </div>
+
 
 
         {/* 🔍 SEARCH */}

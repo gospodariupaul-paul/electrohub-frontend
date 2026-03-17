@@ -47,11 +47,13 @@ export default function SellerPage() {
 
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
+
+      {/* 🔥 BUTON ÎNAPOI INSERAT AICI */}
       <button
         onClick={() => router.back()}
-        className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
+        className="mb-6 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
       >
-        ← Înapoi
+        ← Înapoi la pagina anterioară
       </button>
 
       <div className="flex items-center gap-4 mb-6">

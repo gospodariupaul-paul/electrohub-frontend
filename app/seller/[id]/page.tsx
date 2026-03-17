@@ -2,22 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 
-// SWIPER
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Thumbs } from "swiper/modules";
-
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/thumbs";
-
-export default function SellerProductPage() {
+export default function SellerPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [product, setProduct] = useState<any>(null);
+  const [seller, setSeller] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,161 +15,89 @@ export default function SellerProductPage() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    fetch(`${API}/products/${id}`, {
+    fetch(`${API}/products/seller/${id}`, {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
-        setProduct(data);
+        setSeller(data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Eroare la încărcarea produsului:", err);
+        console.error("Eroare la încărcarea vânzătorului:", err);
         setLoading(false);
       });
   }, [id]);
 
-  // 🔥 FIX: folosim cookie-ul JWT, nu Bearer token
-  const startConversation = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-
-    try {
-      const API = process.env.NEXT_PUBLIC_API_URL;
-
-      const res = await fetch(`${API}/conversations`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ productId: product.id }),
-      });
-
-      if (!res.ok) {
-        console.error("Eroare backend:", await res.text());
-        return;
-      }
-
-      const data = await res.json();
-      router.push(`/chat/${data.id}`);
-    } catch (err) {
-      console.error("Eroare creare conversație:", err);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
-        Se încarcă...
+        Se încarcă profilul vânzătorului...
       </div>
     );
   }
 
-  if (!product) {
+  if (!seller) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
-        Produsul nu a fost găsit.
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        Vânzătorul nu a fost găsit.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e1b4b] to-[#4c1d95] text-white p-6">
-      <Link href="/" className="text-cyan-300 text-lg font-semibold">
-        ← Înapoi în homepage
-      </Link>
+    <div className="min-h-screen bg-[#0b141a] text-white p-6">
+      <button
+        onClick={() => router.back()}
+        className="mb-4 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
+      >
+        ← Înapoi
+      </button>
 
-      <div className="max-w-4xl mx-auto mt-6 bg-white/10 p-6 rounded-2xl backdrop-blur-lg shadow-xl space-y-8">
-        {product.images && product.images.length > 0 && (
-          <div className="w-full max-w-3xl mx-auto">
-            <Swiper
-              modules={[Navigation, Pagination, Thumbs]}
-              navigation
-              pagination={{ clickable: true }}
-              className="rounded-2xl overflow-hidden"
-            >
-              {product.images.map((img: string, index: number) => (
-                <SwiperSlide key={index}>
-                  <img
-                    src={img}
-                    alt={product.name}
-                    className="w-full h-96 object-cover"
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-
-            <div className="mt-4">
-              <Swiper
-                modules={[Thumbs]}
-                slidesPerView={4}
-                spaceBetween={10}
-                watchSlidesProgress
-                className="rounded-xl"
-              >
-                {product.images.map((img: string, index: number) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      src={img}
-                      className="w-full h-20 object-cover rounded-lg border border-white/20 hover:border-cyan-400 transition"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          </div>
-        )}
-
+      <div className="flex items-center gap-4 mb-6">
+        <img
+          src={seller.avatarUrl || "/avatar.png"}
+          className="w-20 h-20 rounded-full object-cover"
+        />
         <div>
-          <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
-          <p className="text-3xl text-green-400 font-semibold mb-4">
-            {product.price} lei
+          <h1 className="text-2xl font-bold">{seller.name}</h1>
+          <p className="text-gray-400">
+            S-a înscris în {seller.joinYear}
           </p>
-          <p className="text-white/80 text-lg mb-6">{product.description}</p>
-        </div>
-
-        {/* 🔥 SECȚIUNEA REPARATĂ — VÂNZĂTOR */}
-        <div className="bg-black/30 p-4 rounded-xl mb-6">
-          <h2 className="text-2xl font-semibold mb-2">
-            Vândut de: {product.user?.name || "Vânzător necunoscut"}
-          </h2>
-
-          <p className="text-white/70 mb-1">
-            S-a înscris în{" "}
-            {product.user
-              ? new Date(product.user.createdAt).getFullYear()
-              : "—"}
+          <p className="text-gray-400">
+            {seller.activeListings} anunțuri active
           </p>
-
-          <p className="text-white/70 mb-3">ID vânzător: {product.user?.id}</p>
-
-          <Link
-            href={`/seller/${product.user?.id}`}
-            className="text-cyan-300 underline"
-          >
-            Vezi profilul vânzătorului →
-          </Link>
         </div>
+      </div>
 
-        <div className="flex gap-4">
-          <button
-            onClick={startConversation}
-            className="px-5 py-3 bg-blue-500 rounded-xl font-semibold"
-          >
-            Trimite mesaj
-          </button>
+      <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
+        <h2 className="text-lg font-semibold mb-3">Despre</h2>
+        <p className="text-gray-300">
+          S-a înscris în {seller.joinYear}
+        </p>
+      </div>
 
-          <a
-            href={`mailto:${product.user?.email}`}
-            className="px-5 py-3 bg-green-500 rounded-xl font-semibold"
-          >
-            Contactează vânzătorul
-          </a>
+      <div className="bg-[#111b21] p-4 rounded-lg border border-white/10">
+        <h2 className="text-lg font-semibold mb-4">
+          Anunțurile listate de {seller.name}
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {seller.listings.map((p: any) => (
+            <div
+              key={p.id}
+              className="bg-[#0f1a20] p-3 rounded-lg cursor-pointer hover:bg-[#15232b] transition"
+              onClick={() => router.push(`/product/${p.id}`)}
+            >
+              <img
+                src={p.images?.[0] || "/placeholder.png"}
+                className="w-full h-40 object-cover rounded"
+              />
+              <h3 className="mt-2 font-semibold">{p.name}</h3>
+              <p className="text-[#00eaff] font-bold">{p.price} RON</p>
+              <p className="text-gray-400 text-sm">{p.location}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

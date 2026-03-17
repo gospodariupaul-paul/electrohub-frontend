@@ -25,7 +25,9 @@ export default function SellerProductPage() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    fetch(`${API}/products/${id}`)
+    fetch(`${API}/products/${id}`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -41,7 +43,6 @@ export default function SellerProductPage() {
   const startConversation = async () => {
     const token = localStorage.getItem("token");
 
-    // 1️⃣ Dacă nu e logat → trimite-l la login
     if (!token) {
       router.push("/login");
       return;
@@ -50,13 +51,12 @@ export default function SellerProductPage() {
     try {
       const API = process.env.NEXT_PUBLIC_API_URL;
 
-      // 2️⃣ Creează conversația folosind cookie-ul httpOnly
       const res = await fetch(`${API}/conversations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // 🔥 OBLIGATORIU pentru cookie JWT
+        credentials: "include",
         body: JSON.stringify({ productId: product.id }),
       });
 
@@ -66,8 +66,6 @@ export default function SellerProductPage() {
       }
 
       const data = await res.json();
-
-      // 3️⃣ Trimite-l în chat
       router.push(`/chat/${data.id}`);
     } catch (err) {
       console.error("Eroare creare conversație:", err);
@@ -145,15 +143,23 @@ export default function SellerProductPage() {
           <p className="text-white/80 text-lg mb-6">{product.description}</p>
         </div>
 
+        {/* 🔥 SECȚIUNEA REPARATĂ — VÂNZĂTOR */}
         <div className="bg-black/30 p-4 rounded-xl mb-6">
           <h2 className="text-2xl font-semibold mb-2">
-            Vândut de: {product.user?.name}
+            Vândut de: {product.user?.name || "Vânzător necunoscut"}
           </h2>
-          <p className="text-white/70 mb-1">Email: {product.user?.email}</p>
+
+          <p className="text-white/70 mb-1">
+            S-a înscris în{" "}
+            {product.user
+              ? new Date(product.user.createdAt).getFullYear()
+              : "—"}
+          </p>
+
           <p className="text-white/70 mb-3">ID vânzător: {product.user?.id}</p>
 
           <Link
-            href={`/user/${product.user?.id}`}
+            href={`/seller/${product.user?.id}`}
             className="text-cyan-300 underline"
           >
             Vezi profilul vânzătorului →

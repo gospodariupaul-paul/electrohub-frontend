@@ -33,7 +33,7 @@ export default function EditProfilePage() {
     setCounty(user.county || "");
     setAddress(user.address || "");
     setGender(user.gender || "");
-    setAvatarUrl(user.avatarUrl || "");
+    setAvatarUrl(user.imageUrl || user.avatarUrl || "");
 
     setBirthDate(
       user.birthDate ? user.birthDate.split("T")[0] : ""

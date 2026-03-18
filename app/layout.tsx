@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import { NotificationProvider } from "./context/NotificationContext"; 
-import WaitForUser from "./context/WaitForUser";   // 🔥 ADĂUGAT
+import WaitForUser from "./context/WaitForUser";
 import Link from "next/link";
 import { useState } from "react";
 import { FiMenu, FiHeart, FiHome, FiBell } from "react-icons/fi";
@@ -18,18 +18,18 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
 
-        {/* 🔥 AȘTEAPTĂ COOKIE-UL + USERUL ÎNAINTE DE ORICE */}
-        <WaitForUser>
-          {/* 🔥 UserProvider rulează DOAR după ce cookie-ul e disponibil */}
-          <UserProvider>
-            {/* 🔥 NotificationProvider rulează DOAR după ce user-ul e încărcat */}
+        {/* 🔥 ORDINEA CORECTĂ */}
+        <UserProvider>
+          <WaitForUser>
             <NotificationProvider>
+
               <Header />
               <main className="pt-4">{children}</main>
               <CookieConsent />
+
             </NotificationProvider>
-          </UserProvider>
-        </WaitForUser>
+          </WaitForUser>
+        </UserProvider>
 
       </body>
     </html>

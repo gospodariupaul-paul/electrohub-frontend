@@ -49,7 +49,7 @@ export default function SettingsPage() {
             icon={<MdOutlineVerifiedUser />}
             title="Verificare cont"
             desc="Verifică emailul sau numărul de telefon pentru siguranță."
-            href="/my-account/settings/verification"
+            href="/my-account/settings/verify"
           />
 
         </div>

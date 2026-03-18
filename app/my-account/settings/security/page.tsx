@@ -1,47 +1,97 @@
 "use client";
 
-import { LockClosedIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import axiosInstance from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
-export default function SecuritySettings() {
-  const [password, setPassword] = useState("");
+export default function SecuritySettingsPage() {
+  const router = useRouter();
+
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (newPassword.length < 6) {
+      setError("Parola nouă trebuie să aibă cel puțin 6 caractere.");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(
+        "/auth/change-password",
+        {
+          currentPassword,
+          newPassword,
+        },
+        { withCredentials: true }
+      );
+
+      setSuccess("Parola a fost schimbată cu succes.");
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          "A apărut o eroare. Încearcă din nou."
+      );
+    }
+  };
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 text-white">
-      <h1 className="text-2xl font-bold flex items-center gap-2 mb-6">
-        <LockClosedIcon className="w-6 h-6 text-[#00eaff]" />
-        Securitate
-      </h1>
+    <div className="min-h-screen bg-[#0b141a] text-white p-6">
 
-      <div className="space-y-6">
+      <button
+        onClick={() => router.push("/my-account/settings")}
+        className="mb-6 px-4 py-2 bg-[#00aaff] text-black rounded-lg font-semibold hover:bg-[#008fcc] transition"
+      >
+        ← Înapoi la setări
+      </button>
 
-        {/* PAROLA CURENTĂ */}
-        <div>
-          <label className="block mb-1 text-white/70">Parola actuală</label>
+      <h1 className="text-2xl font-bold mb-6">Securitate</h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#111b21] p-6 rounded-lg border border-white/10 max-w-md"
+      >
+        <label className="block mb-4">
+          <span className="text-gray-300">Parola actuală</span>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 rounded bg-white/10 border border-white/20"
+            className="w-full mt-1 p-2 rounded bg-[#0b141a] border border-white/20"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
           />
-        </div>
+        </label>
 
-        {/* PAROLA NOUĂ */}
-        <div>
-          <label className="block mb-1 text-white/70">Parola nouă</label>
+        <label className="block mb-4">
+          <span className="text-gray-300">Parola nouă</span>
           <input
             type="password"
+            className="w-full mt-1 p-2 rounded bg-[#0b141a] border border-white/20"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full px-4 py-2 rounded bg-white/10 border border-white/20"
+            required
           />
-        </div>
+        </label>
 
-        <button className="px-6 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition">
+        {error && <p className="text-red-400 mb-3">{error}</p>}
+        {success && <p className="text-green-400 mb-3">{success}</p>}
+
+        <button
+          type="submit"
+          className="w-full py-2 bg-[#00aaff] text-black font-semibold rounded hover:bg-[#008fcc] transition"
+        >
           Schimbă parola
         </button>
-      </div>
+      </form>
     </div>
   );
 }

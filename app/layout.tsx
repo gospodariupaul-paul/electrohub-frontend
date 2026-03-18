@@ -18,16 +18,18 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
 
-        <UserProvider>
-          {/* 🔥 AȘTEAPTĂ USERUL ÎNAINTE DE NOTIFICATION PROVIDER */}
-          <WaitForUser>
+        {/* 🔥 AȘTEAPTĂ COOKIE-UL + USERUL ÎNAINTE DE ORICE */}
+        <WaitForUser>
+          {/* 🔥 UserProvider rulează DOAR după ce cookie-ul e disponibil */}
+          <UserProvider>
+            {/* 🔥 NotificationProvider rulează DOAR după ce user-ul e încărcat */}
             <NotificationProvider>
               <Header />
               <main className="pt-4">{children}</main>
               <CookieConsent />
             </NotificationProvider>
-          </WaitForUser>
-        </UserProvider>
+          </UserProvider>
+        </WaitForUser>
 
       </body>
     </html>

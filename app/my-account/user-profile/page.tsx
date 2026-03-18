@@ -57,14 +57,14 @@ export default function UserProfileView() {
         {/* 🔥 Avatar */}
         <div className="flex items-center gap-4">
           <img
-            src={user.avatarUrl || "/default-avatar.png"}
+            src={user.imageUrl || user.avatarUrl || "/default-avatar.png"}
             alt="Avatar"
             className="w-20 h-20 rounded-full object-cover border border-white/20"
           />
           <div>
             <p className="text-sm opacity-70">Avatar</p>
             <p className="text-lg font-semibold">
-              {user.avatarUrl ? "Setat" : "Nespecificat"}
+              {user.imageUrl || user.avatarUrl ? "Setat" : "Nespecificat"}
             </p>
           </div>
         </div>

@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import "./globals.css";
 import { UserProvider } from "./context/UserContext";
 import { NotificationProvider } from "./context/NotificationContext"; 
+import WaitForUser from "./context/WaitForUser";   // 🔥 ADĂUGAT
 import Link from "next/link";
 import { useState } from "react";
 import { FiMenu, FiHeart, FiHome, FiBell } from "react-icons/fi";
@@ -17,13 +18,15 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
 
-        {/* 🔥 FIX: UserProvider trebuie să fie ÎNAINTE de NotificationProvider */}
         <UserProvider>
-          <NotificationProvider>
-            <Header />
-            <main className="pt-4">{children}</main>
-            <CookieConsent />
-          </NotificationProvider>
+          {/* 🔥 AȘTEAPTĂ USERUL ÎNAINTE DE NOTIFICATION PROVIDER */}
+          <WaitForUser>
+            <NotificationProvider>
+              <Header />
+              <main className="pt-4">{children}</main>
+              <CookieConsent />
+            </NotificationProvider>
+          </WaitForUser>
         </UserProvider>
 
       </body>
@@ -75,7 +78,6 @@ function Header() {
             GOSPO <span className="text-white">Electro Hub</span>
           </Link>
         </div>
-
 
         {/* 🔍 SEARCH */}
         <div className="hidden md:flex flex-1 mx-6">
@@ -235,7 +237,6 @@ function Header() {
                       Profilul meu
                     </Link>
                     <Link href="/account/listings" className="block px-4 py-2 hover:bg-white/10 rounded">
-
                       Anunțurile mele
                     </Link>
                     <Link href="/my-account/profile" className="block px-4 py-2 hover:bg-white/10 rounded">
@@ -266,64 +267,64 @@ function Header() {
       </div>
 
       {/* 🔥 MENIU HAMBURGER */}
-{menuOpen && (
-  <div
-    className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4"
-    onMouseLeave={() => setMenuOpen(false)}   // 🔥 SE ÎNCHIDE CÂND IEȘI CU MOUSE-UL
-  >
+      {menuOpen && (
+        <div
+          className="bg-[#0d1117] border-t border-white/10 p-4 space-y-4"
+          onMouseLeave={() => setMenuOpen(false)}
+        >
 
-    <div>
-      <p className="text-xs text-gray-400 mb-1">Contul meu</p>
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Contul meu</p>
 
-      <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Profilul meu
-      </Link>
+            <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Profilul meu
+            </Link>
 
-      <Link href="/my-account/orders" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Comenzile mele
-      </Link>
+            <Link href="/my-account/orders" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Comenzile mele
+            </Link>
 
-      <Link href="/my-products" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Produsele mele
-      </Link>
+            <Link href="/my-products" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Produsele mele
+            </Link>
 
-      <Link href="/favorites" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Favorite / Wishlist
-      </Link>
-    </div>
+            <Link href="/favorites" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Favorite / Wishlist
+            </Link>
+          </div>
 
-    <div>
-      <p className="text-xs text-gray-400 mb-1">Navigare</p>
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Navigare</p>
 
-      <Link href="/#categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Categorii produse
-      </Link>
+            <Link href="/#categories" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Categorii produse
+            </Link>
 
-      <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Adaugă anunț
-      </Link>
+            <Link href="/my-account/profile" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Adaugă anunț
+            </Link>
 
-      <Link href="/my-account/messages" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Mesaje / Chat
-      </Link>
-    </div>
+            <Link href="/my-account/messages" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Mesaje / Chat
+            </Link>
+          </div>
 
-    <div>
-      <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Setări & Suport</p>
 
-      <Link href="/my-account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
-        Setări
-      </Link>
+            <Link href="/my-account/settings" className="block px-4 py-2 hover:bg-white/10 rounded">
+              Setări
+            </Link>
 
-      <Link href="/help" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
-        Ajutor / Contact / FAQ
-      </Link>
-    </div>
+            <Link href="/help" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+              Ajutor / Contact / FAQ
+            </Link>
+          </div>
 
-    <div className="pt-2 border-t border-white/10">
-      <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
-        Deconectare
-      </Link>
+          <div className="pt-2 border-t border-white/10">
+            <Link href="/logout" className="block py-1 text-red-400 hover:text-red-300 transition">
+              Deconectare
+            </Link>
           </div>
 
         </div>

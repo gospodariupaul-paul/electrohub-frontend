@@ -3,6 +3,7 @@
 import { useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; // 👈 ADĂUGAT
 
 // Funcție pentru puterea parolei
 function getPasswordStrength(password: string) {
@@ -103,9 +104,13 @@ export default function SecuritySettingsPage() {
             <button
               type="button"
               onClick={() => setShowCurrent(!showCurrent)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
             >
-              {showCurrent ? "Ascunde" : "Arată"}
+              {showCurrent ? (
+                <EyeSlashIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
             </button>
           </div>
         </label>
@@ -124,9 +129,13 @@ export default function SecuritySettingsPage() {
             <button
               type="button"
               onClick={() => setShowNew(!showNew)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
             >
-              {showNew ? "Ascunde" : "Arată"}
+              {showNew ? (
+                <EyeSlashIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
             </button>
           </div>
 

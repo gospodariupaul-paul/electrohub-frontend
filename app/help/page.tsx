@@ -2,7 +2,15 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen py-12 px-6 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white">
       <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20">
-        
+
+        {/* BUTON ÎNAPOI */}
+        <a
+          href="/"
+          className="inline-block mb-6 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg shadow-md transition-all"
+        >
+          ← Înapoi
+        </a>
+
         <h1 className="text-4xl font-extrabold mb-8 text-center drop-shadow-lg">
           Ajutor & Suport
         </h1>

@@ -13,44 +13,57 @@
 
 .help-card {
   width: 100%;
-  max-width: 600px;
-  padding: 28px 24px 30px;
-  border-radius: 22px;
+  max-width: 700px; /* 🔥 mai mare decât înainte */
+  padding: 32px 28px 36px; /* 🔥 puțin mai mare */
+  border-radius: 24px;
   background: rgba(15, 23, 42, 0.85);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(16px);
   color: #e5e7eb;
-  text-align: center;
+}
+
+.back-btn {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #e5e7eb;
 }
 
 .help-title {
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   font-size: 32px;
   font-weight: 700;
   color: #f9fafb;
 }
 
 .help-subtitle {
-  margin: 0 0 22px;
-  font-size: 14px;
+  margin: 0 0 26px;
+  font-size: 15px;
   color: #9ca3af;
 }
 
 .help-links {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   margin-top: 20px;
 }
 
 .help-link {
   display: block;
-  padding: 14px;
-  border-radius: 14px;
+  padding: 16px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #e5e7eb;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   text-decoration: none;
   transition: background 0.2s ease, transform 0.1s ease;

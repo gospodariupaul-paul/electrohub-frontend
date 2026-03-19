@@ -9,6 +9,10 @@ export default function HelpPage() {
     <div className="help-page">
       <div className="help-card">
 
+        <button className="back-btn" onClick={() => history.back()}>
+          ← Înapoi
+        </button>
+
         <h1 className="help-title">Centrul de Ajutor</h1>
         <p className="help-subtitle">
           Alege o secțiune pentru a găsi informațiile de care ai nevoie.

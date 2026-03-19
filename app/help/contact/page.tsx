@@ -26,43 +26,64 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4 text-black"> {/* FIX AICI */}
-      <h1 className="text-3xl font-bold mb-6">Contact</h1>
+    <div className="min-h-screen py-12 px-6 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white">
+      <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20">
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Nume"
-          className="w-full p-3 border rounded"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+        {/* TITLU */}
+        <h1 className="text-4xl font-extrabold mb-8 text-center drop-shadow-lg">
+          Contact
+        </h1>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 border rounded"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
+        {/* BUTON ÎNAPOI */}
+        <a
+          href="/help"
+          className="inline-block mb-6 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg shadow-md transition-all"
+        >
+          ← Înapoi
+        </a>
 
-        <input
-          type="text"
-          placeholder="Subiect"
-          className="w-full p-3 border rounded"
-          onChange={(e) => setForm({ ...form, subject: e.target.value })}
-        />
+        {/* FORMULAR */}
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <textarea
-          placeholder="Mesaj"
-          className="w-full p-3 border rounded h-32"
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-        />
+          <input
+            type="text"
+            placeholder="Nume"
+            className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:bg-white/30"
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
 
-        <button className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
-          Trimite mesaj
-        </button>
-      </form>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:bg-white/30"
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
 
-      {response && <p className="mt-4 text-green-600">{response}</p>}
+          <input
+            type="text"
+            placeholder="Subiect"
+            className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:bg-white/30"
+            onChange={(e) => setForm({ ...form, subject: e.target.value })}
+          />
+
+          <textarea
+            placeholder="Mesaj"
+            className="w-full p-3 rounded-lg bg-white/20 text-white placeholder-white/70 border border-white/30 h-32 focus:outline-none focus:bg-white/30"
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+          />
+
+          <button className="w-full bg-white/30 hover:bg-white/40 text-white font-semibold py-3 rounded-lg transition-all shadow-lg">
+            Trimite mesaj
+          </button>
+        </form>
+
+        {/* RĂSPUNS */}
+        {response && (
+          <p className="mt-6 text-green-200 text-center font-semibold">
+            {response}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

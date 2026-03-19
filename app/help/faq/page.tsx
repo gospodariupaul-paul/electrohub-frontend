@@ -15,7 +15,7 @@ export default function FAQPage() {
     <div className="min-h-screen py-12 px-6 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white">
 
       {/* CASETĂ CENTRALĂ ALBASTRU ÎNCHIS */}
-      <div className="max-w-3xl mx-auto bg-blue-900/60 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
+      <div className="max-w-3xl mx-auto bg-blue-900/70 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
 
         {/* BUTON ÎNAPOI */}
         <a
@@ -29,12 +29,12 @@ export default function FAQPage() {
           Întrebări frecvente (FAQ)
         </h1>
 
-        {/* LISTA FAQ */}
+        {/* LISTA FAQ CU CASETE ÎNCHISE */}
         <div className="space-y-6">
           {faq.map((item: any, index: number) => (
             <div
               key={index}
-              className="p-5 rounded-xl bg-purple-500/40 hover:bg-purple-500/60 transition-all shadow-lg border border-white/20"
+              className="p-5 rounded-xl bg-purple-900/60 hover:bg-purple-900/80 transition-all shadow-lg border border-white/20"
             >
               <h2 className="text-2xl font-semibold">{item.question}</h2>
               <p className="text-white/90 mt-2">{item.answer}</p>

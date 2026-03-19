@@ -20,11 +20,10 @@ export default function FavoritesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // 🔥 AICI ESTE SINGURA MODIFICARE NECESARĂ
+  // 🔥 AICI ESTE FIX-UL REAL
   const removeFromList = async (productId: number) => {
     try {
-      await axiosInstance.delete("/favorites/remove", {
-        data: { productId },
+      await axiosInstance.delete(`/favorites/${productId}`, {
         withCredentials: true,
       });
 

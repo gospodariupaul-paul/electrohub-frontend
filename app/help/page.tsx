@@ -2,8 +2,8 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen py-12 px-6 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white">
 
-      {/* CARD CENTRAL COLORAT */}
-      <div className="max-w-3xl mx-auto bg-purple-800/40 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
+      {/* CASETĂ CENTRALĂ ALBASTRU ÎNCHIS */}
+      <div className="max-w-3xl mx-auto bg-blue-900/60 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
 
         {/* BUTON ÎNAPOI */}
         <a

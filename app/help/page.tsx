@@ -1,59 +1,36 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import "./help.css";
+
 export default function HelpPage() {
   return (
-    <div className="min-h-screen py-12 px-6 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white">
+    <div className="help-page">
+      <div className="help-card">
 
-      {/* CASETĂ CENTRALĂ ALBASTRU ÎNCHIS */}
-      <div className="max-w-3xl mx-auto bg-blue-900/60 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/20">
+        <h1 className="help-title">Centrul de Ajutor</h1>
+        <p className="help-subtitle">
+          Alege o secțiune pentru a găsi informațiile de care ai nevoie.
+        </p>
 
-        {/* BUTON ÎNAPOI */}
-        <a
-          href="/"
-          className="inline-block mb-6 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg shadow-md transition-all"
-        >
-          ← Înapoi
-        </a>
+        <div className="help-links">
 
-        <h1 className="text-4xl font-extrabold mb-8 text-center drop-shadow-lg">
-          Ajutor & Suport
-        </h1>
+          <Link href="/help/faq" className="help-link">
+            Întrebări frecvente (FAQ)
+          </Link>
 
-        <div className="space-y-6">
+          <Link href="/help/contact" className="help-link">
+            Contact
+          </Link>
 
-          {/* CARD 1 */}
-          <a
-            href="/help/faq"
-            className="block p-5 rounded-xl bg-blue-500/40 hover:bg-blue-500/60 transition-all shadow-lg border border-white/20"
-          >
-            <h2 className="text-2xl font-semibold">Întrebări frecvente (FAQ)</h2>
-            <p className="text-white/90">Răspunsuri rapide la cele mai comune întrebări.</p>
-          </a>
+          <Link href="/help/policies" className="help-link">
+            Politici & Termeni
+          </Link>
 
-          {/* CARD 2 */}
-          <a
-            href="/help/contact"
-            className="block p-5 rounded-xl bg-green-500/40 hover:bg-green-500/60 transition-all shadow-lg border border-white/20"
-          >
-            <h2 className="text-2xl font-semibold">Contact</h2>
-            <p className="text-white/90">Trimite un mesaj echipei de suport.</p>
-          </a>
-
-          {/* CARD 3 */}
-          <a
-            href="/help/policies"
-            className="block p-5 rounded-xl bg-yellow-500/40 hover:bg-yellow-500/60 transition-all shadow-lg border border-white/20"
-          >
-            <h2 className="text-2xl font-semibold">Politici</h2>
-            <p className="text-white/90">Termeni, confidențialitate, retur și livrare.</p>
-          </a>
-
-          {/* CARD 4 */}
-          <a
-            href="/help/status"
-            className="block p-5 rounded-xl bg-red-500/40 hover:bg-red-500/60 transition-all shadow-lg border border-white/20"
-          >
-            <h2 className="text-2xl font-semibold">Status servicii</h2>
-            <p className="text-white/90">Verifică dacă serverele funcționează normal.</p>
-          </a>
+          <Link href="/help/status" className="help-link">
+            Status Platformă
+          </Link>
 
         </div>
       </div>

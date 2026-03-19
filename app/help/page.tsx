@@ -1,6 +1,6 @@
 export default function HelpPage() {
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
+    <div className="max-w-3xl mx-auto py-10 px-4 bg-white text-black">
       <h1 className="text-3xl font-bold mb-6">Ajutor & Suport</h1>
 
       <div className="space-y-4">

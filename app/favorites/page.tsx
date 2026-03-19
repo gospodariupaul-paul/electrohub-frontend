@@ -20,10 +20,20 @@ export default function FavoritesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const removeFromList = (productId: number) => {
-    setFavorites((prev) =>
-      prev.filter((f: any) => f.product?.id !== productId)
-    );
+  // 🔥 AICI ESTE SINGURA MODIFICARE NECESARĂ
+  const removeFromList = async (productId: number) => {
+    try {
+      await axiosInstance.delete("/favorites/remove", {
+        data: { productId },
+        withCredentials: true,
+      });
+
+      setFavorites((prev) =>
+        prev.filter((f: any) => f.product?.id !== productId)
+      );
+    } catch (err) {
+      console.error("Eroare la ștergerea din favorite:", err);
+    }
   };
 
   if (loading) {
@@ -80,7 +90,6 @@ export default function FavoritesPage() {
               <h3 className="text-lg font-semibold">{product.name}</h3>
               <p className="text-[#00eaff] font-bold">{product.price} lei</p>
 
-              {/* 🔥 Buton detalii produs */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -91,7 +100,7 @@ export default function FavoritesPage() {
                 Vezi detalii produs
               </button>
 
-              {/* ❤️ Buton ȘTERGERE — funcționează EXACT ca înainte */}
+              {/* ❤️ Buton ȘTERGERE */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();

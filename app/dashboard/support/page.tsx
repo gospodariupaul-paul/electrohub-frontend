@@ -68,7 +68,7 @@ export default function SupportMessagesPage() {
 
               {msg.reply ? (
                 <span className="flex items-center gap-2 text-green-400 text-sm">
-                  <FaCheckCircle /> Răspuns trimis
+                  <FaCheckCircle /> Răspuns primit
                 </span>
               ) : (
                 <span className="flex items-center gap-2 text-yellow-400 text-sm">

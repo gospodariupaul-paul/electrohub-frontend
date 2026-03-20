@@ -1,11 +1,17 @@
 "use client";
 
-import { UserProvider, useUser } from "@/app/context/UserContext";
+import { useUser } from "@/app/context/UserContext";
 
 function ProtectedContent({ children }: { children: React.ReactNode }) {
   const { user, loading } = useUser();
 
-  if (loading) return null; // sau un loader
+  if (loading) {
+    return (
+      <div className="p-6 text-white">
+        Se încarcă...
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -19,9 +25,5 @@ function ProtectedContent({ children }: { children: React.ReactNode }) {
 }
 
 export default function MyAccountLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <UserProvider>
-      <ProtectedContent>{children}</ProtectedContent>
-    </UserProvider>
-  );
+  return <ProtectedContent>{children}</ProtectedContent>;
 }

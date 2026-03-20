@@ -12,6 +12,7 @@ import { IoSearch } from "react-icons/io5";
 import { useUser } from "./context/UserContext";
 import { useNotifications } from "./context/NotificationContext";
 import CookieConsent from "../components/CookieConsent";
+import { useRouter } from "next/navigation";
 
 export default function RootLayout({ children }) {
   return (
@@ -41,6 +42,10 @@ function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
 
   const { user, loading } = useUser();
+  const router = useRouter();
+
+  // 🔥 SEARCH GLOBAL
+  const [globalSearch, setGlobalSearch] = useState("");
 
   const {
     getUnreadCount,
@@ -80,16 +85,33 @@ function Header() {
           </Link>
         </div>
 
-        {/* 🔍 SEARCH */}
+        {/* 🔍 SEARCH GLOBAL FUNCȚIONAL */}
         <div className="hidden md:flex flex-1 mx-6">
-          <div className="flex items-center w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-2 shadow-inner">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!globalSearch.trim()) return;
+              router.push(`/search?q=${encodeURIComponent(globalSearch)}`);
+            }}
+            className="flex items-center w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-2 shadow-inner"
+          >
             <IoSearch className="text-xl text-gray-400" />
+
             <input
               type="text"
+              value={globalSearch}
+              onChange={(e) => setGlobalSearch(e.target.value)}
               placeholder="Caută produse, modele, categorii..."
               className="flex-1 bg-transparent outline-none text-sm text-gray-200 ml-3"
             />
-          </div>
+
+            <button
+              type="submit"
+              className="px-4 py-1 bg-cyan-500 text-black rounded-lg text-sm font-semibold hover:bg-cyan-400 transition ml-3"
+            >
+              Caută
+            </button>
+          </form>
         </div>
 
         {/* 🔥 ICONIȚE */}
@@ -231,8 +253,7 @@ function Header() {
                       className="block px-4 py-2 hover:bg-white/10 rounded"
                     >
                       Ajutor / Contact
-                     </Link>
-
+                    </Link>
                   </>
                 )}
 
@@ -321,7 +342,6 @@ function Header() {
               Setări
             </Link>
 
-            {/* 🔥 MODIFICAREA CERUTĂ */}
             <Link
               href={user ? "/help" : "/login"}
               className="block py-1 text-gray-300 hover:text-[#00eaff] transition"

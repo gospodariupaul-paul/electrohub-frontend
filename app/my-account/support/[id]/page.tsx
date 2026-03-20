@@ -10,6 +10,8 @@ export default function MySupportMessageDetails() {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
+    if (!id) return;
+
     axiosInstance
       .get(`/support/my/${id}`, {
         withCredentials: true,

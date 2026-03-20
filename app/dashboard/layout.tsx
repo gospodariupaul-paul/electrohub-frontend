@@ -13,17 +13,21 @@ import {
   FaChevronLeft,
   FaCog,
   FaChartLine,
-  FaEnvelope, // 🔥 ADĂUGAT pentru Support Messages
+  FaEnvelope,
 } from "react-icons/fa";
 
 // 🔥 ADĂUGAT — NotificationProvider
 import { NotificationProvider } from "@/app/context/NotificationContext";
+import axiosInstance from "@/lib/axios"; // 🔥 NECESAR pentru badge
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading } = useUser();
   const [collapsed, setCollapsed] = useState(false);
+
+  // 🔥 ADĂUGAT — număr mesaje fără răspuns
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     if (loading) return;
@@ -35,14 +39,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       return;
     }
 
-    if (!user) {
-      return;
-    }
+    if (!user) return;
 
     if (user.role !== "admin") {
       router.push("/my-account/profile");
       return;
     }
+
+    // 🔥 FETCH NUMĂR MESAJE NECITITE
+    axiosInstance
+      .get("/support/admin/pending/count", { withCredentials: true })
+      .then((res) => setPendingCount(res.data))
+      .catch(() => {});
 
   }, [loading, user]);
 
@@ -55,7 +63,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    // 🔥 ÎNVELIM TOT DASHBOARD-UL ÎN NotificationProvider
     <NotificationProvider>
       <div className="flex min-h-screen bg-[#020312] text-white">
         
@@ -102,8 +109,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" collapsed={collapsed} />
             <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" collapsed={collapsed} />
 
-            {/* 🔥 NOUL BUTON PENTRU MESAJE SUPORT */}
-            <SidebarLink href="/dashboard/support" icon={<FaEnvelope />} label="Support Messages" collapsed={collapsed} />
+            {/* 🔥 SUPPORT MESSAGES CU BADGE */}
+            <SidebarLink
+              href="/dashboard/support"
+              icon={<FaEnvelope />}
+              label="Support Messages"
+              collapsed={collapsed}
+              badge={pendingCount}
+            />
 
             <SidebarLink href="/dashboard/settings" icon={<FaCog />} label="Settings" collapsed={collapsed} />
           </div>
@@ -120,18 +133,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 }
 
-function SidebarLink({ href, icon, label, collapsed, danger = false }: any) {
+function SidebarLink({ href, icon, label, collapsed, danger = false, badge = 0 }: any) {
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+      className={`relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
         hover:bg-white/10
         ${danger ? "text-red-400 hover:bg-red-500/20" : "text-white"}
       `}
       style={{ justifyContent: collapsed ? "center" : "flex-start" }}
     >
       <span className="text-lg">{icon}</span>
+
       {!collapsed && <span className="tracking-wide">{label}</span>}
+
+      {/* 🔥 BADGE NOTIFICĂRI */}
+      {badge > 0 && (
+        <span
+          className="absolute right-3 top-2 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full"
+        >
+          {badge}
+        </span>
+      )}
     </Link>
   );
 }

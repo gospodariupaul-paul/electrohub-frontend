@@ -13,6 +13,7 @@ import {
   FaChevronLeft,
   FaCog,
   FaChartLine,
+  FaEnvelope, // 🔥 ADĂUGAT pentru Support Messages
 } from "react-icons/fa";
 
 // 🔥 ADĂUGAT — NotificationProvider
@@ -100,6 +101,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SidebarLink href="/dashboard/products" icon={<FaBox />} label="Products" collapsed={collapsed} />
             <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" collapsed={collapsed} />
             <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" collapsed={collapsed} />
+
+            {/* 🔥 NOUL BUTON PENTRU MESAJE SUPORT */}
+            <SidebarLink href="/dashboard/support" icon={<FaEnvelope />} label="Support Messages" collapsed={collapsed} />
+
             <SidebarLink href="/dashboard/settings" icon={<FaCog />} label="Settings" collapsed={collapsed} />
           </div>
 

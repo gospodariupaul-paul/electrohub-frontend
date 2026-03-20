@@ -48,7 +48,7 @@ export default function UserProfilePage() {
     fetchUnread();
   }, [user]);
 
-  // 🔥 FETCH NOTIFICATIONS (SINGURA MODIFICARE)
+  // FETCH NOTIFICATIONS
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -60,8 +60,6 @@ export default function UserProfilePage() {
         );
 
         const data = await res.json();
-
-        // actualizează notificările în localStorage (folosit de NotificationContext)
         localStorage.setItem("notifications", JSON.stringify(data));
       } catch (err) {
         console.error("Eroare la fetch notificări:", err);
@@ -206,30 +204,34 @@ export default function UserProfilePage() {
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
 
+          {/* 🔥 AICI ESTE BUTONUL NOU */}
+          <Link href="/my-account/support" className="block">
+            <SidebarItem label="Mesaje către Admin" />
+          </Link>
+
           <Link href="/my-account/user-profile" className="block">
-           <SidebarItem label="Profil" />
+            <SidebarItem label="Profil" />
           </Link>
 
           <Link href="/my-account/settings" className="block">
-           <SidebarItem label="Setări" />
+            <SidebarItem label="Setări" />
           </Link>
-
         </nav>
 
         <div className="pt-6 border-t border-white/10">
-         <Link href="/favorites" className="block">
-          <SidebarItem label="Favorite" />
-         </Link>
+          <Link href="/favorites" className="block">
+            <SidebarItem label="Favorite" />
+          </Link>
 
-         <Link href="/saved-searches" className="block">
-          <SidebarItem label="Căutări salvate" />
-         </Link>
+          <Link href="/saved-searches" className="block">
+            <SidebarItem label="Căutări salvate" />
+          </Link>
 
-         <Link href="/logout" className="text-red-400 hover:text-red-300">
-          Ieșire din cont
-         </Link>
+          <Link href="/logout" className="text-red-400 hover:text-red-300">
+            Ieșire din cont
+          </Link>
         </div>
-        </aside>
+      </aside>
 
       {/* CONTENT */}
       <main className="flex-1 p-10">

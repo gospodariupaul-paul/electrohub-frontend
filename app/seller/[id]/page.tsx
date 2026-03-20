@@ -9,12 +9,14 @@ export default function SellerPage() {
 
   const [seller, setSeller] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [hasBought, setHasBought] = useState(false);
 
   useEffect(() => {
     if (!id) return;
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
+    // 🔥 1. Luăm datele vânzătorului
     fetch(`${API}/products/seller/${id}`, {
       credentials: "include",
     })
@@ -27,6 +29,17 @@ export default function SellerPage() {
         console.error("Eroare la încărcarea vânzătorului:", err);
         setLoading(false);
       });
+
+    // 🔥 2. Verificăm dacă userul a cumpărat de la acest vânzător
+    fetch(`${API}/orders/has-bought/${id}`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setHasBought(data.hasBought);
+      })
+      .catch((err) => console.error("Eroare la verificarea cumpărăturilor:", err));
+
   }, [id]);
 
   if (loading) {
@@ -48,7 +61,7 @@ export default function SellerPage() {
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
 
-      {/* 🔥 BUTON ÎNAPOI INSERAT AICI */}
+      {/* 🔥 BUTON ÎNAPOI */}
       <button
         onClick={() => router.back()}
         className="mb-6 px-4 py-2 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition"
@@ -63,20 +76,24 @@ export default function SellerPage() {
         />
         <div>
           <h1 className="text-2xl font-bold">{seller.name}</h1>
-          <p className="text-gray-400">
-            S-a înscris în {seller.joinYear}
-          </p>
-          <p className="text-gray-400">
-            {seller.activeListings} anunțuri active
-          </p>
+          <p className="text-gray-400">S-a înscris în {seller.joinYear}</p>
+          <p className="text-gray-400">{seller.activeListings} anunțuri active</p>
+
+          {/* ⭐⭐⭐ BUTONUL DE RATING — apare doar dacă userul a cumpărat */}
+          {hasBought && (
+            <button
+              onClick={() => router.push(`/rate/${id}`)}
+              className="mt-3 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-300 transition"
+            >
+              ⭐ Evaluează vânzătorul
+            </button>
+          )}
         </div>
       </div>
 
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Despre</h2>
-        <p className="text-gray-300">
-          S-a înscris în {seller.joinYear}
-        </p>
+        <p className="text-gray-300">S-a înscris în {seller.joinYear}</p>
       </div>
 
       <div className="bg-[#111b21] p-4 rounded-lg border border-white/10">

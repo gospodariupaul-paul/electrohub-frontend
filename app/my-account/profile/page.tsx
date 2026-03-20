@@ -204,9 +204,9 @@ export default function UserProfilePage() {
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
 
-          {/* 🔥 AICI ESTE BUTONUL NOU */}
+          {/* 🔥 AICI ESTE BUTONUL CORECT */}
           <Link href="/my-account/support" className="block">
-            <SidebarItem label="Mesaje către Admin" />
+            <SidebarItem label="Mesaje de la Admin" />
           </Link>
 
           <Link href="/my-account/user-profile" className="block">

@@ -16,6 +16,24 @@ export default function SupportMessagesPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // 🔥 ȘTERGERE MESAJ ADMIN
+  const handleDelete = async (id: number) => {
+    if (!confirm("Sigur vrei să ștergi acest mesaj?")) return;
+
+    try {
+      await axiosInstance.patch(
+        `/support/admin/delete/${id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      // Scoatem mesajul din listă instant
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+    } catch (err) {
+      console.error("Eroare la ștergere mesaj:", err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="text-white text-xl flex justify-center mt-20">
@@ -74,6 +92,14 @@ export default function SupportMessagesPage() {
             >
               Vezi mesajul
             </Link>
+
+            {/* 🔥 BUTON ȘTERGERE ADMIN */}
+            <button
+              onClick={() => handleDelete(msg.id)}
+              className="mt-4 w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-2 rounded-lg transition"
+            >
+              Șterge mesaj
+            </button>
           </div>
         ))}
       </div>

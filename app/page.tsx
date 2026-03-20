@@ -272,9 +272,13 @@ export default function HomePage() {
                   Setări
                 </Link>
 
-                <Link href="/support" className="block py-2 hover:text-cyan-300">
+                <Link
+                  href={isLogged ? "/support" : "/login"}
+                  className="block py-2 hover:text-cyan-300"
+                >
                   Ajutor / Contact / FAQ
                 </Link>
+
               </div>
 
               {isLogged && (

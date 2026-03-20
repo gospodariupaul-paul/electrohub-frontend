@@ -1,9 +1,45 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import axiosInstance from "@/lib/axios";
 import "./contact.css";
 
 export default function ContactPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("gospopaul2006@yahoo.com");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const sendMessage = async (e: any) => {
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
+
+    if (!subject || !message) {
+      setError("Te rugăm să completezi subiectul și mesajul.");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(
+        "/support",
+        {
+          subject,
+          message,
+        },
+        { withCredentials: true }
+      );
+
+      setSuccess(true);
+      setSubject("");
+      setMessage("");
+    } catch (err) {
+      setError("A apărut o eroare. Încearcă din nou.");
+    }
+  };
+
   return (
     <div className="contact-page">
       <div className="contact-card">
@@ -16,29 +52,43 @@ export default function ContactPage() {
           Ai întrebări, idei sau feedback? Scrie-mi un mesaj.
         </p>
 
-        <form className="contact-form">
+        {error && <div className="error-msg">{error}</div>}
+        {success && (
+          <div className="success-msg">
+            Mesajul a fost trimis către admin@electrohub.com!
+          </div>
+        )}
+
+        <form className="contact-form" onSubmit={sendMessage}>
           <input
             type="text"
             placeholder="Numele tău"
             className="contact-input"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
 
           <input
             type="email"
             placeholder="Email"
             className="contact-input"
-            defaultValue="gospodariupaul@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <input
             type="text"
             placeholder="Subiect"
             className="contact-input"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
           />
 
           <textarea
             placeholder="Mesajul tău..."
             className="contact-input contact-textarea"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
 
           <button type="submit" className="contact-btn">

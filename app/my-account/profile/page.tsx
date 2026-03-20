@@ -216,7 +216,11 @@ export default function UserProfilePage() {
 
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
-          <SidebarItem label="Ratinguri" />
+
+          <Link href="/my-account/ratinguri" className="block">
+           <SidebarItem label="Ratinguri" />
+          </Link>
+
 
           {/* 🔥 BADGE ADMIN SUPORT */}
           <Link href="/my-account/support" className="relative block">

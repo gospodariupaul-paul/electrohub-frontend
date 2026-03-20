@@ -14,6 +14,15 @@ export default function MySupportMessages() {
 
   return (
     <div className="text-white p-6">
+
+      {/* 🔥 BUTON ÎNAPOI LA PROFIL */}
+      <Link
+        href="/my-account/profile"
+        className="inline-block mb-6 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm"
+      >
+        ← Înapoi la profil
+      </Link>
+
       <h1 className="text-3xl font-bold mb-6 text-cyan-400">Mesajele mele</h1>
 
       {messages.length === 0 && (

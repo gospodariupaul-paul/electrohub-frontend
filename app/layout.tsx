@@ -18,7 +18,6 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body className="bg-[#0b141a] text-white">
 
-        {/* 🔥 ORDINEA CORECTĂ */}
         <UserProvider>
           <WaitForUser>
             <NotificationProvider>
@@ -318,7 +317,11 @@ function Header() {
               Setări
             </Link>
 
-            <Link href="/help" className="block py-1 text-gray-300 hover:text-[#00eaff] transition">
+            {/* 🔥 MODIFICAREA CERUTĂ */}
+            <Link
+              href={user ? "/help" : "/login"}
+              className="block py-1 text-gray-300 hover:text-[#00eaff] transition"
+            >
               Ajutor / Contact / FAQ
             </Link>
           </div>

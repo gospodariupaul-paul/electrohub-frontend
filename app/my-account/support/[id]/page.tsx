@@ -11,7 +11,10 @@ export default function MySupportMessageDetails() {
 
   useEffect(() => {
     axiosInstance
-      .get(`/support/${id}`, { withCredentials: true })
+      .get(`/support/my/${id}`, {
+        withCredentials: true,
+        headers: { "Cache-Control": "no-cache" }
+      })
       .then((res) => setMessage(res.data))
       .catch(() => setMessage(null));
   }, [id]);

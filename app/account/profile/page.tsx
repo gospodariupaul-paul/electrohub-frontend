@@ -57,13 +57,23 @@ export default async function ProfilePage() {
         </div>
 
         {/* Buton editare */}
-        <div className="mt-6">
+        <div className="mt-6 flex flex-col gap-3">
+
           <a
             href="/account/settings"
             className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-sm font-semibold"
           >
             Editează profilul
           </a>
+
+          {/* 🔥 Nou: Mesaje către Admin */}
+          <a
+            href="/my-account/support"
+            className="px-4 py-2 bg-[#222] hover:bg-[#333] rounded-lg text-sm font-semibold text-cyan-400 border border-[#333]"
+          >
+            Mesaje către Admin
+          </a>
+
         </div>
       </div>
     </div>

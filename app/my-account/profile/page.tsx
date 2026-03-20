@@ -17,9 +17,11 @@ export default function UserProfilePage() {
   const [sliderIndex, setSliderIndex] = useState<any>({});
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const [adminUnread, setAdminUnread] = useState(0); // 🔥 NOU
+
   const notificationCount = user ? getUnreadCount(user.id) : 0;
 
-  // FETCH UNREAD MESSAGES
+  // FETCH UNREAD CHAT MESSAGES
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -46,6 +48,18 @@ export default function UserProfilePage() {
     };
 
     fetchUnread();
+  }, [user]);
+
+  // 🔥 FETCH UNREAD ADMIN SUPPORT MESSAGES
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/support/my/unread`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((count) => setAdminUnread(count))
+      .catch((err) => console.error("Eroare la unread admin:", err));
   }, [user]);
 
   // FETCH NOTIFICATIONS
@@ -204,9 +218,14 @@ export default function UserProfilePage() {
           <SidebarItem label="Plăți" />
           <SidebarItem label="Ratinguri" />
 
-          {/* 🔥 AICI ESTE BUTONUL CORECT */}
-          <Link href="/my-account/support" className="block">
+          {/* 🔥 BADGE ADMIN SUPORT */}
+          <Link href="/my-account/support" className="relative block">
             <SidebarItem label="Mesaje de la Admin" />
+            {adminUnread > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                {adminUnread}
+              </span>
+            )}
           </Link>
 
           <Link href="/my-account/user-profile" className="block">

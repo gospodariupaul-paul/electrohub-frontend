@@ -51,25 +51,40 @@ export default function MySupportMessages() {
             key={msg.id}
             className="bg-[#0b1220] p-4 rounded-lg border border-cyan-500/20 hover:bg-[#0f1a2a]"
           >
-            {/* 🔵 TITLU + MESAJ */}
-            <Link href={`/my-account/support/${msg.id}`}>
-              <h2 className="text-xl text-cyan-300">{msg.subject}</h2>
-              <p className="text-gray-400 mt-2">{msg.message}</p>
+            {/* 🔵 TITLU + MESAJ TRIMIS */}
+            <h2 className="text-xl text-cyan-300">{msg.subject}</h2>
+            <p className="text-gray-400 mt-2">{msg.message}</p>
 
-              <p className="mt-3 text-sm">
-                Status:{" "}
-                {msg.reply ? (
-                  <span className="text-green-400">Răspuns primit</span>
-                ) : (
-                  <span className="text-yellow-400">În așteptare</span>
-                )}
-              </p>
+            {/* 🔥 STATUS */}
+            <p className="mt-3 text-sm">
+              Status:{" "}
+              {msg.reply ? (
+                <span className="text-green-400">Răspuns primit</span>
+              ) : (
+                <span className="text-yellow-400">În așteptare</span>
+              )}
+            </p>
+
+            {/* 🔥 AICI AFIȘĂM RĂSPUNSUL ADMINULUI */}
+            {msg.reply && (
+              <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+                <p className="text-green-300 text-sm font-semibold">Răspuns de la admin:</p>
+                <p className="text-green-200 mt-1">{msg.reply}</p>
+              </div>
+            )}
+
+            {/* 🔥 LINK DETALII */}
+            <Link
+              href={`/my-account/support/${msg.id}`}
+              className="block mt-4 text-center bg-cyan-600 hover:bg-cyan-500 text-black font-semibold py-2 rounded-lg transition"
+            >
+              Vezi detalii
             </Link>
 
-            {/* 🔥 BUTON ȘTERGERE — ÎN AFARA LINK-ULUI */}
+            {/* 🔥 BUTON ȘTERGERE */}
             <button
               onClick={() => handleDelete(msg.id)}
-              className="mt-4 px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm"
+              className="mt-3 px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm"
             >
               Șterge mesaj
             </button>

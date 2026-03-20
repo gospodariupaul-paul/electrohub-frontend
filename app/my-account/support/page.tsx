@@ -7,10 +7,26 @@ import Link from "next/link";
 export default function MySupportMessages() {
   const [messages, setMessages] = useState([]);
 
+  // 🔥 FETCH MESAJELOR
   useEffect(() => {
-    axiosInstance.get("/support/my", { withCredentials: true })
-      .then(res => setMessages(res.data));
+    axiosInstance
+      .get("/support/my", { withCredentials: true })
+      .then((res) => setMessages(res.data));
   }, []);
+
+  // 🔥 ȘTERGERE MESAJ
+  const handleDelete = async (id: number) => {
+    if (!confirm("Sigur vrei să ștergi acest mesaj?")) return;
+
+    try {
+      await axiosInstance.patch(`/support/delete/${id}`, {}, { withCredentials: true });
+
+      // Scoatem mesajul din listă instant
+      setMessages((prev) => prev.filter((m: any) => m.id !== id));
+    } catch (err) {
+      console.error("Eroare la ștergere mesaj:", err);
+    }
+  };
 
   return (
     <div className="text-white p-6">
@@ -30,24 +46,34 @@ export default function MySupportMessages() {
       )}
 
       <div className="flex flex-col gap-4">
-        {messages.map(msg => (
-          <Link
+        {messages.map((msg: any) => (
+          <div
             key={msg.id}
-            href={`/my-account/support/${msg.id}`}
             className="bg-[#0b1220] p-4 rounded-lg border border-cyan-500/20 hover:bg-[#0f1a2a]"
           >
-            <h2 className="text-xl text-cyan-300">{msg.subject}</h2>
-            <p className="text-gray-400 mt-2">{msg.message}</p>
+            {/* 🔵 TITLU + MESAJ */}
+            <Link href={`/my-account/support/${msg.id}`}>
+              <h2 className="text-xl text-cyan-300">{msg.subject}</h2>
+              <p className="text-gray-400 mt-2">{msg.message}</p>
 
-            <p className="mt-3 text-sm">
-              Status:{" "}
-              {msg.reply ? (
-                <span className="text-green-400">Răspuns primit</span>
-              ) : (
-                <span className="text-yellow-400">În așteptare</span>
-              )}
-            </p>
-          </Link>
+              <p className="mt-3 text-sm">
+                Status:{" "}
+                {msg.reply ? (
+                  <span className="text-green-400">Răspuns primit</span>
+                ) : (
+                  <span className="text-yellow-400">În așteptare</span>
+                )}
+              </p>
+            </Link>
+
+            {/* 🔥 BUTON ȘTERGERE — ÎN AFARA LINK-ULUI */}
+            <button
+              onClick={() => handleDelete(msg.id)}
+              className="mt-4 px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm"
+            >
+              Șterge mesaj
+            </button>
+          </div>
         ))}
       </div>
     </div>

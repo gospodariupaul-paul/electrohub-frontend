@@ -226,9 +226,13 @@ function Header() {
                     <Link href="/register" className="block px-4 py-2 hover:bg-white/10 rounded">
                       Creează cont
                     </Link>
-                    <Link href="/help" className="block px-4 py-2 hover:bg-white/10 rounded">
+                    <Link
+                      href={user ? "/help" : "/login"}
+                      className="block px-4 py-2 hover:bg-white/10 rounded"
+                    >
                       Ajutor / Contact
-                    </Link>
+                     </Link>
+
                   </>
                 )}
 

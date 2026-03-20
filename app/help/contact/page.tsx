@@ -12,7 +12,7 @@ export default function ContactPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const sendMessage = async (e: any) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess(false);

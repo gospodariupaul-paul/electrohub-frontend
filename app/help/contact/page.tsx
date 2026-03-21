@@ -33,10 +33,14 @@ export default function ContactPage() {
       );
 
       setSuccess(true);
+
+      // ⭐ RESETARE COMPLETĂ FORMULAR
+      setName("");
+      setEmail("");
       setSubject("");
       setMessage("");
 
-      // 🔥 ascunde mesajul după 3 secunde
+      // ⭐ ascunde mesajul după 3 secunde
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
@@ -56,13 +60,10 @@ export default function ContactPage() {
           Ai întrebări, idei sau feedback? Scrie-mi un mesaj.
         </p>
 
-        {/* ⭐ MESAJ DE EROARE */}
         {error && <div className="error-msg">{error}</div>}
-
-        {/* ⭐ MESAJ DE SUCCES */}
         {success && (
           <div className="success-msg fade-in">
-            Mesajul a fost trimis cu succes către admin@electrohub.com!
+            Mesajul a fost trimis către admin@electrohub.com!
           </div>
         )}
 

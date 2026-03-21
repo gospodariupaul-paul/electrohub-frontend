@@ -16,6 +16,10 @@ export default function Page() {
 
   const [index, setIndex] = useState(0);
 
+  // ⭐ RATINGURI VANZATOR
+  const [sellerRatings, setSellerRatings] = useState<any[]>([]);
+  const [sellerAverage, setSellerAverage] = useState("–");
+
   useEffect(() => {
     const u = localStorage.getItem("user");
     if (u) setUser(JSON.parse(u));
@@ -32,6 +36,29 @@ export default function Page() {
       .catch((err) => console.error("Error loading product:", err))
       .finally(() => setLoading(false));
   }, [id]);
+
+  // ⭐ FETCH RATINGURI VANZATOR
+  useEffect(() => {
+    if (!product?.user?.id) return;
+
+    axiosInstance
+      .get(`/ratings/user/${product.user.id}`, { withCredentials: true })
+      .then((res) => {
+        setSellerRatings(res.data);
+
+        if (res.data.length > 0) {
+          const avg =
+            res.data.reduce((a: number, b: any) => a + b.stars, 0) /
+            res.data.length;
+
+          setSellerAverage(avg.toFixed(1));
+        }
+      })
+      .catch(() => {
+        setSellerRatings([]);
+        setSellerAverage("–");
+      });
+  }, [product]);
 
   const startConversation = async () => {
     if (!user) {
@@ -73,7 +100,8 @@ export default function Page() {
   const images = product.images || [];
 
   const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  const next = () =>
+    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
   return (
     <div className="min-h-screen bg-[#0b141a] text-white p-6">
@@ -141,7 +169,6 @@ export default function Page() {
           {product.condition || "Folosit - stare bună"}
         </p>
 
-        {/* 🔥 Capacitate apare DOAR dacă există */}
         {product.storage && (
           <p className="text-gray-300 mt-2">
             <span className="font-semibold">Capacitate:</span>{" "}
@@ -165,6 +192,7 @@ export default function Page() {
         <p className="text-gray-500 text-sm">Locația este aproximativă</p>
       </div>
 
+      {/* ⭐⭐⭐ INFORMATII VANZATOR + RATINGURI */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Informații despre vânzător</h2>
 
@@ -179,12 +207,23 @@ export default function Page() {
             : "2015"}
         </p>
 
-        <button
-          onClick={() => router.push(`/seller/${product.user.id}`)}
-          className="text-[#00eaff] font-semibold underline mt-2"
-        >
-          Vezi profilul vânzătorului
-        </button>
+        {/* ⭐⭐⭐ RATING VANZATOR */}
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-yellow-400 font-bold text-lg">
+            {sellerAverage} ⭐
+          </span>
+
+          <span className="text-gray-400 text-sm">
+            ({sellerRatings.length} evaluări)
+          </span>
+
+          <button
+            onClick={() => router.push(`/seller/${product.user.id}`)}
+            className="text-[#00eaff] font-semibold underline ml-2"
+          >
+            Vezi toate ratingurile →
+          </button>
+        </div>
       </div>
 
       <button

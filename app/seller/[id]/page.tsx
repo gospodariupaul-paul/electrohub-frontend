@@ -10,6 +10,17 @@ export default function SellerPage() {
   const [seller, setSeller] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // ⭐ RATINGURI VANZATOR
+  const [ratings, setRatings] = useState<any[]>([]);
+  const [average, setAverage] = useState("–");
+  const [distribution, setDistribution] = useState<any>({
+    5: 0,
+    4: 0,
+    3: 0,
+    2: 0,
+    1: 0,
+  });
+
   useEffect(() => {
     if (!id) return;
 
@@ -29,6 +40,27 @@ export default function SellerPage() {
         setLoading(false);
       });
 
+    // 🔥 2. Luăm ratingurile vânzătorului
+    fetch(`${API}/ratings/user/${id}`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setRatings(data);
+
+        if (data.length > 0) {
+          const avg =
+            data.reduce((a: number, b: any) => a + b.stars, 0) / data.length;
+          setAverage(avg.toFixed(1));
+        }
+
+        const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        data.forEach((r: any) => {
+          dist[r.stars] = dist[r.stars] + 1;
+        });
+        setDistribution(dist);
+      })
+      .catch(() => {});
   }, [id]);
 
   if (loading) {
@@ -58,6 +90,7 @@ export default function SellerPage() {
         ← Înapoi la pagina anterioară
       </button>
 
+      {/* ⭐ PROFIL VANZATOR */}
       <div className="flex items-center gap-4 mb-6">
         <img
           src={seller.avatarUrl || "/avatar.png"}
@@ -68,7 +101,6 @@ export default function SellerPage() {
           <p className="text-gray-400">S-a înscris în {seller.joinYear}</p>
           <p className="text-gray-400">{seller.activeListings} anunțuri active</p>
 
-          {/* ⭐⭐⭐ BUTONUL DE RATING — vizibil pentru toți userii */}
           <button
             onClick={() => router.push(`/rate/${id}`)}
             className="mt-3 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-300 transition"
@@ -78,11 +110,66 @@ export default function SellerPage() {
         </div>
       </div>
 
+      {/* ⭐⭐⭐ RATING GENERAL + GRAFIC */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
-        <h2 className="text-lg font-semibold mb-3">Despre</h2>
-        <p className="text-gray-300">S-a înscris în {seller.joinYear}</p>
+        <h2 className="text-xl font-semibold mb-4">Ratingul vânzătorului</h2>
+
+        <div className="flex items-center gap-4 mb-6">
+          <p className="text-5xl font-bold text-yellow-400">{average} ⭐</p>
+          <p className="text-gray-400">{ratings.length} evaluări</p>
+        </div>
+
+        {/* 📊 GRAFIC DISTRIBUȚIE */}
+        <div className="space-y-2">
+          {[5, 4, 3, 2, 1].map((star) => {
+            const count = distribution[star];
+            const percent =
+              ratings.length > 0 ? (count / ratings.length) * 100 : 0;
+
+            return (
+              <div key={star}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>{star} ⭐</span>
+                  <span>{count}</span>
+                </div>
+
+                <div className="w-full bg-gray-700 h-3 rounded">
+                  <div
+                    className="bg-yellow-400 h-3 rounded"
+                    style={{ width: `${percent}%` }}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
+      {/* ⭐⭐⭐ LISTA RATINGURI */}
+      <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
+        <h2 className="text-xl font-semibold mb-4">Recenzii primite</h2>
+
+        {ratings.length === 0 && (
+          <p className="text-gray-400">Acest vânzător nu are încă ratinguri.</p>
+        )}
+
+        <div className="flex flex-col gap-4">
+          {ratings.map((r: any) => (
+            <div
+              key={r.id}
+              className="bg-[#0f1a20] p-4 rounded-lg border border-white/10"
+            >
+              <p className="text-yellow-400 text-xl">{r.stars} ⭐</p>
+              <p className="text-gray-300 mt-2">{r.comment || "Fără comentariu"}</p>
+              <p className="text-gray-500 text-sm mt-2">
+                {new Date(r.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ⭐⭐⭐ ANUNTURI VANZATOR */}
       <div className="bg-[#111b21] p-4 rounded-lg border border-white/10">
         <h2 className="text-lg font-semibold mb-4">
           Anunțurile listate de {seller.name}

@@ -9,7 +9,6 @@ export default function SellerPage() {
 
   const [seller, setSeller] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [hasBought, setHasBought] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -29,16 +28,6 @@ export default function SellerPage() {
         console.error("Eroare la încărcarea vânzătorului:", err);
         setLoading(false);
       });
-
-    // 🔥 2. Verificăm dacă userul a cumpărat de la acest vânzător
-    fetch(`${API}/orders/has-bought/${id}`, {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setHasBought(data.hasBought);
-      })
-      .catch((err) => console.error("Eroare la verificarea cumpărăturilor:", err));
 
   }, [id]);
 
@@ -79,15 +68,13 @@ export default function SellerPage() {
           <p className="text-gray-400">S-a înscris în {seller.joinYear}</p>
           <p className="text-gray-400">{seller.activeListings} anunțuri active</p>
 
-          {/* ⭐⭐⭐ BUTONUL DE RATING — apare doar dacă userul a cumpărat */}
-          {hasBought && (
-            <button
-              onClick={() => router.push(`/rate/${id}`)}
-              className="mt-3 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-300 transition"
-            >
-              ⭐ Evaluează vânzătorul
-            </button>
-          )}
+          {/* ⭐⭐⭐ BUTONUL DE RATING — vizibil pentru toți userii */}
+          <button
+            onClick={() => router.push(`/rate/${id}`)}
+            className="mt-3 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-300 transition"
+          >
+            ⭐ Evaluează vânzătorul
+          </button>
         </div>
       </div>
 

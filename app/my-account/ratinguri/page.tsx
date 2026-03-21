@@ -20,6 +20,14 @@ export default function RatinguriPage() {
       .catch(() => setGiven([]));
   }, []);
 
+  // ⭐⭐⭐ MARCHEAZĂ RATINGURILE CA VĂZUTE CÂND INTRI PE PAGINĂ
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/ratings/mark-seen`, {
+      method: "POST",
+      credentials: "include",
+    });
+  }, []);
+
   const average =
     received.length > 0
       ? (received.reduce((a, b) => a + b.stars, 0) / received.length).toFixed(1)

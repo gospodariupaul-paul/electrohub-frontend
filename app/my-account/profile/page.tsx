@@ -16,8 +16,8 @@ export default function UserProfilePage() {
 
   const [sliderIndex, setSliderIndex] = useState<any>({});
   const [unreadCount, setUnreadCount] = useState(0);
-
-  const [adminUnread, setAdminUnread] = useState(0); // 🔥 NOU
+  const [adminUnread, setAdminUnread] = useState(0);
+  const [unseenRatings, setUnseenRatings] = useState(0);
 
   const notificationCount = user ? getUnreadCount(user.id) : 0;
 
@@ -50,7 +50,7 @@ export default function UserProfilePage() {
     fetchUnread();
   }, [user]);
 
-  // 🔥 FETCH UNREAD ADMIN SUPPORT MESSAGES
+  // FETCH UNREAD ADMIN SUPPORT MESSAGES
   useEffect(() => {
     if (!user || !user.id) return;
 
@@ -83,6 +83,44 @@ export default function UserProfilePage() {
     fetchNotifications();
   }, [user]);
 
+  // FETCH PRODUCTS
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/user/${user.id}`,
+          {
+            credentials: "include",
+          }
+        );
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Eroare la fetch produse:", err);
+      }
+    };
+
+    fetchProducts();
+  }, [user]);
+
+  // FETCH UNSEEN RATINGS
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/ratings/me`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const unseen = data.filter((r: any) => !r.seen).length;
+        setUnseenRatings(unseen);
+      })
+      .catch((err) => console.error("Eroare la ratinguri:", err));
+  }, [user]);
+
   // DELETE PRODUCT
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest anunț?")) return;
@@ -106,29 +144,6 @@ export default function UserProfilePage() {
       console.error("Eroare la ștergere:", err);
     }
   };
-
-  // FETCH PRODUCTS
-  useEffect(() => {
-    if (!user || !user.id) return;
-
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/products/user/${user.id}`,
-          {
-            credentials: "include",
-          }
-        );
-
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error("Eroare la fetch produse:", err);
-      }
-    };
-
-    fetchProducts();
-  }, [user]);
 
   // REDIRECT LOGIC
   useEffect(() => {
@@ -217,12 +232,15 @@ export default function UserProfilePage() {
           <SidebarItem label="Curier" />
           <SidebarItem label="Plăți" />
 
-          <Link href="/my-account/ratinguri" className="block">
-           <SidebarItem label="Ratinguri" />
+          <Link href="/my-account/ratinguri" className="relative block">
+            <SidebarItem label="Ratinguri" />
+            {unseenRatings > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                {unseenRatings}
+              </span>
+            )}
           </Link>
 
-
-          {/* 🔥 BADGE ADMIN SUPORT */}
           <Link href="/my-account/support" className="relative block">
             <SidebarItem label="Mesaje de la Admin" />
             {adminUnread > 0 && (
@@ -270,7 +288,8 @@ export default function UserProfilePage() {
         </div>
 
         <p className="opacity-70 mb-8 text-sm">
-          Anunțurile active rămân aici până când expiră. Aceste anunțuri pot fi văzute de oricine și expiră la 30 de zile după ce au fost activate.
+          Anunțurile active rămân aici până când expiră. Aceste anunțuri pot fi
+          văzute de oricine și expiră la 30 de zile după ce au fost activate.
         </p>
 
         <div className="flex gap-4 mb-6 border-b border-white/10 pb-2">
@@ -369,7 +388,8 @@ export default function UserProfilePage() {
 
                       {p.expired && (
                         <p className="text-red-400 text-sm mt-1">
-                          ❌ Anunț expirat. Reînnoiește-l pentru a fi vizibil din nou.
+                          ❌ Anunț expirat. Reînnoiește-l pentru a fi vizibil din
+                          nou.
                         </p>
                       )}
 

@@ -360,9 +360,6 @@ export default function HomePage() {
             <section id="categories">
               <div className="flex items-center justify_between mb-4">
                 <h2 className="text-lg font-semibold">Categorii principale</h2>
-                <span className="text-xs text-white/50">
-                  Organizare de tip bento grid, cu focus pe ce te interesează
-                </span>
               </div>
 
               <div className="grid md:grid-cols-4 gap-4">

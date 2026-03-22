@@ -18,6 +18,7 @@ export default function MyListingsPage() {
     }
   }, []);
 
+  // 🔥 FETCH PRODUSELE USERULUI
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -27,8 +28,7 @@ export default function MyListingsPage() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    // 🔥 ENDPOINT CORECT: /me
-    fetch(`${API}/me`, {
+    fetch(`${API}/products/my`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -45,9 +45,9 @@ export default function MyListingsPage() {
           data = null;
         }
 
-        // 🔥 PRODUSELE SUNT ÎN /me → data.products
-        if (data && Array.isArray(data.products)) {
-          setProducts(data.products);
+        // 🔥 Dacă backend-ul returnează lista de produse
+        if (Array.isArray(data)) {
+          setProducts(data);
         } else {
           setProducts([]);
         }
@@ -60,15 +60,17 @@ export default function MyListingsPage() {
       });
   }, []);
 
+  // 🔄 LOADING
   if (loading) {
     return <p className="text-white/60 p-6">Se încarcă produsele tale...</p>;
   }
 
+  // ❌ FĂRĂ PRODUSE
   if (products.length === 0) {
     return (
       <div className="p-6 text-white/60">
 
-        {/* 🔥 BUTON ÎNAPOI */}
+        {/* 🔙 BUTON ÎNAPOI */}
         <Link
           href="/"
           className="inline-block mb-4 px-3 py-1.5 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-300 transition text-sm"
@@ -87,10 +89,11 @@ export default function MyListingsPage() {
     );
   }
 
+  // ✅ CU PRODUSE
   return (
     <div className="p-6">
 
-      {/* 🔥 BUTON ÎNAPOI */}
+      {/* 🔙 BUTON ÎNAPOI */}
       <Link
         href="/"
         className="inline-block mb-4 px-3 py-1.5 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-300 transition text-sm"

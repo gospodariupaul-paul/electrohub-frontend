@@ -361,3 +361,47 @@ function Header() {
     </header>
   );
 }
+// 🔥 AICI CONTINUĂ LAYOUT-UL TĂU REAL
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ro">
+      <body className="bg-[#0b141a] text-white">
+
+        <UserProvider>
+          <WaitForUser>
+            <NotificationProvider>
+
+              {/* Header-ul tău deja există mai sus */}
+              <main className="pt-4">{children}</main>
+              <CookieConsent />
+
+              {/* 🔥 FOOTER GLOBAL */}
+              <footer className="border-t border-white/10 bg-black/60 mt-8">
+                <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-[11px] text-white/50">
+
+                  <div className="space-x-3">
+                    <Link href="/security" className="hover:text-cyan-300">
+                      Securitate
+                    </Link>
+
+                    <Link href="/warranty" className="hover:text-cyan-300">
+                      Politica de garanție
+                    </Link>
+
+                    <Link href="/my-account/support" className="hover:text-cyan-300">
+                      Suport Chatbot AI
+                    </Link>
+                  </div>
+
+                </div>
+              </footer>
+
+            </NotificationProvider>
+          </WaitForUser>
+        </UserProvider>
+
+      </body>
+    </html>
+  );
+}

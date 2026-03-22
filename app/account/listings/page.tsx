@@ -18,7 +18,7 @@ export default function MyListingsPage() {
     }
   }, []);
 
-  // 🔥 FETCH PRODUSELE USERULUI
+  // 🔥 FETCH USER + PRODUSE
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -28,7 +28,8 @@ export default function MyListingsPage() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    fetch(`${API}/products/my`, {
+    // 1️⃣ Luăm userul corect din /auth/me
+    fetch(`${API}/auth/me`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -37,22 +38,38 @@ export default function MyListingsPage() {
       },
     })
       .then(async (res) => {
-        let data;
+        const user = await res.json();
 
-        try {
-          data = await res.json();
-        } catch {
-          data = null;
-        }
-
-        // 🔥 Dacă backend-ul returnează lista de produse
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
+        if (!user || !user.id) {
           setProducts([]);
+          setLoading(false);
+          return;
         }
 
-        setLoading(false);
+        // 2️⃣ Luăm produsele userului
+        fetch(`${API}/products/my`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then(async (res) => {
+            const data = await res.json();
+
+            if (Array.isArray(data)) {
+              setProducts(data);
+            } else {
+              setProducts([]);
+            }
+
+            setLoading(false);
+          })
+          .catch(() => {
+            setProducts([]);
+            setLoading(false);
+          });
       })
       .catch(() => {
         setProducts([]);

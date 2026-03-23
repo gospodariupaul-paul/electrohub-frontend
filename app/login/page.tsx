@@ -9,6 +9,9 @@ import { useUser } from "@/app/context/UserContext";
 import { FaFacebook, FaApple } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
+// 🔥 Importăm NextAuth pentru Google Login
+import { signIn } from "next-auth/react";
+
 export default function LoginPage() {
   const router = useRouter();
   const { setUser, reloadUser } = useUser();
@@ -80,8 +83,10 @@ export default function LoginPage() {
             Continuă cu Apple
           </button>
 
+          {/* 🔥 BUTON GOOGLE LOGIN (MODIFICAT CORECT) */}
           <button
             type="button"
+            onClick={() => signIn("google")}
             className="w-full py-3 bg-white text-black hover:bg-gray-200 rounded-lg font-semibold transition flex items-center justify-center gap-3"
           >
             <FcGoogle size={22} />

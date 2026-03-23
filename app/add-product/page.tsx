@@ -85,7 +85,7 @@ export default function AddProductPage() {
         images,
         category,
         condition,
-        storage: storage || null, // 🔥 NU MAI ESTE OBLIGATORIU
+        storage: storage || null,
         location,
         userId: user.id,
       };
@@ -196,7 +196,7 @@ export default function AddProductPage() {
           </select>
         </label>
 
-        {/* CAPACITATE — DOAR PENTRU TELEFOANE ȘI LAPTOPURI */}
+        {/* CAPACITATE */}
         {(category === "Telefoane" || category === "Laptopuri") && (
           <label className="block mb-4">
             <span className="text-sm opacity-80">Capacitate / Specificații</span>
@@ -227,10 +227,11 @@ export default function AddProductPage() {
           />
         </label>
 
-        {/* IMAGINI */}
+        {/* IMAGINI — VARIANTA MODERNĂ */}
         <div className="mb-6">
           <span className="text-sm opacity-80">Imagini</span>
 
+          {/* PREVIEW EXISTENT */}
           {images.length > 0 && (
             <div className="mt-3">
               <div className="relative w-full h-64 overflow-hidden rounded-xl border border-white/20">
@@ -299,13 +300,31 @@ export default function AddProductPage() {
             </div>
           )}
 
+          {/* INPUT ASCUNS */}
           <input
             type="file"
+            id="imageUpload"
             multiple
             accept="image/*"
             onChange={handleImageUpload}
-            className="mt-3"
+            className="hidden"
           />
+
+          {/* CASETA DE UPLOAD */}
+          <div
+            onClick={() => document.getElementById("imageUpload")?.click()}
+            className="mt-4 border-2 border-dashed border-cyan-600 bg-[#05071a] hover:bg-[#0a0d2a] transition cursor-pointer rounded-xl p-6 text-center"
+          >
+            <p className="text-cyan-400 font-semibold text-lg">Selectează imagini</p>
+            <p className="text-gray-400 text-sm mt-1">Click pentru a alege fișiere</p>
+
+            <button
+              type="button"
+              className="mt-4 px-5 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
+            >
+              Browse product
+            </button>
+          </div>
         </div>
 
         {/* DESCRIERE */}

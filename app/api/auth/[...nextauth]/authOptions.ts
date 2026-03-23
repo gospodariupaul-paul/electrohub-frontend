@@ -1,8 +1,16 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // 🔥 LOGIN CU GOOGLE
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    // 🔥 LOGIN CU EMAIL + PAROLĂ (CREDENTIALS)
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -15,7 +23,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // 🔥 1. LOGIN ADMIN DIRECT (fără backend)
+        // 🔥 1. LOGIN ADMIN DIRECT
         if (
           credentials.email === "admin@electrohub.com" &&
           credentials.password === "123456"
@@ -63,12 +71,21 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      // 🔥 Dacă userul vine din Google
+      if (account?.provider === "google" && user) {
+        token.id = user.id || user.sub;
+        token.email = user.email;
+        token.role = "USER"; // poți schimba dacă vrei
+      }
+
+      // 🔥 Dacă userul vine din Credentials
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.role = user.role;
       }
+
       return token;
     },
 
@@ -85,4 +102,6 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 };

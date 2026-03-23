@@ -50,17 +50,25 @@ export default function UserProfilePage() {
     fetchUnread();
   }, [user]);
 
-  // FETCH UNREAD ADMIN SUPPORT MESSAGES
-  useEffect(() => {
-    if (!user || !user.id) return;
+  // FETCH UNREAD ADMIN SUPPORT MESSAGES (varianta sigură)
+useEffect(() => {
+  if (!user || !user.id) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/support/my/unread`, {
-      credentials: "include",
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/support/my`, {
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((messages) => {
+      // Mesajele primite de la admin sunt cele cu reply
+      const unread = messages.filter((m: any) => m.reply && !m.read).length;
+
+      // Dacă backend-ul nu are "read", folosește doar m.reply
+      // const unread = messages.filter((m: any) => m.reply).length;
+
+      setAdminUnread(unread);
     })
-      .then((res) => res.json())
-      .then((count) => setAdminUnread(count))
-      .catch((err) => console.error("Eroare la unread admin:", err));
-  }, [user]);
+    .catch((err) => console.error("Eroare la unread admin:", err));
+}, [user]);
 
   // FETCH NOTIFICATIONS
   useEffect(() => {

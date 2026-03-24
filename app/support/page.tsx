@@ -4,8 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function SupportPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -21,12 +19,11 @@ export default function SupportPage() {
     setError("");
 
     try {
-      const res = await fetch(`${API}/help/contact`, {
+      const res = await fetch(`${API}/support`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // 🔥 OBLIGATORIU pentru userId
         body: JSON.stringify({
-          name,
-          email,
           subject: "Mesaj trimis din pagina de suport",
           message,
         }),
@@ -37,8 +34,6 @@ export default function SupportPage() {
       }
 
       setSent(true);
-      setName("");
-      setEmail("");
       setMessage("");
     } catch (err: any) {
       setError("A apărut o eroare. Încearcă din nou.");
@@ -63,6 +58,7 @@ export default function SupportPage() {
         direct echipei noastre.
       </p>
 
+      {/* CHATBOT AI */}
       <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-10">
         <h2 className="text-xl font-semibold mb-3">💬 Chatbot AI</h2>
         <p className="text-white/60 mb-4">
@@ -78,11 +74,12 @@ export default function SupportPage() {
         </Link>
       </div>
 
+      {/* FORMULAR SUPORT NOU */}
       <div className="bg-white/5 border border-white/10 rounded-xl p-6">
         <h2 className="text-xl font-semibold mb-3">📨 Trimite un mesaj</h2>
         <p className="text-white/60 mb-4">
-          Mesajele trimise de aici ajung direct la administrator, exact ca în
-          pagina /help.
+          Mesajele trimise de aici ajung direct la administrator prin sistemul
+          nou de suport.
         </p>
 
         {sent ? (
@@ -93,24 +90,6 @@ export default function SupportPage() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <p className="text-red-400">{error}</p>}
-
-            <input
-              type="text"
-              placeholder="Numele tău"
-              className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
 
             <textarea
               placeholder="Mesajul tău"

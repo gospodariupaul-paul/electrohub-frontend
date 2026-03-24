@@ -24,7 +24,12 @@ export default function SupportPage() {
       const res = await fetch(`${API}/help/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({
+          name,
+          email,
+          subject: "Mesaj trimis din pagina de suport",
+          message,
+        }),
       });
 
       if (!res.ok) {

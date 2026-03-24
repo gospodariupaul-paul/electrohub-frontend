@@ -11,7 +11,7 @@ export default function SupportMessagesPage() {
 
   useEffect(() => {
     axiosInstance
-      .get("/help/support", { withCredentials: true })
+      .get("/support/admin", { withCredentials: true })   // 🔥 RUTA CORECTĂ
       .then((res) => setMessages(res.data))
       .finally(() => setLoading(false));
   }, []);
@@ -21,7 +21,7 @@ export default function SupportMessagesPage() {
 
     try {
       await axiosInstance.patch(
-        `/help/support/delete/${id}`,
+        `/support/admin/delete/${id}`,   // 🔥 RUTA CORECTĂ
         {},
         { withCredentials: true }
       );
@@ -80,7 +80,7 @@ export default function SupportMessagesPage() {
             <div className="text-sm text-gray-400 mb-4">
               De la:{" "}
               <span className="text-cyan-300 font-semibold">
-                {msg.user?.email}
+                {msg.user?.email || "unknown@unknown.com"}   {/* 🔥 FALLBACK */}
               </span>
             </div>
 

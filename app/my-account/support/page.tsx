@@ -18,16 +18,37 @@ export default function MySupportMessages() {
   const sentMessages = messages.filter((m: any) => !m.reply);
   const receivedMessages = messages.filter((m: any) => m.reply);
 
-  // 🔥 ȘTERGERE MESAJ
+  // 🔥 ȘTERGERE MESAJ INDIVIDUAL
   const handleDelete = async (id: number) => {
     if (!confirm("Sigur vrei să ștergi acest mesaj?")) return;
 
     try {
-      await axiosInstance.patch(`/support/delete/${id}`, {}, { withCredentials: true });
+      await axiosInstance.patch(
+        `/support/delete/${id}`,
+        {},
+        { withCredentials: true }
+      );
 
       setMessages((prev) => prev.filter((m: any) => m.id !== id));
     } catch (err) {
       console.error("Eroare la ștergere mesaj:", err);
+    }
+  };
+
+  // 🔥 ȘTERGEREA TUTUROR MESAJELOR
+  const handleDeleteAll = async () => {
+    if (!confirm("Sigur vrei să ștergi TOATE mesajele?")) return;
+
+    try {
+      await axiosInstance.patch(
+        `/support/delete-all`,
+        {},
+        { withCredentials: true }
+      );
+
+      setMessages([]); // 🔥 Golește instant lista
+    } catch (err) {
+      console.error("Eroare la ștergerea tuturor mesajelor:", err);
     }
   };
 
@@ -42,7 +63,19 @@ export default function MySupportMessages() {
         ← Înapoi la profil
       </Link>
 
-      <h1 className="text-3xl font-bold mb-6 text-cyan-400">Mesajele mele</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-cyan-400">Mesajele mele</h1>
+
+        {/* 🔥 BUTON NOU — ȘTERGE TOATE */}
+        {messages.length > 0 && (
+          <button
+            onClick={handleDeleteAll}
+            className="px-4 py-2 bg-red-700 hover:bg-red-600 rounded-lg text-sm font-semibold"
+          >
+            Șterge toate mesajele
+          </button>
+        )}
+      </div>
 
       {/* ============================
           🔵 MESAJE PRIMITE DE LA ADMIN
@@ -65,11 +98,14 @@ export default function MySupportMessages() {
               <h3 className="text-xl text-green-300">{msg.subject}</h3>
 
               <p className="text-gray-400 mt-2">
-                <span className="text-gray-500">Mesaj trimis de tine:</span> {msg.message}
+                <span className="text-gray-500">Mesaj trimis de tine:</span>{" "}
+                {msg.message}
               </p>
 
               <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
-                <p className="text-green-300 text-sm font-semibold">Răspuns de la admin:</p>
+                <p className="text-green-300 text-sm font-semibold">
+                  Răspuns de la admin:
+                </p>
                 <p className="text-green-200 mt-1">{msg.reply}</p>
               </div>
 

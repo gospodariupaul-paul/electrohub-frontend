@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function WalletPage() {
   const [showTopUp, setShowTopUp] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   return (
     <div className="text-white p-6">
@@ -52,7 +53,7 @@ export default function WalletPage() {
         </p>
       </div>
 
-      {/* 🔥 MODAL TOP-UP */}
+      {/* 🔥 MODAL 1 — TOP-UP */}
       {showTopUp && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="bg-[#0f1a2a] p-6 rounded-xl border border-cyan-500/30 w-full max-w-md shadow-xl">
@@ -79,6 +80,10 @@ export default function WalletPage() {
 
               <button
                 type="button"
+                onClick={() => {
+                  setShowTopUp(false);
+                  setShowPayment(true);
+                }}
                 className="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold"
               >
                 Continuă plata
@@ -87,6 +92,63 @@ export default function WalletPage() {
 
             <button
               onClick={() => setShowTopUp(false)}
+              className="mt-4 w-full px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg font-semibold"
+            >
+              Închide
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🔥 MODAL 2 — CONTINUĂ PLATA */}
+      {showPayment && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0f1a2a] p-6 rounded-xl border border-cyan-500/30 w-full max-w-md shadow-xl">
+
+            <h2 className="text-2xl font-semibold text-cyan-400 mb-4">
+              Finalizează plata
+            </h2>
+
+            <p className="text-gray-300 mb-4">
+              Introdu detaliile cardului pentru a finaliza alimentarea portofelului.
+            </p>
+
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Numele de pe card"
+                className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+              />
+
+              <input
+                type="text"
+                placeholder="Numărul cardului"
+                className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+              />
+
+              <div className="flex gap-4">
+                <input
+                  type="text"
+                  placeholder="MM/YY"
+                  className="w-1/2 p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+                />
+                <input
+                  type="text"
+                  placeholder="CVV"
+                  className="w-1/2 p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+                />
+              </div>
+
+              <button
+                type="button"
+                className="w-full px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-semibold"
+              >
+                Plătește acum
+              </button>
+            </form>
+
+            <button
+              onClick={() => setShowPayment(false)}
               className="mt-4 w-full px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg font-semibold"
             >
               Închide

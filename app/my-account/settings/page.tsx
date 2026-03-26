@@ -93,7 +93,7 @@ export default function SettingsPage() {
             icon={<FiMapPin />}
             title="Setări livrare"
             desc="Curieri preferați și opțiuni implicite de livrare."
-            href="/my-account/settings/shipping"
+            href="/my-account/settings/delivery"
           />
 
         </div>

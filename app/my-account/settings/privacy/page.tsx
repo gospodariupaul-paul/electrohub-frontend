@@ -2,8 +2,42 @@
 
 import Link from "next/link";
 import { FiLock, FiUserX, FiShield } from "react-icons/fi";
+import axiosInstance from "@/lib/axios";
+import { useState, useEffect } from "react";
 
 export default function PrivacySettings() {
+  const [blockedUsers, setBlockedUsers] = useState([]);
+
+  const loadBlocked = async () => {
+    const res = await axiosInstance.get("/privacy/blocked");
+    setBlockedUsers(res.data.blocked);
+  };
+
+  useEffect(() => {
+    loadBlocked();
+  }, []);
+
+  const blockUser = async (id: string) => {
+    await axiosInstance.post("/privacy/block", { targetUserId: id });
+    loadBlocked();
+  };
+
+  const unblockUser = async (id: string) => {
+    await axiosInstance.post("/privacy/unblock", { targetUserId: id });
+    loadBlocked();
+  };
+
+  const handleExport = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/privacy/gdpr/export`;
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Ești sigur că vrei să îți ștergi contul?")) return;
+
+    await axiosInstance.delete("/privacy/gdpr/delete-account");
+    window.location.href = "/logout";
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-white">
 
@@ -19,47 +53,60 @@ export default function PrivacySettings() {
         Confidențialitate
       </h1>
 
-      <p className="text-gray-400 mb-6">
-        Controlează opțiunile tale de confidențialitate, blocare utilizatori și gestionarea datelor personale.
-      </p>
+      {/* UTILIZATORI BLOCAȚI */}
+      <section className="bg-white/5 p-5 rounded-xl border border-white/10 mb-8">
+        <h2 className="text-xl font-semibold flex items-center gap-2 mb-3">
+          <FiUserX className="text-[#00eaff]" />
+          Utilizatori blocați
+        </h2>
 
-      <div className="space-y-8">
+        {blockedUsers.length === 0 && (
+          <p className="text-gray-400">Nu ai utilizatori blocați.</p>
+        )}
 
-        {/* Blocare utilizatori */}
-        <section className="bg-white/5 p-5 rounded-xl border border-white/10">
-          <h2 className="text-xl font-semibold flex items-center gap-2 mb-3">
-            <FiUserX className="text-[#00eaff]" />
-            Utilizatori blocați
-          </h2>
-          <p className="text-gray-400 mb-3">
-            Vezi și gestionează lista utilizatorilor pe care i-ai blocat.
-          </p>
-          <button className="px-4 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition">
-            Gestionează utilizatorii blocați
-          </button>
-        </section>
-
-        {/* GDPR */}
-        <section className="bg-white/5 p-5 rounded-xl border border-white/10">
-          <h2 className="text-xl font-semibold flex items-center gap-2 mb-3">
-            <FiLock className="text-[#00eaff]" />
-            Date personale (GDPR)
-          </h2>
-          <p className="text-gray-400 mb-3">
-            Exportă sau șterge datele tale personale conform legislației GDPR.
-          </p>
-
-          <div className="flex gap-3">
-            <button className="px-4 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition">
-              Exportă datele
-            </button>
-            <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
-              Șterge contul
+        {blockedUsers.map((u: any) => (
+          <div key={u.id} className="flex justify-between items-center mb-2">
+            <span>{u.name}</span>
+            <button
+              onClick={() => unblockUser(u.id)}
+              className="px-3 py-1 bg-red-500 rounded"
+            >
+              Deblochează
             </button>
           </div>
-        </section>
+        ))}
 
-      </div>
+        <button
+          onClick={() => blockUser("123")}
+          className="mt-4 px-4 py-2 bg-[#00eaff] text-black rounded"
+        >
+          Blochează utilizator de test
+        </button>
+      </section>
+
+      {/* GDPR */}
+      <section className="bg-white/5 p-5 rounded-xl border border-white/10">
+        <h2 className="text-xl font-semibold flex items-center gap-2 mb-3">
+          <FiLock className="text-[#00eaff]" />
+          Date personale (GDPR)
+        </h2>
+
+        <div className="flex gap-3">
+          <button
+            onClick={handleExport}
+            className="px-4 py-2 bg-[#00eaff] text-black rounded"
+          >
+            Exportă datele
+          </button>
+
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-500 text-white rounded"
+          >
+            Șterge contul
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

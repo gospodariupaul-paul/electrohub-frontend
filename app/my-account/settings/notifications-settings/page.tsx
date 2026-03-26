@@ -2,10 +2,32 @@
 
 import { BellIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import axiosInstance from "@/lib/axios";
 
 export default function NotificationSettings() {
   const [emailNotif, setEmailNotif] = useState(true);
   const [chatNotif, setChatNotif] = useState(true);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      // Trimite setările către backend
+      await axiosInstance.post(
+        "/notifications/settings",
+        {
+          email: emailNotif,
+          chat: chatNotif,
+        },
+        { withCredentials: true }
+      );
+
+      // Afișează mesaj de succes
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Eroare la salvarea notificărilor:", err);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-white">
@@ -38,9 +60,18 @@ export default function NotificationSettings() {
           Notificări pentru mesaje / chat
         </label>
 
-        <button className="px-6 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition">
+        <button
+          onClick={handleSave}
+          className="px-6 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition"
+        >
           Salvează notificările
         </button>
+
+        {saved && (
+          <p className="text-green-400 mt-3">
+            ✔ Setările au fost salvate cu succes!
+          </p>
+        )}
       </div>
     </div>
   );

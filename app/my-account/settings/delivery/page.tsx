@@ -3,10 +3,30 @@
 import Link from "next/link";
 import { TruckIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import axiosInstance from "@/lib/axios";
 
 export default function DeliverySettings() {
-  const [courier, setCourier] = useState("fan");
+  const [courier, setCourier] = useState("sameday");
   const [defaultAddress, setDefaultAddress] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      await axiosInstance.post(
+        "/delivery/settings",
+        {
+          courier,
+          address: defaultAddress,
+        },
+        { withCredentials: true }
+      );
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Eroare la salvarea setărilor de livrare:", err);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-white">
@@ -37,8 +57,8 @@ export default function DeliverySettings() {
             onChange={(e) => setCourier(e.target.value)}
             className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
           >
-            <option value="fan">Fan Courier</option>
             <option value="sameday">Sameday</option>
+            <option value="fan">Fan Courier</option>
             <option value="dpd">DPD</option>
             <option value="gls">GLS</option>
           </select>
@@ -56,9 +76,18 @@ export default function DeliverySettings() {
           />
         </div>
 
-        <button className="px-6 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition">
+        <button
+          onClick={handleSave}
+          className="px-6 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition"
+        >
           Salvează setările
         </button>
+
+        {saved && (
+          <p className="text-green-400 mt-3">
+            ✔ Setările de livrare au fost salvate cu succes!
+          </p>
+        )}
       </div>
     </div>
   );

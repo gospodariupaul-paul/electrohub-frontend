@@ -4,11 +4,20 @@ import Link from "next/link";
 import { FiLock, FiUserX, FiShield } from "react-icons/fi";
 import axiosInstance from "@/lib/axios";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 
 export default function PrivacySettings() {
-  const { data: session, status } = useSession();
   const [blockedUsers, setBlockedUsers] = useState([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // 🔥 Luăm userul logat direct din backend (cookies)
+  const loadUser = async () => {
+    try {
+      const res = await axiosInstance.get("/auth/me");
+      setUserId(res.data.id);
+    } catch (err) {
+      console.error("Nu am putut încărca userul", err);
+    }
+  };
 
   const loadBlocked = async () => {
     const res = await axiosInstance.get("/privacy/blocked");
@@ -16,6 +25,7 @@ export default function PrivacySettings() {
   };
 
   useEffect(() => {
+    loadUser();
     loadBlocked();
   }, []);
 
@@ -36,18 +46,12 @@ export default function PrivacySettings() {
   const handleDelete = async () => {
     if (!confirm("Ești sigur că vrei să îți ștergi contul?")) return;
 
-    // 🔥 Așteptăm sesiunea să fie încărcată
-    if (status === "loading") {
-      alert("Se încarcă sesiunea, încearcă din nou.");
-      return;
-    }
-
-    if (!session?.user?.id) {
+    if (!userId) {
       alert("Nu am putut identifica utilizatorul.");
       return;
     }
 
-    await axiosInstance.delete(`/users/${session.user.id}`);
+    await axiosInstance.delete(`/users/${userId}`);
 
     window.location.href = "/logout";
   };

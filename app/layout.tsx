@@ -1,5 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 import "./globals.css";
 import { UserProvider } from "./context/UserContext";

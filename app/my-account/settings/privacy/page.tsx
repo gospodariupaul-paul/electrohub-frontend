@@ -4,10 +4,8 @@ import Link from "next/link";
 import { FiLock, FiUserX, FiShield } from "react-icons/fi";
 import axiosInstance from "@/lib/axios";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 
 export default function PrivacySettings() {
-  const { data: session } = useSession();
   const [blockedUsers, setBlockedUsers] = useState([]);
 
   const loadBlocked = async () => {
@@ -36,13 +34,15 @@ export default function PrivacySettings() {
   const handleDelete = async () => {
     if (!confirm("Ești sigur că vrei să îți ștergi contul?")) return;
 
-    if (!session?.user?.id) {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
       alert("Nu am putut identifica utilizatorul.");
       return;
     }
 
     // 🔥 RUTA CORECTĂ CĂTRE BACKEND NESTJS
-    await axiosInstance.delete(`/users/${session.user.id}`);
+    await axiosInstance.delete(`/users/${userId}`);
 
     window.location.href = "/logout";
   };

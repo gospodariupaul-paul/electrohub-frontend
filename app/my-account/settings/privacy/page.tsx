@@ -58,6 +58,9 @@ export default function PrivacySettings() {
         withCredentials: true,
       });
 
+      // 🔥 FIX ABSOLUT NECESAR — ȘTERGEM COOKIE-UL JWT
+      document.cookie = "jwt=; Max-Age=0; path=/;";
+
       // 🔥 NU mai mergem la /logout — contul e șters, cookie-ul devine invalid
       window.location.href = "/login";
     } catch (err) {

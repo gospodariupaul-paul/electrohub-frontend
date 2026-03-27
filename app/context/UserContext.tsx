@@ -10,6 +10,14 @@ export function UserProvider({ children }: any) {
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
+    // 🔥 FIX: dacă nu există JWT → nu încerca să încarci userul
+    const hasJwt = document.cookie.includes("jwt=");
+    if (!hasJwt) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await axiosInstance.get("/auth/me");
       setUser(res.data);
@@ -35,7 +43,7 @@ export function UserProvider({ children }: any) {
     loadUser();
   }, []);
 
-  // 🔥 FIX FINAL — GOLEȘTE USERUL CÂND SE ȘTERGE CONTUL
+  // 🔥 FIX: ascultă force-logout
   useEffect(() => {
     const clearUser = () => setUser(null);
     window.addEventListener("force-logout", clearUser);

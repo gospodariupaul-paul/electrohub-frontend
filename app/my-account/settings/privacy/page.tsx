@@ -43,17 +43,23 @@ export default function PrivacySettings() {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/privacy/gdpr/export`;
   };
 
+  // 🔥 FIX FINAL — luăm userul direct din backend în momentul ștergerii
   const handleDelete = async () => {
     if (!confirm("Ești sigur că vrei să îți ștergi contul?")) return;
 
-    if (!userId) {
-      alert("Nu am putut identifica utilizatorul.");
-      return;
+    try {
+      const me = await axiosInstance.get("/auth/me");
+      const id = me.data.id;
+
+      console.log("Șterg userul cu ID:", id);
+
+      await axiosInstance.delete(`/users/${id}`);
+
+      window.location.href = "/logout";
+    } catch (err) {
+      console.error("Eroare la ștergerea contului:", err);
+      alert("A apărut o eroare la ștergerea contului.");
     }
-
-    await axiosInstance.delete(`/users/${userId}`);
-
-    window.location.href = "/logout";
   };
 
   return (

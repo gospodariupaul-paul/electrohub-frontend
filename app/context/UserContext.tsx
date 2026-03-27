@@ -35,13 +35,20 @@ export function UserProvider({ children }: any) {
     loadUser();
   }, []);
 
+  // 🔥 FIX FINAL — GOLEȘTE USERUL CÂND SE ȘTERGE CONTUL
+  useEffect(() => {
+    const clearUser = () => setUser(null);
+    window.addEventListener("force-logout", clearUser);
+    return () => window.removeEventListener("force-logout", clearUser);
+  }, []);
+
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
         loading,
-        reloadUser: loadUser, // 🔥 AICI E IMPORTANT
+        reloadUser: loadUser,
         logout,
       }}
     >

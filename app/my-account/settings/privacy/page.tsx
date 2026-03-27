@@ -43,7 +43,7 @@ export default function PrivacySettings() {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/privacy/gdpr/export`;
   };
 
-  // 🔥 FIX FINAL — luăm userul direct din backend în momentul ștergerii
+  // 🔥 FIX FINAL — ștergere cont REALĂ
   const handleDelete = async () => {
     if (!confirm("Ești sigur că vrei să îți ștergi contul?")) return;
 
@@ -53,9 +53,13 @@ export default function PrivacySettings() {
 
       console.log("Șterg userul cu ID:", id);
 
-      await axiosInstance.delete(`/users/${id}`);
+      // 🔥 FIX: trimitem cookie-ul explicit la DELETE
+      await axiosInstance.delete(`/users/${id}`, {
+        withCredentials: true,
+      });
 
-      window.location.href = "/logout";
+      // 🔥 NU mai mergem la /logout — contul e șters, cookie-ul devine invalid
+      window.location.href = "/login";
     } catch (err) {
       console.error("Eroare la ștergerea contului:", err);
       alert("A apărut o eroare la ștergerea contului.");

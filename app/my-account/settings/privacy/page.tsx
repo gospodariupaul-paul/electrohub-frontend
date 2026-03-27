@@ -61,6 +61,11 @@ export default function PrivacySettings() {
       // 🔥 ȘTERGEM COOKIE-UL JWT
       document.cookie = "jwt=; Max-Age=0; path=/;";
 
+      // 🔥 ȘTERGEM cookie-urile NextAuth (te țin logat!)
+      document.cookie = "__Secure-next-auth.session-token=; Max-Age=0; path=/; Secure; SameSite=Lax;";
+      document.cookie = "__Host-next-auth.csrf-token=; Max-Age=0; path=/; Secure; SameSite=Lax;";
+      document.cookie = "__Secure-next-auth.callback-url=; Max-Age=0; path=/; Secure; SameSite=Lax;";
+
       // 🔥 ȘTERGEM orice cache de user din frontend
       sessionStorage.clear();
 

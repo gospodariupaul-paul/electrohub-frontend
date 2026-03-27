@@ -7,10 +7,9 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      // 🔥 IMPORTANT: nu mai permite auto-login
       authorization: {
         params: {
-          prompt: "consent", // forțează alegerea contului
+          prompt: "consent", // 🔥 forțează alegerea contului, oprește auto-login
         },
       },
     }),
@@ -25,7 +24,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // LOGIN ADMIN
         if (
           credentials.email === "admin@electrohub.com" &&
           credentials.password === "123456"
@@ -38,7 +36,6 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
-        // LOGIN USER NORMAL
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
@@ -71,7 +68,6 @@ export const authOptions: NextAuthOptions = {
     // 🔥 BLOCARE RECREARE USER DUPĂ ȘTERGERE
     async signIn({ user, account }) {
       if (account?.provider === "google") {
-        // verificăm dacă userul există în backend
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/check-email?email=${user.email}`
         );
@@ -112,7 +108,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    // 🔥 NU mai redirectăm automat după login Google
+    // 🔥 OPRIM redirectul automat după login Google
     async redirect() {
       return "/login";
     },

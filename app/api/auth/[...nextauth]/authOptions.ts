@@ -4,13 +4,17 @@ import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    // 🔥 LOGIN CU GOOGLE
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      // 🔥 IMPORTANT: nu mai permite auto-login
+      authorization: {
+        params: {
+          prompt: "consent", // forțează alegerea contului
+        },
+      },
     }),
 
-    // 🔥 LOGIN CU EMAIL + PAROLĂ (CREDENTIALS)
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -19,11 +23,9 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
+        if (!credentials?.email || !credentials?.password) return null;
 
-        // 🔥 1. LOGIN ADMIN DIRECT
+        // LOGIN ADMIN
         if (
           credentials.email === "admin@electrohub.com" &&
           credentials.password === "123456"
@@ -36,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
-        // 🔥 2. LOGIN USER NORMAL (prin backend)
+        // LOGIN USER NORMAL
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
@@ -52,12 +54,7 @@ export const authOptions: NextAuthOptions = {
         if (!res.ok) return null;
 
         const data = await res.json();
-
-        const user =
-          data.user ||
-          data.data?.user ||
-          data.data ||
-          data;
+        const user = data.user || data.data?.user || data.data || data;
 
         if (!user) return null;
 
@@ -71,15 +68,32 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
+    // 🔥 BLOCARE RECREARE USER DUPĂ ȘTERGERE
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        // verificăm dacă userul există în backend
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/check-email?email=${user.email}`
+        );
+
+        const exists = await res.json();
+
+        if (!exists?.found) {
+          console.log("User șters → blocăm loginul Google");
+          return false; // 🔥 NU recreăm userul
+        }
+      }
+
+      return true;
+    },
+
     async jwt({ token, user, account }) {
-      // 🔥 Dacă userul vine din Google
       if (account?.provider === "google" && user) {
         token.id = user.id || user.sub;
         token.email = user.email;
-        token.role = "USER"; // poți schimba dacă vrei
+        token.role = "USER";
       }
 
-      // 🔥 Dacă userul vine din Credentials
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -97,10 +111,19 @@ export const authOptions: NextAuthOptions = {
       };
       return session;
     },
+
+    // 🔥 NU mai redirectăm automat după login Google
+    async redirect() {
+      return "/login";
+    },
   },
 
   session: {
     strategy: "jwt",
+  },
+
+  pages: {
+    signIn: "/login", // 🔥 NU mai intră automat în Google
   },
 
   secret: process.env.NEXTAUTH_SECRET,

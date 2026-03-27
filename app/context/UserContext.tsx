@@ -8,8 +8,28 @@ const UserContext = createContext<any>(null);
 export function UserProvider({ children }: any) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [forcedLogout, setForcedLogout] = useState(false);
+
+  // 🔥 Ascultă evenimentul de ștergere cont
+  useEffect(() => {
+    const handler = () => {
+      setForcedLogout(true);
+      setUser(null);
+      setLoading(false);
+    };
+
+    window.addEventListener("force-logout", handler);
+    return () => window.removeEventListener("force-logout", handler);
+  }, []);
 
   const loadUser = async () => {
+    // 🔥 Dacă tocmai am șters contul → NU mai încărcăm userul
+    if (forcedLogout) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await axiosInstance.get("/auth/me");
       setUser(res.data);
@@ -33,14 +53,7 @@ export function UserProvider({ children }: any) {
 
   useEffect(() => {
     loadUser();
-  }, []);
-
-  // 🔥 Golește userul când se emite force-logout (ștergere cont)
-  useEffect(() => {
-    const clearUser = () => setUser(null);
-    window.addEventListener("force-logout", clearUser);
-    return () => window.removeEventListener("force-logout", clearUser);
-  }, []);
+  }, [forcedLogout]); // 🔥 dacă forcedLogout devine true → NU mai rulăm loadUser
 
   return (
     <UserContext.Provider

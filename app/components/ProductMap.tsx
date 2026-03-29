@@ -1,11 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Fix pentru iconițele Leaflet în Next.js
+// Icon default Leaflet
 const icon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -14,19 +14,40 @@ const icon = L.icon({
 });
 
 export default function ProductMap({ location }: { location: string }) {
-  // Default: Iași
-  let coords: [number, number] = [47.1585, 27.6014];
+  const [coords, setCoords] = useState<[number, number]>([47.1585, 27.6014]); // fallback Iași
+  const [loading, setLoading] = useState(true);
 
-  // Poți extinde aici cu alte orașe
-  const knownLocations: Record<string, [number, number]> = {
-    "iasi": [47.1585, 27.6014],
-    "bucuresti": [44.4268, 26.1025],
-    "cluj": [46.7712, 23.6236],
-    "timisoara": [45.7489, 21.2087],
-  };
+  useEffect(() => {
+    if (!location) return;
 
-  const key = location?.toLowerCase().trim();
-  if (knownLocations[key]) coords = knownLocations[key];
+    const query = `${location} Romania`;
+
+    fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        query
+      )}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          setCoords([lat, lon]);
+        }
+      })
+      .catch(() => {
+        console.warn("Geocoding failed, using fallback coordinates");
+      })
+      .finally(() => setLoading(false));
+  }, [location]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-64 flex items-center justify-center text-gray-400">
+        Se încarcă harta...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-64 rounded-xl overflow-hidden border border-white/10 mt-4">

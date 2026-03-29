@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import "./globals.css";
-import "./leaflet.css"; // 🔥 OBLIGATORIU pentru hartă
 import { UserProvider } from "./context/UserContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import WaitForUser from "./context/WaitForUser";

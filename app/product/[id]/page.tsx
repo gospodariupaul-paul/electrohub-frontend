@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import ProductMap from "../../components/ProductMap";
+import ProductMap from "../components/ProductMap";
 
 export default function Page() {
   const params = useParams();

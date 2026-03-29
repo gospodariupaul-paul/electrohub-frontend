@@ -5,10 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import dynamic from "next/dynamic";
 
-// 🔥 Dynamic import pentru Leaflet (obligatoriu)
-const ProductMap = dynamic(() => import("../components/ProductMap"), {
-  ssr: false,
-});
+const ProductMap = dynamic(
+  () => import("@/app/components/ProductMap"),
+  { ssr: false }
+);
 
 export default function Page() {
   const params = useParams();

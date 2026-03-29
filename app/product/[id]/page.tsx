@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import ProductMap from "../components/ProductMap";
+import dynamic from "next/dynamic";
+
+// 🔥 Dynamic import pentru Leaflet (obligatoriu)
+const ProductMap = dynamic(() => import("../components/ProductMap"), {
+  ssr: false,
+});
 
 export default function Page() {
   const params = useParams();
@@ -162,6 +167,7 @@ export default function Page() {
         {product.location || "România"}
       </p>
 
+      {/* 🔥 DETALII */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Detalii</h2>
 
@@ -178,6 +184,7 @@ export default function Page() {
         )}
       </div>
 
+      {/* 🔥 DESCRIERE */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Descriere</h2>
         <p className="text-gray-300 whitespace-pre-line">
@@ -185,12 +192,20 @@ export default function Page() {
         </p>
       </div>
 
+      {/* 🔥 LOCAȚIE + HARTĂ */}
       <div className="bg-[#111b21] p-4 rounded-lg mb-6 border border-white/10">
         <h2 className="text-lg font-semibold mb-3">Locație</h2>
+
         <p className="text-gray-300 mb-2">
           {product.location || "Iași, România"}
         </p>
+
         <p className="text-gray-500 text-sm">Locația este aproximativă</p>
+
+        {/* 🔥 AICI ESTE HARTA */}
+        <div className="mt-4">
+          <ProductMap location={product.location || "Iași"} />
+        </div>
       </div>
 
       {/* ⭐⭐⭐ INFORMATII VANZATOR + RATINGURI */}

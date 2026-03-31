@@ -237,8 +237,12 @@ useEffect(() => {
             )}
           </Link>
 
-          <SidebarItem label="Curier" />
+          <Link href="/my-account/orders" className="block">
+           <SidebarItem label="Comenzi" />
+          </Link>
+
           <SidebarItem label="Plăți" />
+
 
           <Link href="/my-account/ratinguri" className="relative block">
             <SidebarItem label="Ratinguri" />

@@ -22,7 +22,6 @@ export default function DeliverySettings() {
 
   const [saved, setSaved] = useState(false);
 
-  // Load existing settings
   useEffect(() => {
     axiosInstance
       .get("/delivery-settings/me", { withCredentials: true })
@@ -63,16 +62,12 @@ export default function DeliverySettings() {
         {/* Curier preferat */}
         <div>
           <label className="block mb-2 text-gray-300">Curier preferat</label>
+
           <select
             value={form.preferredCourier}
             onChange={(e) =>
               setForm({ ...form, preferredCourier: e.target.value })
             }
-            className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
-          >
-          <select
-            value={form.preferredCourier}
-            onChange={(e) => setForm({ ...form, preferredCourier: e.target.value })}
             className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
           >
             <option className="text-black" value="sameday">Sameday</option>
@@ -88,7 +83,7 @@ export default function DeliverySettings() {
           </select>
         </div>
 
-        {/* Adresă */}
+        {/* Stradă */}
         <div>
           <label className="block mb-2 text-gray-300">Stradă</label>
           <input
@@ -99,6 +94,7 @@ export default function DeliverySettings() {
           />
         </div>
 
+        {/* Număr */}
         <div>
           <label className="block mb-2 text-gray-300">Număr</label>
           <input
@@ -109,6 +105,7 @@ export default function DeliverySettings() {
           />
         </div>
 
+        {/* Oraș */}
         <div>
           <label className="block mb-2 text-gray-300">Oraș</label>
           <input
@@ -119,6 +116,7 @@ export default function DeliverySettings() {
           />
         </div>
 
+        {/* Județ */}
         <div>
           <label className="block mb-2 text-gray-300">Județ</label>
           <input
@@ -129,6 +127,7 @@ export default function DeliverySettings() {
           />
         </div>
 
+        {/* Cod poștal */}
         <div>
           <label className="block mb-2 text-gray-300">Cod poștal</label>
           <input

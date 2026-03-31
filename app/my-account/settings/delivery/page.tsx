@@ -70,10 +70,21 @@ export default function DeliverySettings() {
             }
             className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
           >
-            <option value="sameday">Sameday</option>
-            <option value="fan">Fan Courier</option>
-            <option value="dpd">DPD</option>
-            <option value="gls">GLS</option>
+          <select
+            value={form.preferredCourier}
+            onChange={(e) => setForm({ ...form, preferredCourier: e.target.value })}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+          >
+            <option className="text-black" value="sameday">Sameday</option>
+            <option className="text-black" value="fan">Fan Courier</option>
+            <option className="text-black" value="dpd">DPD</option>
+            <option className="text-black" value="gls">GLS</option>
+            <option className="text-black" value="cargus">Cargus</option>
+            <option className="text-black" value="nemo">Nemo Express</option>
+            <option className="text-black" value="posta">Poșta Română</option>
+            <option className="text-black" value="easybox">EasyBox (locker)</option>
+            <option className="text-black" value="sameday-box">SameDay Box</option>
+            <option className="text-black" value="pickup">Ridicare personală</option>
           </select>
         </div>
 

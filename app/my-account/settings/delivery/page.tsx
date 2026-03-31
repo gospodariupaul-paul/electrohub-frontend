@@ -2,35 +2,51 @@
 
 import Link from "next/link";
 import { TruckIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 
 export default function DeliverySettings() {
-  const [courier, setCourier] = useState("sameday");
-  const [defaultAddress, setDefaultAddress] = useState("");
+  const [form, setForm] = useState({
+    preferredCourier: "sameday",
+    preferredMethod: "address",
+    street: "",
+    number: "",
+    city: "",
+    county: "",
+    postalCode: "",
+    callBefore: false,
+    noSaturday: false,
+    cashOnDelivery: false,
+    easyboxId: "",
+  });
+
   const [saved, setSaved] = useState(false);
+
+  // Load existing settings
+  useEffect(() => {
+    axiosInstance
+      .get("/delivery-settings/me", { withCredentials: true })
+      .then((res) => {
+        setForm((prev) => ({ ...prev, ...res.data }));
+      })
+      .catch((err) => console.error("Eroare la încărcare:", err));
+  }, []);
 
   const handleSave = async () => {
     try {
-      await axiosInstance.post(
-        "/delivery/settings",
-        {
-          courier,
-          address: defaultAddress,
-        },
-        { withCredentials: true }
-      );
+      await axiosInstance.patch("/delivery-settings/me", form, {
+        withCredentials: true,
+      });
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
-      console.error("Eroare la salvarea setărilor de livrare:", err);
+      console.error("Eroare la salvare:", err);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 text-white">
-
       <Link
         href="/my-account/settings"
         className="inline-block mb-6 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm"
@@ -43,18 +59,15 @@ export default function DeliverySettings() {
         Setări livrare
       </h1>
 
-      <p className="text-gray-400 mb-6">
-        Curieri preferați și opțiuni implicite de livrare.
-      </p>
-
       <div className="space-y-6">
-
         {/* Curier preferat */}
         <div>
           <label className="block mb-2 text-gray-300">Curier preferat</label>
           <select
-            value={courier}
-            onChange={(e) => setCourier(e.target.value)}
+            value={form.preferredCourier}
+            onChange={(e) =>
+              setForm({ ...form, preferredCourier: e.target.value })
+            }
             className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
           >
             <option value="sameday">Sameday</option>
@@ -64,14 +77,53 @@ export default function DeliverySettings() {
           </select>
         </div>
 
-        {/* Adresă implicită */}
+        {/* Adresă */}
         <div>
-          <label className="block mb-2 text-gray-300">Adresă implicită</label>
+          <label className="block mb-2 text-gray-300">Stradă</label>
           <input
             type="text"
-            placeholder="Ex: Str. Exemplu nr. 10, Iași"
-            value={defaultAddress}
-            onChange={(e) => setDefaultAddress(e.target.value)}
+            value={form.street}
+            onChange={(e) => setForm({ ...form, street: e.target.value })}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-300">Număr</label>
+          <input
+            type="text"
+            value={form.number}
+            onChange={(e) => setForm({ ...form, number: e.target.value })}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-300">Oraș</label>
+          <input
+            type="text"
+            value={form.city}
+            onChange={(e) => setForm({ ...form, city: e.target.value })}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-300">Județ</label>
+          <input
+            type="text"
+            value={form.county}
+            onChange={(e) => setForm({ ...form, county: e.target.value })}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-300">Cod poștal</label>
+          <input
+            type="text"
+            value={form.postalCode}
+            onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
             className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white"
           />
         </div>

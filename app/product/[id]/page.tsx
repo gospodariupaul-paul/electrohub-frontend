@@ -87,6 +87,30 @@ export default function Page() {
     }
   };
 
+  // ⭐⭐⭐ AICI ESTE CE AM ADĂUGAT — FUNCTIA ADD TO CART
+  const addToCart = async () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(
+        "/cart/add",
+        {
+          productId: Number(id),
+          quantity: 1
+        },
+        { withCredentials: true }
+      );
+
+      router.push("/cart");
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      alert("Eroare: nu s-a putut adăuga în coș.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
@@ -242,12 +266,22 @@ export default function Page() {
         </div>
       </div>
 
+      {/* 🔥 CONTACT + ADAUGĂ ÎN COȘ */}
       <button
         onClick={startConversation}
-        className="px-6 py-3 bg-[#00a884] text-white rounded-lg font-semibold"
+        className="px-6 py-3 bg-[#00a884] text-white rounded-lg font-semibold w-full"
       >
         Contactează vânzătorul
       </button>
+
+      {/* ⭐⭐⭐ AICI ESTE BUTONUL NOU */}
+      <button
+        onClick={addToCart}
+        className="mt-4 px-6 py-3 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition w-full"
+      >
+        Adaugă în coș
+      </button>
+
     </div>
   );
 }

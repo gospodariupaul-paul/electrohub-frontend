@@ -87,7 +87,7 @@ export default function Page() {
     }
   };
 
-  // ⭐⭐⭐ AICI ESTE CE AM ADĂUGAT — FUNCTIA ADD TO CART
+  // ⭐⭐⭐ FUNCTIA ADD TO CART — FIXATĂ
   const addToCart = async () => {
     if (!user) {
       router.push("/login");
@@ -99,7 +99,8 @@ export default function Page() {
         "/cart/add",
         {
           productId: Number(id),
-          quantity: 1
+          quantity: 1,
+          total: product.price   // 🔥 FIXUL OBLIGATORIU
         },
         { withCredentials: true }
       );
@@ -226,7 +227,6 @@ export default function Page() {
 
         <p className="text-gray-500 text-sm">Locația este aproximativă</p>
 
-        {/* 🔥 AICI ESTE HARTA */}
         <div className="mt-4">
           <ProductMap location={product.location || "Iași"} />
         </div>
@@ -247,7 +247,6 @@ export default function Page() {
             : "2015"}
         </p>
 
-        {/* ⭐⭐⭐ RATING VANZATOR */}
         <div className="mt-3 flex items-center gap-2">
           <span className="text-yellow-400 font-bold text-lg">
             {sellerAverage} ⭐
@@ -274,7 +273,6 @@ export default function Page() {
         Contactează vânzătorul
       </button>
 
-      {/* ⭐⭐⭐ AICI ESTE BUTONUL NOU */}
       <button
         onClick={addToCart}
         className="mt-4 px-6 py-3 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d6] transition w-full"

@@ -93,9 +93,12 @@ export default function OrderDetailsPage() {
     return <div className="text-center py-20 text-red-400">Comanda nu există.</div>;
   }
 
+  const createdAt = new Date(order.createdAt).toLocaleString("ro-RO");
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 text-white">
-      <h1 className="text-3xl font-bold mb-6">Comanda #{order.id}</h1>
+      <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
+      <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 
       {/* STATUS */}
       <div className="mb-6">
@@ -141,9 +144,9 @@ export default function OrderDetailsPage() {
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Adresă livrare</h2>
         <p>{order.user.name}</p>
-        <p>{order.user.address}</p>
-        <p>{order.user.city}, {order.user.county}</p>
-        <p>{order.user.phone}</p>
+        <p>{order.user.address || "Adresă necompletată"}</p>
+        <p>{order.user.city || ""} {order.user.county || ""}</p>
+        <p>{order.user.phone || ""}</p>
       </div>
 
       {/* FORMULAR AWB */}

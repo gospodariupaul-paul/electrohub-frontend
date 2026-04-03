@@ -28,6 +28,23 @@ export default function CartPage() {
     loadCart();
   };
 
+  // 🔥 FINALIZEAZĂ COMANDA
+  const handleCheckout = async () => {
+    try {
+      const res = await axiosInstance.post(
+        "/orders",
+        {},
+        { withCredentials: true }
+      );
+
+      alert("Comanda a fost plasată cu succes!");
+      router.push("/orders/success");
+    } catch (err) {
+      console.error(err);
+      alert("A apărut o eroare la finalizarea comenzii.");
+    }
+  };
+
   if (loading) return <p className="text-white p-10">Se încarcă...</p>;
 
   const total = items.reduce(
@@ -94,7 +111,10 @@ export default function CartPage() {
         <div className="mt-10 p-4 bg-white/10 rounded-lg border border-white/20">
           <h2 className="text-xl font-bold mb-2">Total: {total} lei</h2>
 
-          <button className="w-full mt-4 px-6 py-3 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d1] transition">
+          <button
+            onClick={handleCheckout}
+            className="w-full mt-4 px-6 py-3 bg-[#00eaff] text-black rounded-lg font-semibold hover:bg-[#00c7d1] transition"
+          >
             Finalizează comanda
           </button>
         </div>

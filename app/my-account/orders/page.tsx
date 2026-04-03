@@ -28,22 +28,32 @@ export default function OrdersPage() {
       try {
         const API = process.env.NEXT_PUBLIC_API_URL;
 
-        // Luăm token-ul JWT
-        const token = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("access_token="))
-          ?.split("=")[1];
+        // 1️⃣ Luăm userul logat din /auth/me (folosește cookie-ul httpOnly "jwt")
+        const meRes = await fetch(`${API}/auth/me`, {
+          credentials: "include",
+        });
 
-        if (!token) return;
+        if (!meRes.ok) {
+          console.error("Nu ești logat sau /auth/me a eșuat");
+          setLoading(false);
+          return;
+        }
 
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const userId = payload.sub;
+        const me = await meRes.json();
+        const userId = me.id;
 
+        // 2️⃣ Luăm comenzile userului logat
         const res = await fetch(`${API}/orders/user/${userId}`, {
           credentials: "include",
         });
 
-        const data = await res.json();
+        if (!res.ok) {
+          console.error("Eroare la încărcarea comenzilor");
+          setLoading(false);
+          return;
+        }
+
+        const data: Order[] = await res.json();
         setOrders(data);
       } catch (err) {
         console.error("Eroare API:", err);

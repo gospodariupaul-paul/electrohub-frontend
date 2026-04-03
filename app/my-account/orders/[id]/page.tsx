@@ -5,13 +5,15 @@ import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { FiTruck, FiCopy, FiMapPin, FiPackage } from "react-icons/fi";
 
+// ⭐ import corect pentru useMap (NU dynamic!)
+import { useMap } from "react-leaflet";
+
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 // Leaflet doar pe client
 const Map = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then(m => m.TileLayer), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then(m => m.Marker), { ssr: false });
-const useMap = dynamic(() => import("react-leaflet").then(m => m.useMap), { ssr: false });
 
 // ⭐ COMPONENTA CARE FORȚEAZĂ RECENTER
 function RecenterMap({ lat, lon }: { lat: number; lon: number }) {

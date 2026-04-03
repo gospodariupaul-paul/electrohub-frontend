@@ -95,6 +95,16 @@ export default function OrderDetailsPage() {
 
   const createdAt = new Date(order.createdAt).toLocaleString("ro-RO");
 
+  // ⭐ TIMELINE VERTICAL (PASUL 2)
+  const steps = [
+    { key: "processing", label: "Comandă procesată" },
+    { key: "packed", label: "Comandă ambalată" },
+    { key: "shipped", label: "Expediată către tine" },
+    { key: "delivered", label: "Livrată" },
+  ];
+
+  const activeIndex = steps.findIndex((s) => s.key === order.status);
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 text-white">
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
@@ -107,25 +117,40 @@ export default function OrderDetailsPage() {
         </span>
       </div>
 
-      {/* TIMELINE */}
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Stadiu comandă</h2>
-        <div className="flex items-center gap-4">
-          {["processing", "packed", "shipped", "delivered"].map((step) => (
-            <div key={step} className="flex items-center gap-2">
-              <div
-                className={`w-4 h-4 rounded-full ${
-                  order.status === step ||
-                  (step === "packed" && order.status !== "processing") ||
-                  (step === "shipped" && ["shipped", "delivered"].includes(order.status)) ||
-                  (step === "delivered" && order.status === "delivered")
-                    ? "bg-[#00eaff]"
-                    : "bg-gray-600"
-                }`}
-              ></div>
-              <span className="text-gray-300 capitalize">{step}</span>
-            </div>
-          ))}
+      {/* ⭐ TIMELINE VERTICAL PROFESIONIST */}
+      <div className="mb-10 bg-[#0f172a] p-5 rounded-xl border border-white/10">
+        <h2 className="text-xl font-semibold mb-4">Stadiu comandă</h2>
+
+        <div className="relative">
+          <div className="absolute left-4 top-0 bottom-0 w-1 bg-white/10 rounded-full"></div>
+
+          <div className="space-y-8">
+            {steps.map((step, index) => {
+              const isActive = index <= activeIndex;
+
+              return (
+                <div key={step.key} className="relative pl-12">
+                  <div
+                    className={`absolute left-0 top-1 w-8 h-8 rounded-full flex items-center justify-center border-2 ${
+                      isActive
+                        ? "bg-[#00eaff] border-[#00eaff] text-black"
+                        : "bg-[#1e293b] border-white/20 text-gray-400"
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+
+                  <p
+                    className={`text-lg ${
+                      isActive ? "text-white font-semibold" : "text-gray-500"
+                    }`}
+                  >
+                    {step.label}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 

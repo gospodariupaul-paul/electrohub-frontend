@@ -5,15 +5,17 @@ import Link from "next/link";
 import { FiPackage, FiFileText, FiTruck, FiXCircle } from "react-icons/fi";
 
 interface OrderItem {
-  productName: string;
+  product: {
+    name: string;
+    images: string[];
+  };
   quantity: number;
   price: number;
 }
 
 interface Order {
-  id: number | string;
-  date: string;
-  status: "livrata" | "in_tranzit" | "procesare" | "anulata";
+  id: number;
+  createdAt: string;
   total: number;
   items: OrderItem[];
 }
@@ -27,30 +29,22 @@ export default function OrdersPage() {
       try {
         const API = process.env.NEXT_PUBLIC_API_URL;
 
-        // 🔥 EXTRAGEM USER ID DIN JWT
+        // Luăm token-ul JWT
         const token = document.cookie
           .split("; ")
           .find((row) => row.startsWith("access_token="))
           ?.split("=")[1];
 
-        if (!token) {
-          console.error("Nu există token");
-          return;
-        }
+        if (!token) return;
 
         const payload = JSON.parse(atob(token.split(".")[1]));
         const userId = payload.sub;
 
-        // 🔥 CEREM COMENZILE USERULUI LOGAT
         const res = await fetch(`${API}/orders/user/${userId}`, {
           credentials: "include",
         });
 
-        if (!res.ok) {
-          throw new Error("Eroare la încărcarea comenzilor");
-        }
-
-        const data: Order[] = await res.json();
+        const data = await res.json();
         setOrders(data);
       } catch (err) {
         console.error("Eroare API:", err);
@@ -61,28 +55,6 @@ export default function OrdersPage() {
 
     loadOrders();
   }, []);
-
-  const statusBadge = (status: Order["status"]) => {
-    const styles: Record<Order["status"], string> = {
-      livrata: "bg-green-600/20 text-green-400 border border-green-600/40",
-      in_tranzit: "bg-blue-600/20 text-blue-400 border border-blue-600/40",
-      procesare: "bg-yellow-600/20 text-yellow-400 border border-yellow-600/40",
-      anulata: "bg-red-600/20 text-red-400 border border-red-600/40",
-    };
-
-    const labels: Record<Order["status"], string> = {
-      livrata: "Livrată",
-      in_tranzit: "În tranzit",
-      procesare: "În procesare",
-      anulata: "Anulată",
-    };
-
-    return (
-      <span className={`px-3 py-1 rounded-lg text-sm ${styles[status]}`}>
-        {labels[status]}
-      </span>
-    );
-  };
 
   if (loading) {
     return (
@@ -127,23 +99,18 @@ export default function OrdersPage() {
             <div className="flex justify-between items-center mb-4">
               <div>
                 <p className="text-lg font-semibold">#{order.id}</p>
-                <p className="text-gray-400 text-sm">{order.date}</p>
+                <p className="text-gray-400 text-sm">
+                  {new Date(order.createdAt).toLocaleString("ro-RO")}
+                </p>
               </div>
-              {statusBadge(order.status)}
             </div>
 
             <div className="space-y-2 mb-4">
-              {order.items.slice(0, 3).map((p, index) => (
+              {order.items.map((p, index) => (
                 <div key={index} className="text-gray-300 text-sm">
-                  • {p.productName} – {p.quantity} buc – {p.price} lei
+                  • {p.product.name} – {p.quantity} buc – {p.price} lei
                 </div>
               ))}
-
-              {order.items.length > 3 && (
-                <div className="text-gray-500 text-sm">
-                  +{order.items.length - 3} produse
-                </div>
-              )}
             </div>
 
             <p className="font-bold text-lg mb-4">
@@ -157,22 +124,6 @@ export default function OrdersPage() {
               >
                 <FiFileText /> Vezi detalii
               </Link>
-
-              <button className="bg-white/10 px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition flex items-center gap-2">
-                <FiPackage /> Descarcă factura
-              </button>
-
-              {order.status === "in_tranzit" && (
-                <button className="bg-blue-600/20 text-blue-400 border border-blue-600/40 px-4 py-2 rounded-lg text-sm hover:bg-blue-600/30 transition flex items-center gap-2">
-                  <FiTruck /> Track order
-                </button>
-              )}
-
-              {order.status === "anulata" && (
-                <button className="bg-red-600/20 text-red-400 border border-red-600/40 px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                  <FiXCircle /> Comandă anulată
-                </button>
-              )}
             </div>
           </div>
         ))}

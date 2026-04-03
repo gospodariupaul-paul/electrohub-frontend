@@ -38,7 +38,9 @@ export default function CartPage() {
       );
 
       alert("Comanda a fost plasată cu succes!");
-      router.push("/orders/success");
+
+      // 🔥 REDIRECT CORECT
+      router.push("/my-account/orders/success");
     } catch (err) {
       console.error(err);
       alert("A apărut o eroare la finalizarea comenzii.");

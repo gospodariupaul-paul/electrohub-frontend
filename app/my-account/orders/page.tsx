@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FiPackage, FiFileText, FiTruck, FiXCircle } from "react-icons/fi";
 
-// Tipuri pentru TypeScript — adaptează-le după backend-ul tău real
 interface OrderItem {
   productName: string;
   quantity: number;
@@ -28,7 +27,22 @@ export default function OrdersPage() {
       try {
         const API = process.env.NEXT_PUBLIC_API_URL;
 
-        const res = await fetch(`${API}/orders/user/1`, {
+        // 🔥 EXTRAGEM USER ID DIN JWT
+        const token = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("access_token="))
+          ?.split("=")[1];
+
+        if (!token) {
+          console.error("Nu există token");
+          return;
+        }
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const userId = payload.sub;
+
+        // 🔥 CEREM COMENZILE USERULUI LOGAT
+        const res = await fetch(`${API}/orders/user/${userId}`, {
           credentials: "include",
         });
 
@@ -110,7 +124,6 @@ export default function OrdersPage() {
             key={order.id}
             className="bg-[#0f172a] border border-white/10 rounded-xl p-5 shadow-lg"
           >
-            {/* Header */}
             <div className="flex justify-between items-center mb-4">
               <div>
                 <p className="text-lg font-semibold">#{order.id}</p>
@@ -119,7 +132,6 @@ export default function OrdersPage() {
               {statusBadge(order.status)}
             </div>
 
-            {/* Produse */}
             <div className="space-y-2 mb-4">
               {order.items.slice(0, 3).map((p, index) => (
                 <div key={index} className="text-gray-300 text-sm">
@@ -134,12 +146,10 @@ export default function OrdersPage() {
               )}
             </div>
 
-            {/* Total */}
             <p className="font-bold text-lg mb-4">
               Total: {order.total} lei
             </p>
 
-            {/* Acțiuni */}
             <div className="flex gap-3 flex-wrap">
               <Link
                 href={`/my-account/orders/${order.id}`}

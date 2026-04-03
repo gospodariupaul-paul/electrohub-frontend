@@ -23,6 +23,28 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ⭐ Funcție pentru ștergere comandă
+  const handleDelete = async (orderId: number) => {
+    if (!confirm("Sigur vrei să ștergi această comandă?")) return;
+
+    try {
+      const API = process.env.NEXT_PUBLIC_API_URL;
+
+      const res = await fetch(`${API}/orders/${orderId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        setOrders((prev) => prev.filter((o) => o.id !== orderId));
+      } else {
+        alert("Eroare la ștergere.");
+      }
+    } catch (err) {
+      console.error("Eroare la ștergere:", err);
+    }
+  };
+
   useEffect(() => {
     async function loadOrders() {
       try {
@@ -112,6 +134,14 @@ export default function OrdersPage() {
                   {new Date(order.createdAt).toLocaleString("ro-RO")}
                 </p>
               </div>
+
+              {/* ⭐ Buton Ștergere */}
+              <button
+                onClick={() => handleDelete(order.id)}
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-semibold"
+              >
+                Șterge
+              </button>
             </div>
 
             <div className="space-y-2 mb-4">

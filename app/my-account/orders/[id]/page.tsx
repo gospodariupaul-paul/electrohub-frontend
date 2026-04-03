@@ -11,6 +11,14 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 const Map = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then(m => m.TileLayer), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then(m => m.Marker), { ssr: false });
+const useMap = dynamic(() => import("react-leaflet").then(m => m.useMap), { ssr: false });
+
+// ⭐ COMPONENTA CARE FORȚEAZĂ RECENTER
+function RecenterMap({ lat, lon }: { lat: number; lon: number }) {
+  const map = useMap();
+  map.setView([lat, lon]);
+  return null;
+}
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
@@ -83,7 +91,7 @@ export default function OrderDetailsPage() {
     }
   }
 
-  // ⭐ FIX CACHE BUSTER — elimină 304
+  // ⭐ FIX CACHE BUSTER + RECENTER
   async function loadLocker(address: string) {
     try {
       const res = await fetch(
@@ -155,12 +163,14 @@ export default function OrderDetailsPage() {
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
       <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 
+      {/* STATUS */}
       <div className="mb-6">
         <span className="px-4 py-2 rounded-lg bg-[#1e293b] text-[#00eaff] font-semibold capitalize">
           {order.status}
         </span>
       </div>
 
+      {/* TIMELINE */}
       <div className="mb-10 bg-[#0f172a] p-5 rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-4">Stadiu comandă</h2>
 
@@ -197,6 +207,7 @@ export default function OrderDetailsPage() {
         </div>
       </div>
 
+      {/* PRODUSE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Produse</h2>
         {order.items.map((item: any, i: number) => (
@@ -207,6 +218,7 @@ export default function OrderDetailsPage() {
         <p className="font-bold text-lg mt-3">Total: {order.total} lei</p>
       </div>
 
+      {/* ADRESĂ LIVRARE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Adresă livrare</h2>
         <p>{order.user.name}</p>
@@ -215,6 +227,7 @@ export default function OrderDetailsPage() {
         <p>{order.user.phone || ""}</p>
       </div>
 
+      {/* FORMULAR AWB */}
       {!awb && (
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -254,13 +267,14 @@ export default function OrderDetailsPage() {
 
           <button
             onClick={generateAwb}
-            className="mt-4 bg-[#00eaff] text-black px-6 py-3 rounded-lg font-semibold hover:bg[#00c7d6] transition"
+            className="mt-4 bg-[#00eaff] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#00c7d6] transition"
           >
             Generează AWB
           </button>
         </div>
       )}
 
+      {/* AWB */}
       {awb && (
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
@@ -278,6 +292,7 @@ export default function OrderDetailsPage() {
         </div>
       )}
 
+      {/* TRACKING */}
       {tracking.length > 0 && (
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-3">Tracking</h2>
@@ -291,6 +306,7 @@ export default function OrderDetailsPage() {
         </div>
       )}
 
+      {/* ⭐ HARTĂ FANBOX */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
           <FiMapPin /> Locker FANbox
@@ -309,6 +325,9 @@ export default function OrderDetailsPage() {
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+            {/* ⭐ RECENTER MAP */}
+            {locker && <RecenterMap lat={locker.lat} lon={locker.lon} />}
 
             {userLocation && (
               <Marker position={[userLocation.lat, userLocation.lon]} />

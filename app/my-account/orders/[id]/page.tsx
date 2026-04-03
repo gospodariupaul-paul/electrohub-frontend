@@ -79,7 +79,7 @@ export default function OrderDetailsPage() {
     }
   }
 
-  // ⭐ PASUL 3 — funcția pentru locker
+  // ⭐ PASUL 3 — funcția pentru locker (SINGURA MODIFICARE)
   async function loadLocker(address: string) {
     try {
       const res = await fetch(
@@ -89,12 +89,20 @@ export default function OrderDetailsPage() {
       const data = await res.json();
 
       if (data.userLocation) {
-        setUserLocation(data.userLocation);
+        setUserLocation({
+          lat: Number(data.userLocation.lat),
+          lon: Number(data.userLocation.lon),
+        });
       }
 
       if (data.locker) {
-        setLocker(data.locker);
+        setLocker({
+          name: data.locker.name,
+          lat: Number(data.locker.lat),
+          lon: Number(data.locker.lon),
+        });
       }
+
     } catch (e) {
       console.error("Eroare locker:", e);
     }

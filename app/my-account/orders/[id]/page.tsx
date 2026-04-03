@@ -19,11 +19,9 @@ export default function OrderDetailsPage() {
   const [tracking, setTracking] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ⭐ PASUL 3 — locații
   const [userLocation, setUserLocation] = useState<any>(null);
   const [locker, setLocker] = useState<any>(null);
 
-  // Formular AWB
   const [form, setForm] = useState({
     weight: 1,
     parcels: 1,
@@ -36,7 +34,6 @@ export default function OrderDetailsPage() {
     loadShipment();
   }, [id]);
 
-  // ⭐ FIXUL — REÎNCARCĂ LOCKERUL CÂND SE SCHIMBĂ ADRESA
   useEffect(() => {
     if (order?.user?.address) {
       const fullAddress = `${order.user.address}, ${order.user.city}, ${order.user.county}`;
@@ -50,7 +47,6 @@ export default function OrderDetailsPage() {
       const data = await res.json();
       setOrder(data);
 
-      // încărcare locker inițială
       if (data?.user?.address) {
         const fullAddress = `${data.user.address}, ${data.user.city}, ${data.user.county}`;
         loadLocker(fullAddress);
@@ -87,11 +83,11 @@ export default function OrderDetailsPage() {
     }
   }
 
-  // ⭐ PASUL 3 — funcția pentru locker
+  // ⭐ FIX CACHE BUSTER — elimină 304
   async function loadLocker(address: string) {
     try {
       const res = await fetch(
-        `${API}/fancourier/locker/nearest?address=${encodeURIComponent(address)}`
+        `${API}/fancourier/locker/nearest?address=${encodeURIComponent(address)}&t=${Date.now()}`
       );
 
       const data = await res.json();
@@ -145,7 +141,6 @@ export default function OrderDetailsPage() {
 
   const createdAt = new Date(order.createdAt).toLocaleString("ro-RO");
 
-  // ⭐ TIMELINE VERTICAL (PASUL 2)
   const steps = [
     { key: "processing", label: "Comandă procesată" },
     { key: "packed", label: "Comandă ambalată" },
@@ -160,14 +155,12 @@ export default function OrderDetailsPage() {
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
       <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 
-      {/* STATUS */}
       <div className="mb-6">
         <span className="px-4 py-2 rounded-lg bg-[#1e293b] text-[#00eaff] font-semibold capitalize">
           {order.status}
         </span>
       </div>
 
-      {/* ⭐ TIMELINE VERTICAL PROFESIONIST */}
       <div className="mb-10 bg-[#0f172a] p-5 rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-4">Stadiu comandă</h2>
 
@@ -204,7 +197,6 @@ export default function OrderDetailsPage() {
         </div>
       </div>
 
-      {/* PRODUSE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Produse</h2>
         {order.items.map((item: any, i: number) => (
@@ -215,7 +207,6 @@ export default function OrderDetailsPage() {
         <p className="font-bold text-lg mt-3">Total: {order.total} lei</p>
       </div>
 
-      {/* ADRESĂ LIVRARE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Adresă livrare</h2>
         <p>{order.user.name}</p>
@@ -224,7 +215,6 @@ export default function OrderDetailsPage() {
         <p>{order.user.phone || ""}</p>
       </div>
 
-      {/* FORMULAR AWB */}
       {!awb && (
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -264,14 +254,13 @@ export default function OrderDetailsPage() {
 
           <button
             onClick={generateAwb}
-            className="mt-4 bg-[#00eaff] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#00c7d6] transition"
+            className="mt-4 bg-[#00eaff] text-black px-6 py-3 rounded-lg font-semibold hover:bg[#00c7d6] transition"
           >
             Generează AWB
           </button>
         </div>
       )}
 
-      {/* AFIȘARE AWB */}
       {awb && (
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
@@ -289,7 +278,6 @@ export default function OrderDetailsPage() {
         </div>
       )}
 
-      {/* TRACKING */}
       {tracking.length > 0 && (
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-3">Tracking</h2>
@@ -303,7 +291,6 @@ export default function OrderDetailsPage() {
         </div>
       )}
 
-      {/* ⭐ HARTĂ FANBOX DINAMICĂ */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
           <FiMapPin /> Locker FANbox
@@ -323,12 +310,10 @@ export default function OrderDetailsPage() {
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            {/* Marker adresă client */}
             {userLocation && (
               <Marker position={[userLocation.lat, userLocation.lon]} />
             )}
 
-            {/* Marker locker */}
             {locker && (
               <Marker position={[locker.lat, locker.lon]} />
             )}

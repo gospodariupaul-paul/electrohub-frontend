@@ -19,6 +19,10 @@ export default function OrderDetailsPage() {
   const [tracking, setTracking] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ⭐ PASUL 3 — locații
+  const [userLocation, setUserLocation] = useState<any>(null);
+  const [locker, setLocker] = useState<any>(null);
+
   // Formular AWB
   const [form, setForm] = useState({
     weight: 1,
@@ -37,6 +41,13 @@ export default function OrderDetailsPage() {
       const res = await fetch(`${API}/orders/${id}`, { credentials: "include" });
       const data = await res.json();
       setOrder(data);
+
+      // ⭐ PASUL 3 — încărcăm lockerul după adresă
+      if (data?.user?.address) {
+        const fullAddress = `${data.user.address}, ${data.user.city}, ${data.user.county}`;
+        loadLocker(fullAddress);
+      }
+
     } catch (e) {
       console.error("Eroare la încărcarea comenzii:", e);
     } finally {
@@ -65,6 +76,27 @@ export default function OrderDetailsPage() {
       setTracking(data.history || []);
     } catch (e) {
       console.error("Tracking error:", e);
+    }
+  }
+
+  // ⭐ PASUL 3 — funcția pentru locker
+  async function loadLocker(address: string) {
+    try {
+      const res = await fetch(
+        `${API}/fancourier/locker/nearest?address=${encodeURIComponent(address)}`
+      );
+
+      const data = await res.json();
+
+      if (data.userLocation) {
+        setUserLocation(data.userLocation);
+      }
+
+      if (data.locker) {
+        setLocker(data.locker);
+      }
+    } catch (e) {
+      console.error("Eroare locker:", e);
     }
   }
 
@@ -253,16 +285,35 @@ export default function OrderDetailsPage() {
         </div>
       )}
 
-      {/* HARTĂ FANBOX */}
+      {/* ⭐ HARTĂ FANBOX DINAMICĂ (PASUL 3) */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
           <FiMapPin /> Locker FANbox
         </h2>
 
         <div className="h-[400px] rounded-xl overflow-hidden">
-          <Map center={[47.1585, 27.6014]} zoom={12} style={{ height: "100%", width: "100%" }}>
+          <Map
+            center={
+              locker
+                ? [locker.lat, locker.lon]
+                : userLocation
+                ? [userLocation.lat, userLocation.lon]
+                : [47.1585, 27.6014]
+            }
+            zoom={13}
+            style={{ height: "100%", width: "100%" }}
+          >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={[47.1585, 27.6014]} />
+
+            {/* Marker adresă client */}
+            {userLocation && (
+              <Marker position={[userLocation.lat, userLocation.lon]} />
+            )}
+
+            {/* Marker locker */}
+            {locker && (
+              <Marker position={[locker.lat, locker.lon]} />
+            )}
           </Map>
         </div>
       </div>

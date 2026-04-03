@@ -7,7 +7,7 @@ import { FiTruck, FiCopy, FiMapPin, FiPackage } from "react-icons/fi";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-// Leaflet trebuie încărcat doar pe client
+// Leaflet doar pe client
 const Map = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then(m => m.TileLayer), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then(m => m.Marker), { ssr: false });
@@ -97,15 +97,53 @@ export default function OrderDetailsPage() {
     <div className="max-w-4xl mx-auto px-4 py-10 text-white">
       <h1 className="text-3xl font-bold mb-6">Comanda #{order.id}</h1>
 
+      {/* STATUS */}
+      <div className="mb-6">
+        <span className="px-4 py-2 rounded-lg bg-[#1e293b] text-[#00eaff] font-semibold capitalize">
+          {order.status}
+        </span>
+      </div>
+
+      {/* TIMELINE */}
+      <div className="mb-10">
+        <h2 className="text-xl font-semibold mb-3">Stadiu comandă</h2>
+        <div className="flex items-center gap-4">
+          {["processing", "packed", "shipped", "delivered"].map((step) => (
+            <div key={step} className="flex items-center gap-2">
+              <div
+                className={`w-4 h-4 rounded-full ${
+                  order.status === step ||
+                  (step === "packed" && order.status !== "processing") ||
+                  (step === "shipped" && ["shipped", "delivered"].includes(order.status)) ||
+                  (step === "delivered" && order.status === "delivered")
+                    ? "bg-[#00eaff]"
+                    : "bg-gray-600"
+                }`}
+              ></div>
+              <span className="text-gray-300 capitalize">{step}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* PRODUSE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Produse</h2>
         {order.items.map((item: any, i: number) => (
           <div key={i} className="text-gray-300 text-sm mb-1">
-            • Produs #{item.productId} — {item.quantity} buc — {item.price} lei
+            • {item.product.name} — {item.quantity} buc — {item.price} lei
           </div>
         ))}
         <p className="font-bold text-lg mt-3">Total: {order.total} lei</p>
+      </div>
+
+      {/* ADRESĂ LIVRARE */}
+      <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
+        <h2 className="text-xl font-semibold mb-3">Adresă livrare</h2>
+        <p>{order.user.name}</p>
+        <p>{order.user.address}</p>
+        <p>{order.user.city}, {order.user.county}</p>
+        <p>{order.user.phone}</p>
       </div>
 
       {/* FORMULAR AWB */}

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { FiTruck, FiCopy, FiMapPin, FiPackage } from "react-icons/fi";
 
-// ⭐ import corect pentru useMap (NU dynamic!)
+// ⭐ import corect pentru useMap
 import { useMap } from "react-leaflet";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
@@ -16,21 +16,25 @@ const TileLayer = dynamic(() => import("react-leaflet").then(m => m.TileLayer), 
 const Marker = dynamic(() => import("react-leaflet").then(m => m.Marker), { ssr: false });
 
 // ⭐ COMPONENTA CARE FORȚEAZĂ RECENTER
-function RecenterMap({ lat, lon }: { lat: number; lon: number }) {
+function RecenterMap({ lat, lon }) {
   const map = useMap();
-  map.setView([lat, lon]);
+  useEffect(() => {
+    if (lat && lon) {
+      map.setView([lat, lon], 15);
+    }
+  }, [lat, lon, map]);
   return null;
 }
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
-  const [order, setOrder] = useState<any>(null);
-  const [awb, setAwb] = useState<string | null>(null);
-  const [tracking, setTracking] = useState<any[]>([]);
+  const [order, setOrder] = useState(null);
+  const [awb, setAwb] = useState(null);
+  const [tracking, setTracking] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [userLocation, setUserLocation] = useState<any>(null);
-  const [locker, setLocker] = useState<any>(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [locker, setLocker] = useState(null);
 
   const [form, setForm] = useState({
     weight: 1,
@@ -83,7 +87,7 @@ export default function OrderDetailsPage() {
     } catch {}
   }
 
-  async function loadTracking(awbNumber: string) {
+  async function loadTracking(awbNumber) {
     try {
       const res = await fetch(`${API}/fancourier/tracking/${awbNumber}`);
       const data = await res.json();
@@ -94,7 +98,7 @@ export default function OrderDetailsPage() {
   }
 
   // ⭐ FIX CACHE BUSTER + RECENTER
-  async function loadLocker(address: string) {
+  async function loadLocker(address) {
     try {
       const res = await fetch(
         `${API}/fancourier/locker/nearest?address=${encodeURIComponent(address)}&t=${Date.now()}`
@@ -212,7 +216,7 @@ export default function OrderDetailsPage() {
       {/* PRODUSE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Produse</h2>
-        {order.items.map((item: any, i: number) => (
+        {order.items.map((item, i) => (
           <div key={i} className="text-gray-300 text-sm mb-1">
             • {item.product.name} — {item.quantity} buc — {item.price} lei
           </div>
@@ -299,7 +303,7 @@ export default function OrderDetailsPage() {
         <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
           <h2 className="text-xl font-semibold mb-3">Tracking</h2>
 
-          {tracking.map((t: any, i: number) => (
+          {tracking.map((t, i) => (
             <div key={i} className="border-l-2 border-[#00eaff] pl-3 mb-3">
               <p className="text-[#00eaff] font-semibold">{t.status}</p>
               <p className="text-gray-400 text-sm">{t.date}</p>
@@ -323,7 +327,7 @@ export default function OrderDetailsPage() {
                 ? [userLocation.lat, userLocation.lon]
                 : [47.1585, 27.6014]
             }
-            zoom={13}
+            zoom={15}
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -331,10 +335,12 @@ export default function OrderDetailsPage() {
             {/* ⭐ RECENTER MAP */}
             {locker && <RecenterMap lat={locker.lat} lon={locker.lon} />}
 
+            {/* MARKER USER */}
             {userLocation && (
               <Marker position={[userLocation.lat, userLocation.lon]} />
             )}
 
+            {/* MARKER LOCKER */}
             {locker && (
               <Marker position={[locker.lat, locker.lon]} />
             )}

@@ -36,13 +36,21 @@ export default function OrderDetailsPage() {
     loadShipment();
   }, [id]);
 
+  // ⭐ FIXUL — REÎNCARCĂ LOCKERUL CÂND SE SCHIMBĂ ADRESA
+  useEffect(() => {
+    if (order?.user?.address) {
+      const fullAddress = `${order.user.address}, ${order.user.city}, ${order.user.county}`;
+      loadLocker(fullAddress);
+    }
+  }, [order?.user?.address, order?.user?.city, order?.user?.county]);
+
   async function loadOrder() {
     try {
       const res = await fetch(`${API}/orders/${id}`, { credentials: "include" });
       const data = await res.json();
       setOrder(data);
 
-      // ⭐ PASUL 3 — încărcăm lockerul după adresă
+      // încărcare locker inițială
       if (data?.user?.address) {
         const fullAddress = `${data.user.address}, ${data.user.city}, ${data.user.county}`;
         loadLocker(fullAddress);
@@ -79,7 +87,7 @@ export default function OrderDetailsPage() {
     }
   }
 
-  // ⭐ PASUL 3 — funcția pentru locker (SINGURA MODIFICARE)
+  // ⭐ PASUL 3 — funcția pentru locker
   async function loadLocker(address: string) {
     try {
       const res = await fetch(
@@ -88,6 +96,8 @@ export default function OrderDetailsPage() {
 
       const data = await res.json();
 
+      console.log("RESPONSE:", data);
+      
       if (data.userLocation) {
         setUserLocation({
           lat: Number(data.userLocation.lat),
@@ -293,7 +303,7 @@ export default function OrderDetailsPage() {
         </div>
       )}
 
-      {/* ⭐ HARTĂ FANBOX DINAMICĂ (PASUL 3) */}
+      {/* ⭐ HARTĂ FANBOX DINAMICĂ */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
           <FiMapPin /> Locker FANbox

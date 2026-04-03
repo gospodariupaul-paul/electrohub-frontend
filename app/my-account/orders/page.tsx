@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FiPackage, FiFileText, FiTruck, FiXCircle } from "react-icons/fi";
 
 interface OrderItem {
   product: {
@@ -122,7 +121,7 @@ export default function OrdersPage() {
                 href={`/my-account/orders/${order.id}`}
                 className="bg-[#00eaff] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#00c7d6] transition flex items-center gap-2"
               >
-                <FiFileText /> Vezi detalii
+                Vezi detalii
               </Link>
             </div>
           </div>

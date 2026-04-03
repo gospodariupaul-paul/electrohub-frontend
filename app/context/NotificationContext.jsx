@@ -44,7 +44,7 @@ export function NotificationProvider({ children }) {
     }
   };
 
-  // 🔵 ÎNCARCĂ SETĂRILE
+  // 🔵 ÎNCARCĂ SETĂRILE — FIXAT COMPLET
   const loadSettings = async () => {
     try {
       const res = await fetch(`${API}/notifications/settings/me`, {
@@ -52,12 +52,22 @@ export function NotificationProvider({ children }) {
         cache: "no-store",
       });
 
-      if (!res.ok) return;
+      if (!res.ok) {
+        setSettings(null);
+        return;
+      }
 
-      const data = await res.json();
+      let data = null;
+      try {
+        data = await res.json(); // dacă răspunsul e gol, nu mai crăpă
+      } catch {
+        data = null;
+      }
+
       setSettings(data);
     } catch (err) {
       console.error("Eroare setări:", err);
+      setSettings(null);
     }
   };
 

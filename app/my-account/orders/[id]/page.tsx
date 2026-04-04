@@ -166,6 +166,31 @@ export default function OrderDetailsPage() {
     }
   }
 
+  // ⭐ FUNCȚIE CORECTĂ PENTRU DESCĂRCARE PDF
+  const downloadInvoice = async () => {
+    try {
+      const res = await fetch(`${API}/orders/${order.id}/invoice`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        alert("Eroare la descărcarea facturii");
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `factura-${order.id}.pdf`;
+      link.click();
+    } catch (e) {
+      console.error("Eroare descărcare PDF:", e);
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-20 text-gray-400">Se încarcă...</div>;
   }
@@ -198,11 +223,12 @@ export default function OrderDetailsPage() {
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
       <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 
+      {/* ⭐ BUTON PDF CORECT */}
       <button
-        onClick={() => window.open(`${API}/orders/${order.id}/invoice`, "_blank")}
+        onClick={downloadInvoice}
         className="mb-6 bg-white/10 px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition"
       >
-       📄 Descarcă factura PDF
+        📄 Descarcă factura PDF
       </button>
 
       {/* STATUS */}

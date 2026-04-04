@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation"; // ⭐ ADĂUGAT useRouter
 import dynamic from "next/dynamic";
 import { FiTruck, FiCopy, FiMapPin, FiPackage } from "react-icons/fi";
 
@@ -27,6 +27,7 @@ function RecenterMap({ lat, lon }) {
 }
 
 export default function OrderDetailsPage() {
+  const router = useRouter(); // ⭐ ADĂUGAT
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [awb, setAwb] = useState(null);
@@ -166,6 +167,15 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 text-white">
+
+      {/* ⭐ BUTON ÎNAPOI — SINGURA MODIFICARE DIN UI */}
+      <button
+        onClick={() => router.back()}
+        className="mb-6 bg-white/10 px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition"
+      >
+        ← Înapoi
+      </button>
+
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
       <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // ⭐ ADĂUGAT useRouter
+import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { FiTruck, FiCopy, FiMapPin, FiPackage } from "react-icons/fi";
 
@@ -27,7 +27,7 @@ function RecenterMap({ lat, lon }) {
 }
 
 export default function OrderDetailsPage() {
-  const router = useRouter(); // ⭐ ADĂUGAT
+  const router = useRouter();
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [awb, setAwb] = useState(null);
@@ -129,8 +129,11 @@ export default function OrderDetailsPage() {
     }
   }
 
+  // ⭐ FUNCȚIE generateAwb() CORECTĂ
   async function generateAwb() {
     try {
+      console.log("▶️ Trimit cerere AWB...");
+
       const res = await fetch(`${API}/fancourier/orders/${id}/awb`, {
         method: "POST",
         credentials: "include",
@@ -138,11 +141,28 @@ export default function OrderDetailsPage() {
         body: JSON.stringify(form),
       });
 
+      console.log("🔁 Răspuns AWB status:", res.status);
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("❌ Eroare răspuns AWB:", text);
+        alert("Nu s-a putut genera AWB. Verifică consola (F12 → Console).");
+        return;
+      }
+
       const data = await res.json();
+      console.log("✅ Răspuns AWB JSON:", data);
+
+      if (!data.awb) {
+        alert("Răspuns fără AWB. Vezi consola pentru detalii.");
+        return;
+      }
+
       setAwb(data.awb);
       loadTracking(data.awb);
     } catch (e) {
-      console.error("Eroare generare AWB:", e);
+      console.error("❌ Eroare generare AWB (catch):", e);
+      alert("A apărut o eroare la generarea AWB. Vezi consola.");
     }
   }
 
@@ -168,7 +188,6 @@ export default function OrderDetailsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 text-white">
 
-      {/* ⭐ BUTON ÎNAPOI — SINGURA MODIFICARE DIN UI */}
       <button
         onClick={() => router.back()}
         className="mb-6 bg-white/10 px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition"

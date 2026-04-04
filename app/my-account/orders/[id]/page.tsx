@@ -198,6 +198,13 @@ export default function OrderDetailsPage() {
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
       <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 
+      <button
+        onClick={() => window.open(`${API}/orders/${order.id}/invoice`, "_blank")}
+        className="mb-6 bg-white/10 px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition"
+      >
+       📄 Descarcă factura PDF
+      </button>
+
       {/* STATUS */}
       <div className="mb-6">
         <span className="px-4 py-2 rounded-lg bg-[#1e293b] text-[#00eaff] font-semibold capitalize">

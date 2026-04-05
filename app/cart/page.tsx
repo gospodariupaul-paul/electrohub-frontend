@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const [items, setItems] = useState<any[]>([]);
+  const [settings, setSettings] = useState<any>(null); // ⭐ ADĂUGAT
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -19,6 +20,12 @@ export default function CartPage() {
 
   useEffect(() => {
     loadCart();
+
+    // ⭐ ÎNCĂRCARE SETĂRI LIVRARE
+    axiosInstance
+      .get("/delivery-settings/me", { withCredentials: true })
+      .then((res) => setSettings(res.data))
+      .catch(() => setSettings(null));
   }, []);
 
   const handleDelete = async (productId: number) => {
@@ -111,6 +118,27 @@ export default function CartPage() {
 
       {items.length > 0 && (
         <div className="mt-10 p-4 bg-white/10 rounded-lg border border-white/20">
+
+          {/* ⭐ SECȚIUNE LIVRARE — ADĂUGATĂ */}
+          {settings && (
+            <div className="mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
+              <h3 className="text-lg font-semibold mb-2">Livrare</h3>
+
+              <p>Curier: <span className="text-[#00eaff]">{settings.preferredCourier}</span></p>
+              <p>Adresă: {settings.street} {settings.number}</p>
+              <p>{settings.city}, {settings.county}</p>
+              <p>Cod poștal: {settings.postalCode}</p>
+
+              {settings.easyboxId && (
+                <p>EasyBox: {settings.easyboxId}</p>
+              )}
+
+              {settings.callBefore && <p>• Sună înainte</p>}
+              {settings.noSaturday && <p>• Fără livrare sâmbăta</p>}
+              {settings.cashOnDelivery && <p>• Ramburs</p>}
+            </div>
+          )}
+
           <h2 className="text-xl font-bold mb-2">Total: {total} lei</h2>
 
           <button

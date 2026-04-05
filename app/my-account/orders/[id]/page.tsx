@@ -50,11 +50,11 @@ export default function OrderDetailsPage() {
   }, [id]);
 
   useEffect(() => {
-    if (order?.user?.address) {
-      const fullAddress = `${order.user.address}, ${order.user.city}, ${order.user.county}`;
+    if (order?.street && order?.city && order?.county) {
+      const fullAddress = `${order.street} ${order.number}, ${order.city}, ${order.county}`;
       loadLocker(fullAddress);
     }
-  }, [order?.user?.address, order?.user?.city, order?.user?.county]);
+  }, [order?.street, order?.city, order?.county]);
 
   async function loadOrder() {
     try {
@@ -62,8 +62,8 @@ export default function OrderDetailsPage() {
       const data = await res.json();
       setOrder(data);
 
-      if (data?.user?.address) {
-        const fullAddress = `${data.user.address}, ${data.user.city}, ${data.user.county}`;
+      if (data?.street && data?.city && data?.county) {
+        const fullAddress = `${data.street} ${data.number}, ${data.city}, ${data.county}`;
         loadLocker(fullAddress);
       }
 
@@ -107,8 +107,6 @@ export default function OrderDetailsPage() {
 
       const data = await res.json();
 
-      console.log("RESPONSE:", data);
-      
       if (data.userLocation) {
         setUserLocation({
           lat: Number(data.userLocation.lat),
@@ -132,8 +130,6 @@ export default function OrderDetailsPage() {
   // ⭐ FUNCȚIE generateAwb() CORECTĂ
   async function generateAwb() {
     try {
-      console.log("▶️ Trimit cerere AWB...");
-
       const res = await fetch(`${API}/fancourier/orders/${id}/awb`, {
         method: "POST",
         credentials: "include",
@@ -141,32 +137,29 @@ export default function OrderDetailsPage() {
         body: JSON.stringify(form),
       });
 
-      console.log("🔁 Răspuns AWB status:", res.status);
-
       if (!res.ok) {
         const text = await res.text();
         console.error("❌ Eroare răspuns AWB:", text);
-        alert("Nu s-a putut genera AWB. Verifică consola (F12 → Console).");
+        alert("Nu s-a putut genera AWB.");
         return;
       }
 
       const data = await res.json();
-      console.log("✅ Răspuns AWB JSON:", data);
 
       if (!data.awb) {
-        alert("Răspuns fără AWB. Vezi consola pentru detalii.");
+        alert("Răspuns fără AWB.");
         return;
       }
 
       setAwb(data.awb);
       loadTracking(data.awb);
     } catch (e) {
-      console.error("❌ Eroare generare AWB (catch):", e);
-      alert("A apărut o eroare la generarea AWB. Vezi consola.");
+      console.error("❌ Eroare generare AWB:", e);
+      alert("A apărut o eroare la generarea AWB.");
     }
   }
 
-  // ⭐ FUNCȚIE CORECTĂ PENTRU DESCĂRCARE PDF
+  // ⭐ DESCĂRCARE PDF
   const downloadInvoice = async () => {
     try {
       const res = await fetch(`${API}/orders/${order.id}/invoice`, {
@@ -223,7 +216,7 @@ export default function OrderDetailsPage() {
       <h1 className="text-3xl font-bold mb-2">Comanda #{order.id}</h1>
       <p className="text-gray-400 mb-6">Plasată la: {createdAt}</p>
 
-      {/* ⭐ BUTON PDF CORECT */}
+      {/* ⭐ BUTON PDF */}
       <button
         onClick={downloadInvoice}
         className="mb-6 bg-white/10 px-4 py-2 rounded-lg text-sm hover:bg-white/20 transition"
@@ -275,6 +268,42 @@ export default function OrderDetailsPage() {
         </div>
       </div>
 
+      {/* ⭐ DETALII LIVRARE — CORECT */}
+      <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
+        <h2 className="text-xl font-semibold mb-3">Adresă livrare</h2>
+
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Curier:</span>{" "}
+          {order.courier || "Nespecificat"}
+        </p>
+
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Adresă:</span>{" "}
+          {order.street} {order.number}
+        </p>
+
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Localitate:</span>{" "}
+          {order.city}, {order.county}
+        </p>
+
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Cod poștal:</span>{" "}
+          {order.postalCode}
+        </p>
+
+        {order.easyboxId && (
+          <p className="text-gray-300">
+            <span className="font-semibold text-white">EasyBox:</span>{" "}
+            {order.easyboxId}
+          </p>
+        )}
+
+        {order.callBefore && <p className="text-gray-300">• Sună înainte</p>}
+        {order.noSaturday && <p className="text-gray-300">• Fără livrare sâmbăta</p>}
+        {order.cashOnDelivery && <p className="text-gray-300">• Ramburs</p>}
+      </div>
+
       {/* PRODUSE */}
       <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
         <h2 className="text-xl font-semibold mb-3">Produse</h2>
@@ -284,15 +313,6 @@ export default function OrderDetailsPage() {
           </div>
         ))}
         <p className="font-bold text-lg mt-3">Total: {order.total} lei</p>
-      </div>
-
-      {/* ADRESĂ LIVRARE */}
-      <div className="bg-[#0f172a] p-5 rounded-xl border border-white/10 mb-6">
-        <h2 className="text-xl font-semibold mb-3">Adresă livrare</h2>
-        <p>{order.user.name}</p>
-        <p>{order.user.address || "Adresă necompletată"}</p>
-        <p>{order.user.city || ""} {order.user.county || ""}</p>
-        <p>{order.user.phone || ""}</p>
       </div>
 
       {/* FORMULAR AWB */}

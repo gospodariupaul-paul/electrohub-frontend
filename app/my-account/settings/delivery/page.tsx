@@ -26,16 +26,44 @@ export default function DeliverySettings() {
     axiosInstance
       .get("/delivery-settings/me", { withCredentials: true })
       .then((res) => {
-        setForm((prev) => ({ ...prev, ...res.data }));
+        const data = res.data;
+
+        setForm({
+          preferredCourier: data.preferredCourier || "sameday",
+          preferredMethod: data.preferredMethod || "address",
+          street: data.street || "",
+          number: data.number || "",
+          city: data.city || "",
+          county: data.county || "",
+          postalCode: data.postalCode || "",
+          callBefore: data.callBefore ?? false,
+          noSaturday: data.noSaturday ?? false,
+          cashOnDelivery: data.cashOnDelivery ?? false,
+          easyboxId: data.easyboxId || "",
+        });
       })
       .catch((err) => console.error("Eroare la încărcare:", err));
   }, []);
 
   const handleSave = async () => {
     try {
-      await axiosInstance.patch("/delivery-settings/me", form, {
-        withCredentials: true,
-      });
+      await axiosInstance.patch(
+        "/delivery-settings/me",
+        {
+          preferredCourier: form.preferredCourier,
+          preferredMethod: form.preferredMethod,
+          street: form.street,
+          number: form.number,
+          city: form.city,
+          county: form.county,
+          postalCode: form.postalCode,
+          callBefore: form.callBefore,
+          noSaturday: form.noSaturday,
+          cashOnDelivery: form.cashOnDelivery,
+          easyboxId: form.easyboxId,
+        },
+        { withCredentials: true }
+      );
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);

@@ -342,14 +342,16 @@ export default function HomePage() {
                   </div>
                 </Link>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <p className="text-sm font-semibold">Vinde un produs</p>
-                  <p className="text-[11px] text-white/50">Publică un anunț rapid</p>
+                 {/* RECOMANDATE PENTRU TINE */}
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-cyan-400 transition">
+                  <p className="text-sm font-semibold">Recomandate pentru tine</p>
+                  <p className="text-[11px] text-white/50">Produse alese special pentru tine</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                  <p className="text-sm font-semibold">Categorii populare</p>
-                  <p className="text-[11px] text-white/50">Vezi topul</p>
+                 {/* OFERTE ȘI NOUTĂȚI */}
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-emerald-400 transition">
+                  <p className="text-sm font-semibold">Oferte și noutăți</p>
+                  <p className="text-[11px] text-white/50">Promoții active și produse noi</p>
                 </div>
 
               </div>

@@ -334,7 +334,7 @@ export default function HomePage() {
                   </div>
                 </Link>
 
-                {/* UTILIZATORI ONLINE */}
+                 {/* UTILIZATORI ONLINE */}
                 <Link href="/utilizatori-online">
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-emerald-400 transition">
                     <p className="text-xs text-white/50">Utilizatori online</p>
@@ -342,17 +342,21 @@ export default function HomePage() {
                   </div>
                 </Link>
 
-                 {/* RECOMANDATE PENTRU TINE */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-cyan-400 transition">
-                  <p className="text-sm font-semibold">Recomandate pentru tine</p>
-                  <p className="text-[11px] text-white/50">Produse alese special pentru tine</p>
-                </div>
+                  {/* RECOMANDATE PENTRU TINE */}
+                <Link href="/recommended">
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-cyan-400 transition">
+                    <p className="text-sm font-semibold">Recomandate pentru tine</p>
+                    <p className="text-[11px] text-white/50">Produse alese special pentru tine</p>
+                  </div>
+                </Link>
 
-                 {/* OFERTE ȘI NOUTĂȚI */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-emerald-400 transition">
-                  <p className="text-sm font-semibold">Oferte și noutăți</p>
-                  <p className="text-[11px] text-white/50">Promoții active și produse noi</p>
-                </div>
+                  {/* OFERTE ȘI NOUTĂȚI */}
+                <Link href="/offers">
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-emerald-400 transition">
+                    <p className="text-sm font-semibold">Oferte și noutăți</p>
+                    <p className="text-[11px] text-white/50">Promoții active și produse noi</p>
+                  </div>
+                </Link>
 
               </div>
 

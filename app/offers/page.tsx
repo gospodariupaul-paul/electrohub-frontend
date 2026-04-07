@@ -13,10 +13,11 @@ export default function OffersPage() {
     if (!API_URL) return;
 
     axios
-      .get(`${API_URL}/products`) // aici poți filtra doar produsele cu reducere
+      .get(`${API_URL}/products`)
       .then((res) => {
-        const filtered = res.data.filter((p: any) => p.discount || p.isOffer);
-        setOffers(filtered);
+        // 🔥 Afișăm ultimele 6 produse ca noutăți
+        const latest = res.data.slice(-6).reverse();
+        setOffers(latest);
       })
       .catch(() => {});
   }, []);

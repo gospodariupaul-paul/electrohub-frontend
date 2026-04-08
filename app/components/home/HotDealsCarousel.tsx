@@ -12,10 +12,10 @@ import { useEffect, useState } from "react";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface Product {
-  id: string;
-  title: string;
+  id: number;
+  name: string;
   price: number;
-  image: string;
+  images: string[];
   tag?: string;
 }
 
@@ -68,9 +68,11 @@ export default function HotDealsCarousel() {
           >
             <Link href={`/product/${p.id}`}>
               <div className="w-full h-full flex flex-col">
+                
+                {/* 🔥 IMAGINEA CORECTĂ */}
                 <img
-                  src={p.image}
-                  alt={p.title}
+                  src={p.images?.[0] ?? "/no-image.png"}
+                  alt={p.name}
                   className="w-full h-40 object-cover"
                 />
 
@@ -81,7 +83,7 @@ export default function HotDealsCarousel() {
                     </span>
                   )}
 
-                  <p className="font-semibold text-white">{p.title}</p>
+                  <p className="font-semibold text-white">{p.name}</p>
 
                   <p className="text-cyan-400 font-bold text-lg">
                     {p.price} lei

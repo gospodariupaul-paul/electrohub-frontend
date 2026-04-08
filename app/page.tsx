@@ -8,6 +8,9 @@ import { FiMessageCircle, FiBell } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useNotifications } from "./context/NotificationContext"; // 🔥 ADĂUGAT
 
+// 🔥 IMPORT CARUSEL 3D
+import HotDealsCarousel from "@/components/home/HotDealsCarousel";
+
 Link.defaultProps = { prefetch: false };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -402,7 +405,7 @@ export default function HomePage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Top Tech Hot Deals</h2>
                 <span className="text-xs text-white/50">
-                  Carusel 3D (placeholder)
+                  <HotDealsCarousel />
                 </span>
               </div>
 

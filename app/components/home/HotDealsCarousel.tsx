@@ -63,40 +63,37 @@ export default function HotDealsCarousel() {
         {products.map((p) => (
           <SwiperSlide
             key={p.id}
-            className="w-[260px] h-[340px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl"
+            className="w-[300px] h-[300px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col"
           >
-            <Link href={`/product/${p.id}`}>
-              <div className="w-full h-full flex flex-col">
+            <Link href={`/product/${p.id}`} className="flex flex-col h-full">
 
-                {/* 🔥 IMAGINEA CORECTĂ, COMPLET VIZIBILĂ */}
+              {/* 🔥 IMAGINE PĂTRATĂ FULL-COVER */}
+              <div className="w-full h-[300px]">
                 <img
                   src={p.images?.[0] ?? "/no-image.png"}
                   alt={p.name}
-                  className="w-full h-40 object-contain bg-black rounded-t-xl"
+                  className="w-full h-full object-cover rounded-xl"
                 />
-
-                <div className="p-4 flex flex-col gap-2">
-                  {p.tag && (
-                    <span className="text-xs text-cyan-300 font-semibold">
-                      {p.tag}
-                    </span>
-                  )}
-
-                  <p className="font-semibold text-white">{p.name}</p>
-
-                  <p className="text-cyan-400 font-bold text-lg">
-                    {p.price} lei
-                  </p>
-
-                  <button className="mt-auto px-3 py-2 bg-cyan-600/30 border border-cyan-400/40 rounded-lg text-sm hover:bg-cyan-600/50 transition">
-                    Adaugă în coș
-                  </button>
-                </div>
               </div>
+
             </Link>
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* 🔥 TEXT SUB CARUSEL */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 max-w-5xl mx-auto">
+        {products.map((p) => (
+          <Link
+            key={p.id}
+            href={`/product/${p.id}`}
+            className="text-center bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 transition"
+          >
+            <p className="font-semibold text-white">{p.name}</p>
+            <p className="text-cyan-400 font-bold text-lg">{p.price} lei</p>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

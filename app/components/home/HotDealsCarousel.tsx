@@ -28,7 +28,6 @@ export default function HotDealsCarousel() {
     axios
       .get(`${API_URL}/products`)
       .then((res) => {
-        // 🔥 Selectăm 6 produse pentru carusel
         const items = res.data.slice(0, 6);
         setProducts(items);
       })
@@ -68,12 +67,12 @@ export default function HotDealsCarousel() {
           >
             <Link href={`/product/${p.id}`}>
               <div className="w-full h-full flex flex-col">
-                
-                {/* 🔥 IMAGINEA CORECTĂ */}
+
+                {/* 🔥 IMAGINEA CORECTĂ, COMPLET VIZIBILĂ */}
                 <img
                   src={p.images?.[0] ?? "/no-image.png"}
                   alt={p.name}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-40 object-contain bg-black rounded-t-xl"
                 />
 
                 <div className="p-4 flex flex-col gap-2">

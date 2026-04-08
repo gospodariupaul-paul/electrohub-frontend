@@ -62,12 +62,12 @@ export default function HotDealsCarousel() {
         {products.map((p) => (
           <SwiperSlide
             key={p.id}
-            className="w-[260px] h-[340px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col"
+            className="w-[240px] h-[380px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col"
           >
             <Link href={`/product/${p.id}`} className="flex flex-col h-full">
 
               {/* 🔥 IMAGINE PĂTRATĂ FULL-COVER */}
-              <div className="w-full h-[260px]">
+              <div className="w-full h-[240px]">
                 <img
                   src={p.images?.[0] ?? "/no-image.png"}
                   alt={p.name}
@@ -76,7 +76,7 @@ export default function HotDealsCarousel() {
               </div>
 
               {/* 🔥 NUME + PREȚ ÎN CARUSEL */}
-              <div className="p-3 text-center flex flex-col gap-1">
+              <div className="p-4 text-center flex flex-col gap-2">
                 <p className="font-semibold text-white text-sm truncate">
                   {p.name}
                 </p>

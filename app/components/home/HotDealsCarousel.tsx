@@ -44,9 +44,9 @@ export default function HotDealsCarousel() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="w-[240px] h-[470px] bg-white/5 border border-white/10 rounded-xl animate-pulse"
+            className="w-[260px] h-[500px] bg-white/5 border border-white/10 rounded-xl animate-pulse"
           >
-            <div className="w-full h-[260px] bg-white/10 rounded-t-xl" />
+            <div className="w-full h-[280px] bg-white/10 rounded-t-xl" />
             <div className="p-4 space-y-3">
               <div className="h-4 bg-white/10 rounded" />
               <div className="h-4 bg-white/10 rounded w-1/2" />
@@ -60,38 +60,43 @@ export default function HotDealsCarousel() {
 
   return (
     <div className="w-full py-10">
+      <audio id="hoverSound" src="/sounds/hover.mp3" preload="auto" />
+      <audio id="clickSound" src="/sounds/click.mp3" preload="auto" />
+
       <Swiper
         effect={"coverflow"}
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={"auto"}
-        autoplay={{ delay: 2200 }}
+        autoplay={{ delay: 2000 }}
         speed={900}
         coverflowEffect={{
           rotate: 35,
           stretch: 0,
-          depth: 180,
-          modifier: 2.2,
+          depth: 200,
+          modifier: 2.4,
           slideShadows: true,
         }}
         modules={[EffectCoverflow, Autoplay]}
-        className="w-full max-w-5xl mx-auto"
+        className="w-full max-w-6xl mx-auto"
       >
         {products.map((p) => (
           <SwiperSlide
             key={p.id}
             className="
-              w-[240px] h-[470px] 
+              w-[260px] h-[500px] 
               bg-white/5 border border-white/10 
               rounded-xl overflow-hidden backdrop-blur-md shadow-xl 
               flex flex-col relative
-              transition-all duration-300 
-              hover:scale-[1.05] hover:shadow-cyan-500/40 hover:border-cyan-400/40
+              transition-all duration-500 
+              hover:scale-[1.08] hover:rotate-[1.5deg]
+              hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]
             "
+            onMouseEnter={() => document.getElementById("hoverSound")?.play()}
           >
 
             {/* ⚡ Efect electric pe margini la hover */}
-            <div className="absolute inset-0 rounded-xl pointer-events-none opacity-0 hover:opacity-60 transition-all duration-500 bg-[conic-gradient(from_0deg,cyan,transparent,cyan)] animate-spin-slow" />
+            <div className="absolute inset-0 rounded-xl pointer-events-none opacity-0 hover:opacity-70 transition-all duration-700 bg-[conic-gradient(from_0deg,cyan,transparent,cyan)] animate-spin-slow" />
 
             <Link href={`/product/${p.id}`} className="flex flex-col h-full relative z-10">
 
@@ -102,29 +107,32 @@ export default function HotDealsCarousel() {
                 </span>
               )}
 
-              {/* Imagine */}
-              <div className="w-full h-[260px] relative">
+              {/* Imagine cu reflexii animate */}
+              <div className="w-full h-[280px] relative overflow-hidden">
                 <img
                   src={p.images?.[0] ?? "/no-image.png"}
                   alt={p.name}
                   className="w-full h-full object-cover rounded-t-xl"
                 />
 
-                {/* Electric pulse */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(0,255,255,0.25)_0%,transparent_70%)] animate-ping opacity-20" />
+                {/* Reflexie animată */}
+                <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.25),transparent)] animate-reflect" />
+
+                {/* Particule electrice TURBO */}
+                <div className="absolute inset-0 pointer-events-none animate-electric-particles" />
               </div>
 
               {/* Text + Preț + Rating + Buton */}
-              <div className="p-4 text-center flex flex-col gap-2">
+              <div className="p-4 text-center flex flex-col gap-3">
 
                 {/* Glow neon pe text */}
-                <p className="font-semibold text-white text-sm leading-tight line-clamp-2 drop-shadow-[0_0_6px_rgba(0,255,255,0.6)]">
+                <p className="font-semibold text-white text-sm leading-tight line-clamp-2 drop-shadow-[0_0_8px_rgba(0,255,255,0.7)]">
                   {p.name}
                 </p>
 
                 {/* 🔄 Preț cu animație flip/slide */}
                 <div className="flex justify-center items-center gap-2">
-                  <p className="text-cyan-400 font-bold text-lg tracking-wide animate-flip">
+                  <p className="text-cyan-400 font-bold text-xl tracking-wide animate-flip">
                     {p.price} lei
                   </p>
 
@@ -142,17 +150,30 @@ export default function HotDealsCarousel() {
                   ))}
                 </div>
 
-                {/* 🌊 Buton cu animație ripple */}
-                <button className="
-                  mt-2 px-4 py-2 
-                  bg-cyan-600/30 border border-cyan-400/40 
-                  rounded-lg text-sm text-cyan-300 
-                  relative overflow-hidden
-                  hover:bg-cyan-600/60 hover:border-cyan-300 
-                  hover:shadow-[0_0_12px_rgba(0,255,255,0.8)]
-                  transition-all duration-300
-                  ripple
-                ">
+                {/* 🌊 Buton cu animație ripple + glow electric la click */}
+                <button
+                  className="
+                    mt-2 px-4 py-2 
+                    bg-cyan-600/30 border border-cyan-400/40 
+                    rounded-lg text-sm text-cyan-300 
+                    relative overflow-hidden
+                    hover:bg-cyan-600/60 hover:border-cyan-300 
+                    hover:shadow-[0_0_15px_rgba(0,255,255,0.9)]
+                    transition-all duration-300
+                    active:shadow-[0_0_25px_rgba(0,255,255,1)]
+                  "
+                  onClick={(e) => {
+                    document.getElementById("clickSound")?.play();
+
+                    const ripple = document.createElement("span");
+                    ripple.className =
+                      "absolute w-20 h-20 bg-cyan-400/40 rounded-full animate-ripple";
+                    ripple.style.left = `${e.nativeEvent.offsetX - 40}px`;
+                    ripple.style.top = `${e.nativeEvent.offsetY - 40}px`;
+                    e.currentTarget.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                  }}
+                >
                   Adaugă în coș
                 </button>
 

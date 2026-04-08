@@ -16,10 +16,12 @@ interface Product {
   name: string;
   price: number;
   images: string[];
+  tag?: string; // Nou, Hot Deal, Best Seller
 }
 
 export default function HotDealsCarousel() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!API_URL) return;
@@ -30,14 +32,26 @@ export default function HotDealsCarousel() {
         const items = res.data.slice(0, 6);
         setProducts(items);
       })
-      .catch(() => {});
+      .finally(() => setLoading(false));
   }, []);
 
-  if (products.length === 0) {
+  // 🔥 Skeleton Loading Premium
+  if (loading) {
     return (
-      <p className="text-white/40 text-center py-10">
-        Se încarcă ofertele...
-      </p>
+      <div className="w-full py-10 flex justify-center gap-6">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="w-[240px] h-[380px] bg-white/5 border border-white/10 rounded-xl animate-pulse"
+          >
+            <div className="w-full h-[240px] bg-white/10 rounded-t-xl" />
+            <div className="p-4 space-y-3">
+              <div className="h-4 bg-white/10 rounded" />
+              <div className="h-4 bg-white/10 rounded w-1/2" />
+            </div>
+          </div>
+        ))}
+      </div>
     );
   }
 
@@ -62,26 +76,36 @@ export default function HotDealsCarousel() {
         {products.map((p) => (
           <SwiperSlide
             key={p.id}
-            className="w-[240px] h-[380px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col"
+            className="w-[240px] h-[380px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col transition-all duration-300 hover:scale-[1.04] hover:shadow-cyan-500/40 hover:border-cyan-400/40"
           >
             <Link href={`/product/${p.id}`} className="flex flex-col h-full">
 
+              {/* 🔥 BADGE DINAMIC */}
+              {p.tag && (
+                <span className="absolute z-10 top-2 left-2 bg-cyan-500 text-black text-xs font-bold px-2 py-1 rounded">
+                  {p.tag}
+                </span>
+              )}
+
               {/* 🔥 IMAGINE PĂTRATĂ FULL-COVER */}
-              <div className="w-full h-[240px]">
+              <div className="w-full h-[240px] relative">
                 <img
                   src={p.images?.[0] ?? "/no-image.png"}
                   alt={p.name}
                   className="w-full h-full object-cover rounded-t-xl"
                 />
+
+                {/* Efect electric subtil */}
+                <div className="absolute inset-0 opacity-0 hover:opacity-20 transition bg-[radial-gradient(circle,rgba(0,255,255,0.4)_0%,transparent_70%)]" />
               </div>
 
-              {/* 🔥 NUME + PREȚ ÎN CARUSEL */}
+              {/* 🔥 NUME + PREȚ */}
               <div className="p-4 text-center flex flex-col gap-2">
-                <p className="font-semibold text-white text-sm truncate">
+                <p className="font-semibold text-white text-sm leading-tight line-clamp-2">
                   {p.name}
                 </p>
 
-                <p className="text-cyan-400 font-bold text-lg">
+                <p className="text-cyan-400 font-bold text-lg tracking-wide">
                   {p.price} lei
                 </p>
               </div>

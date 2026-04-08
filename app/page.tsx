@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useNotifications } from "./context/NotificationContext"; // 🔥 ADĂUGAT
 
 // 🔥 IMPORT CARUSEL 3D
-import HotDealsCarousel from "@/components/home/HotDealsCarousel";
+import HotDealsCarousel from "./components/home/HotDealsCarousel";
 
 Link.defaultProps = { prefetch: false };
 

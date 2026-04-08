@@ -16,7 +16,6 @@ interface Product {
   name: string;
   price: number;
   images: string[];
-  tag?: string;
 }
 
 export default function HotDealsCarousel() {
@@ -63,37 +62,34 @@ export default function HotDealsCarousel() {
         {products.map((p) => (
           <SwiperSlide
             key={p.id}
-            className="w-[300px] h-[300px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col"
+            className="w-[260px] h-[340px] bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-xl flex flex-col"
           >
             <Link href={`/product/${p.id}`} className="flex flex-col h-full">
 
               {/* 🔥 IMAGINE PĂTRATĂ FULL-COVER */}
-              <div className="w-full h-[300px]">
+              <div className="w-full h-[260px]">
                 <img
                   src={p.images?.[0] ?? "/no-image.png"}
                   alt={p.name}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full h-full object-cover rounded-t-xl"
                 />
+              </div>
+
+              {/* 🔥 NUME + PREȚ ÎN CARUSEL */}
+              <div className="p-3 text-center flex flex-col gap-1">
+                <p className="font-semibold text-white text-sm truncate">
+                  {p.name}
+                </p>
+
+                <p className="text-cyan-400 font-bold text-lg">
+                  {p.price} lei
+                </p>
               </div>
 
             </Link>
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* 🔥 TEXT SUB CARUSEL */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 max-w-5xl mx-auto">
-        {products.map((p) => (
-          <Link
-            key={p.id}
-            href={`/product/${p.id}`}
-            className="text-center bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400 transition"
-          >
-            <p className="font-semibold text-white">{p.name}</p>
-            <p className="text-cyan-400 font-bold text-lg">{p.price} lei</p>
-          </Link>
-        ))}
-      </div>
     </div>
   );
 }

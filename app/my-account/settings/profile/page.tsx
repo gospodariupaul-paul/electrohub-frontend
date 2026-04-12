@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/axios";
 import { useUser } from "@/app/context/UserContext";
+import { useRouter } from "next/navigation";
 
 export default function EditProfilePage() {
   const { user, reloadUser } = useUser();
+  const router = useRouter();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,11 +76,19 @@ export default function EditProfilePage() {
 
       {/* 🔙 BUTON ÎNAPOI */}
       <a
-        href="/my-account/user-profile"
+        href="/my-account/profile"
         className="inline-block mb-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
       >
         ← Înapoi la profil
       </a>
+
+      {/* 🔥 AICI ESTE BUTONUL „PLĂȚI” MODIFICAT */}
+      <button
+        onClick={() => router.push("/my-account/settings/payments")}
+        className="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-black font-semibold rounded-lg"
+      >
+        Plăți
+      </button>
 
       <p className="text-gray-400 mb-6">
         Modifică informațiile personale ale contului tău.

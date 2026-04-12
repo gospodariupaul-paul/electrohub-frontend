@@ -82,14 +82,6 @@ export default function EditProfilePage() {
         ← Înapoi la profil
       </a>
 
-      {/* 🔥 AICI ESTE BUTONUL „PLĂȚI” MODIFICAT */}
-      <button
-        onClick={() => router.push("/my-account/settings/payments")}
-        className="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-black font-semibold rounded-lg"
-      >
-        Plăți
-      </button>
-
       <p className="text-gray-400 mb-6">
         Modifică informațiile personale ale contului tău.
       </p>

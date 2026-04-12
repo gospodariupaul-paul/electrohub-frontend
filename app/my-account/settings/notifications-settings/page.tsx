@@ -1,6 +1,6 @@
 "use client";
 
-import { BellIcon } from "@heroicons/react/24/outline";
+import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,11 @@ export default function NotificationSettings() {
   const router = useRouter();
 
   const [emailNotif, setEmailNotif] = useState(false);
+  const [pushNotif, setPushNotif] = useState(false);
+  const [productAlerts, setProductAlerts] = useState(false);
   const [chatNotif, setChatNotif] = useState(false);
+  const [priceAlerts, setPriceAlerts] = useState(false);
+
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -21,10 +25,11 @@ export default function NotificationSettings() {
           withCredentials: true,
         });
 
-        // DTO fields from backend:
-        // email_notifications, message_alerts
         setEmailNotif(res.data.email_notifications ?? false);
+        setPushNotif(res.data.push_notifications ?? false);
+        setProductAlerts(res.data.product_alerts ?? false);
         setChatNotif(res.data.message_alerts ?? false);
+        setPriceAlerts(res.data.price_alerts ?? false);
 
       } catch (err) {
         console.error("Eroare la încărcarea setărilor:", err);
@@ -43,7 +48,10 @@ export default function NotificationSettings() {
         "/notifications/settings",
         {
           email_notifications: emailNotif,
+          push_notifications: pushNotif,
+          product_alerts: productAlerts,
           message_alerts: chatNotif,
+          price_alerts: priceAlerts,
         },
         { withCredentials: true }
       );
@@ -69,53 +77,104 @@ export default function NotificationSettings() {
       {/* Back button */}
       <button
         onClick={() => router.push("/my-acount/settings")}
-        className="text-[#00eaff] hover:underline mb-6 flex items-center gap-2"
+        className="flex items-center gap-2 text-[#00eaff] hover:text-[#00c7d1] transition mb-6"
       >
-        ← Înapoi la setări
+        <ArrowLeftIcon className="w-5 h-5" />
+        Înapoi la setări
       </button>
 
-      <h1 className="text-2xl font-bold flex items-center gap-2 mb-6">
-        <BellIcon className="w-6 h-6 text-[#00eaff]" />
-        Notificări
-      </h1>
+      {/* Card */}
+      <div className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-6 shadow-lg">
 
-      <div className="space-y-6">
+        {/* Title */}
+        <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
+          <BellIcon className="w-8 h-8 text-[#00eaff]" />
+          Notificări
+        </h1>
 
-        {/* EMAIL */}
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
-            type="checkbox"
+        <p className="text-gray-400 mb-8">
+          Controlează modul în care primești notificări despre activitatea contului tău.
+        </p>
+
+        <div className="space-y-8">
+
+          {/* EMAIL */}
+          <SettingToggle
+            title="Notificări prin email"
+            description="Primești emailuri despre activitatea contului."
             checked={emailNotif}
             onChange={() => setEmailNotif(!emailNotif)}
-            className="w-5 h-5"
           />
-          Notificări prin email
-        </label>
 
-        {/* CHAT */}
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
-            type="checkbox"
+          {/* PUSH */}
+          <SettingToggle
+            title="Notificări push"
+            description="Primești notificări direct pe dispozitiv."
+            checked={pushNotif}
+            onChange={() => setPushNotif(!pushNotif)}
+          />
+
+          {/* PRODUCT ALERTS */}
+          <SettingToggle
+            title="Alerte produse"
+            description="Primești notificări când apar produse noi sau actualizări."
+            checked={productAlerts}
+            onChange={() => setProductAlerts(!productAlerts)}
+          />
+
+          {/* CHAT */}
+          <SettingToggle
+            title="Notificări pentru mesaje / chat"
+            description="Primești notificări când cineva îți trimite un mesaj."
             checked={chatNotif}
             onChange={() => setChatNotif(!chatNotif)}
-            className="w-5 h-5"
           />
-          Notificări pentru mesaje / chat
-        </label>
 
-        <button
-          onClick={handleSave}
-          className="px-6 py-2 bg-[#00eaff] text-black rounded hover:bg-[#00c7d1] transition"
-        >
-          Salvează notificările
-        </button>
+          {/* PRICE ALERTS */}
+          <SettingToggle
+            title="Alerte de preț"
+            description="Primești notificări când prețurile produselor scad."
+            checked={priceAlerts}
+            onChange={() => setPriceAlerts(!priceAlerts)}
+          />
 
-        {saved && (
-          <p className="text-green-400 mt-3">
-            ✔ Setările au fost salvate cu succes!
-          </p>
-        )}
+          {/* Save button */}
+          <button
+            onClick={handleSave}
+            className="w-full mt-6 py-3 bg-[#00eaff] text-black font-semibold rounded-lg hover:bg-[#00c7d1] transition"
+          >
+            Salvează notificările
+          </button>
+
+          {saved && (
+            <p className="text-green-400 mt-3 text-center">
+              ✔ Setările au fost salvate cu succes!
+            </p>
+          )}
+        </div>
       </div>
+    </div>
+  );
+}
+
+/* Reusable toggle component */
+function SettingToggle({ title, description, checked, onChange }) {
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-lg font-medium">{title}</p>
+        <p className="text-gray-400 text-sm">{description}</p>
+      </div>
+
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          className="sr-only peer"
+        />
+        <div className="w-12 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-[#00eaff] rounded-full peer peer-checked:bg-[#00eaff] transition"></div>
+      </label>
     </div>
   );
 }

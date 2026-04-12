@@ -241,8 +241,9 @@ useEffect(() => {
            <SidebarItem label="Comenzi" />
           </Link>
 
-          <SidebarItem label="Plăți" />
-
+          <Link href="/my-account/settings/payments" className="block">
+           <SidebarItem label="Plăți" />
+          </Link>
 
           <Link href="/my-account/ratinguri" className="relative block">
             <SidebarItem label="Ratinguri" />

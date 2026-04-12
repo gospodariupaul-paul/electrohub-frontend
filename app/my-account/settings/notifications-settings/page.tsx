@@ -76,7 +76,7 @@ export default function NotificationSettings() {
 
       {/* Back button */}
       <button
-        onClick={() => router.push("/my-acount/settings")}
+        onClick={() => router.push("/my-account/settings")}
         className="flex items-center gap-2 text-[#00eaff] hover:text-[#00c7d1] transition mb-6"
       >
         <ArrowLeftIcon className="w-5 h-5" />

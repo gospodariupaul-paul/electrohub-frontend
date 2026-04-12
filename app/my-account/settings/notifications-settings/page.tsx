@@ -21,8 +21,11 @@ export default function NotificationSettings() {
           withCredentials: true,
         });
 
-        setEmailNotif(res.data.emailNotifications);
-        setChatNotif(res.data.chatNotifications);
+        // DTO fields from backend:
+        // email_notifications, message_alerts
+        setEmailNotif(res.data.email_notifications ?? false);
+        setChatNotif(res.data.message_alerts ?? false);
+
       } catch (err) {
         console.error("Eroare la încărcarea setărilor:", err);
       } finally {
@@ -33,13 +36,14 @@ export default function NotificationSettings() {
     loadSettings();
   }, []);
 
+  // Save settings
   const handleSave = async () => {
     try {
       await axiosInstance.post(
         "/notifications/settings",
         {
-          emailNotifications: emailNotif,
-          chatNotifications: chatNotif,
+          email_notifications: emailNotif,
+          message_alerts: chatNotif,
         },
         { withCredentials: true }
       );
@@ -47,7 +51,7 @@ export default function NotificationSettings() {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
-      console.error("Eroare la salvarea notificărilor:", err);
+      console.error("Eroare la salvarea notificărilor:", err.response?.data || err);
     }
   };
 

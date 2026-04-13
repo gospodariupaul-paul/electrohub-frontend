@@ -12,7 +12,7 @@ export default function LogoutPage() {
     const doLogout = async () => {
       try {
         // Trimitem logout la backend ca să marcheze userul OFFLINE
-        await fetch("https://electrohub-backend-production.up.railway.app/auth/logout", {
+        await fetch("https://electrohub-backend-3q94.onrender.com/auth/logout", {
           method: "POST",
           credentials: "include",
         });

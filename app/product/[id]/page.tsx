@@ -114,7 +114,9 @@ export default function Page() {
 
   // ⭐⭐⭐ FUNCTIA FAVORITE — ADAUGATĂ FĂRĂ SĂ ATING ALTCEVA
   const toggleFavorite = async () => {
-    if (!user) {
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
       router.push("/login");
       return;
     }

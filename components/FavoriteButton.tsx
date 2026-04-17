@@ -29,6 +29,13 @@ export default function FavoriteButton({ productId, initial = false }) {
   };
 
   const toggleFavorite = async () => {
+    // 🔥 FIX: verificăm dacă userul este logat
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      window.location.href = "/login";
+      return;
+    }
+
     const newState = !fav;
 
     setFav(newState);

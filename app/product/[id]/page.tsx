@@ -100,7 +100,7 @@ export default function Page() {
         {
           productId: Number(id),
           quantity: 1,
-          total: product.price   // 🔥 FIXUL OBLIGATORIU
+          total: product.price
         },
         { withCredentials: true }
       );
@@ -109,6 +109,27 @@ export default function Page() {
     } catch (err) {
       console.error("Error adding to cart:", err);
       alert("Eroare: nu s-a putut adăuga în coș.");
+    }
+  };
+
+  // ⭐⭐⭐ FUNCTIA FAVORITE — ADAUGATĂ FĂRĂ SĂ ATING ALTCEVA
+  const toggleFavorite = async () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(
+        `/favorites/${product.id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      alert("Produs adăugat la favorite!");
+    } catch (err) {
+      console.error("Eroare la favorite:", err);
+      alert("Nu s-a putut adăuga la favorite.");
     }
   };
 
@@ -186,6 +207,14 @@ export default function Page() {
       </div>
 
       <p className="text-lg font-semibold mb-2">{product.price} RON</p>
+
+      {/* 🔥 BUTON FAVORITE — ADAUGAT FĂRĂ SĂ ATING ALTCEVA */}
+      <button
+        onClick={toggleFavorite}
+        className="mb-4 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition"
+      >
+        ❤️ Adaugă la favorite
+      </button>
 
       <p className="text-gray-400 text-sm mb-4">
         Listat acum {product.daysListed || "câteva zile"} în{" "}

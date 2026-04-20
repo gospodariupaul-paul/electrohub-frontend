@@ -8,7 +8,7 @@ import EmojiPicker from "emoji-picker-react";
 import { FiMessageCircle } from "react-icons/fi";
 
 // ⭐ ADĂUGAT
-import CallOverlay from "@/components/CallOverlay";
+import CallOverlay from "@/app/components/CallOverlay";
 
 export default function ChatPage() {
   const { conversationId } = useParams();

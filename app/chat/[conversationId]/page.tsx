@@ -7,6 +7,9 @@ import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
 import { FiMessageCircle } from "react-icons/fi";
 
+// ⭐ ADĂUGAT
+import CallOverlay from "@/components/CallOverlay";
+
 export default function ChatPage() {
   const { conversationId } = useParams();
   const router = useRouter();
@@ -22,6 +25,15 @@ export default function ChatPage() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  // ⭐ ADĂUGAT — controlăm overlay-ul de apel
+  const [showCall, setShowCall] = useState(false);
+  const [callType, setCallType] = useState<"audio" | "video" | null>(null);
+
+  const startCall = (type: "audio" | "video") => {
+    setCallType(type);
+    setShowCall(true);
+  };
 
   useEffect(() => {
     const u = localStorage.getItem("user");
@@ -186,6 +198,21 @@ export default function ChatPage() {
           </p>
         </div>
 
+        {/* ⭐ ADĂUGAT — butoane apel */}
+        <button
+          onClick={() => startCall("audio")}
+          className="text-xl mr-2"
+        >
+          📞
+        </button>
+
+        <button
+          onClick={() => startCall("video")}
+          className="text-xl mr-2"
+        >
+          🎥
+        </button>
+
         <div className="relative mr-3">
           <FiMessageCircle size={22} className="text-cyan-300" />
           {unreadCount > 0 && (
@@ -301,6 +328,17 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+
+      {/* ⭐ ADĂUGAT — overlay apel */}
+      {showCall && (
+        <CallOverlay
+          type={callType}
+          conversationId={conversationId}
+          user={user}
+          otherUser={otherUser}
+          onClose={() => setShowCall(false)}
+        />
+      )}
     </div>
   );
 }

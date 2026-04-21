@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Pusher from "pusher-js";
+import { io } from "socket.io-client";
 
 export default function CallOverlay({
   type,
@@ -20,16 +20,16 @@ export default function CallOverlay({
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
-  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-  });
-
-  const channel = pusher.subscribe(`call-${conversationId}`);
+  // 🔥 WebSocket către backend
+  const socket = useRef(
+    io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
+      transports: ["websocket"],
+    })
+  ).current;
 
   // 🔥 Sunet apel
-  const ringtone = typeof Audio !== "undefined"
-    ? new Audio("/ringtone.mp3")
-    : null;
+  const ringtone =
+    typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
   useEffect(() => {
     if (ringtone) {
@@ -50,8 +50,10 @@ export default function CallOverlay({
 
     pcRef.current.onicecandidate = (e) => {
       if (e.candidate) {
-        channel.trigger("client-ice", {
+        socket.emit("ice-candidate", {
           candidate: e.candidate,
+          conversationId,
+          from: user.id,
         });
       }
     };
@@ -85,8 +87,9 @@ export default function CallOverlay({
     const offer = await pcRef.current!.createOffer();
     await pcRef.current!.setLocalDescription(offer);
 
-    channel.trigger("client-offer", {
+    socket.emit("call-offer", {
       offer,
+      conversationId,
       from: user.id,
     });
   };
@@ -102,8 +105,9 @@ export default function CallOverlay({
     const answer = await pcRef.current!.createAnswer();
     await pcRef.current!.setLocalDescription(answer);
 
-    channel.trigger("client-answer", {
+    socket.emit("call-answer", {
       answer,
+      conversationId,
       from: user.id,
     });
   };
@@ -111,14 +115,18 @@ export default function CallOverlay({
   // 🔥 Închidere apel
   const endCall = () => {
     stopRingtone();
+    socket.emit("call-end", { conversationId });
+
     pcRef.current?.close();
     localStreamRef.current?.getTracks().forEach((t) => t.stop());
     onClose();
   };
 
-  // 🔥 Pusher listeners
+  // 🔥 WebSocket listeners
   useEffect(() => {
-    channel.bind("client-offer", async (data: any) => {
+    socket.emit("join-call-room", { conversationId });
+
+    socket.on("call-offer", async (data: any) => {
       if (data.from === user.id) return;
 
       stopRingtone();
@@ -128,7 +136,7 @@ export default function CallOverlay({
       await pcRef.current!.setRemoteDescription(data.offer);
     });
 
-    channel.bind("client-answer", async (data: any) => {
+    socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
       stopRingtone();
@@ -137,7 +145,7 @@ export default function CallOverlay({
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
-    channel.bind("client-ice", async (data: any) => {
+    socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
 
       try {
@@ -145,8 +153,12 @@ export default function CallOverlay({
       } catch {}
     });
 
+    socket.on("call-end", () => {
+      endCall();
+    });
+
     return () => {
-      pusher.unsubscribe(`call-${conversationId}`);
+      socket.disconnect();
     };
   }, []);
 

@@ -199,17 +199,11 @@ export default function ChatPage() {
         </div>
 
         {/* ⭐ ADĂUGAT — butoane apel */}
-        <button
-          onClick={() => startCall("audio")}
-          className="text-xl mr-2"
-        >
+        <button onClick={() => startCall("audio")} className="text-xl mr-2">
           📞
         </button>
 
-        <button
-          onClick={() => startCall("video")}
-          className="text-xl mr-2"
-        >
+        <button onClick={() => startCall("video")} className="text-xl mr-2">
           🎥
         </button>
 
@@ -329,8 +323,8 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* ⭐ ADĂUGAT — overlay apel */}
-      {showCall && (
+      {/* ⭐ ADĂUGAT — CallOverlay */}
+      {showCall && callType && (
         <CallOverlay
           type={callType}
           conversationId={conversationId}

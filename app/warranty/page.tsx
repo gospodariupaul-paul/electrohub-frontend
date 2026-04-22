@@ -15,4 +15,3 @@ export default function WarrantyPage() {
     </div>
   );
 }
-update for rebuild

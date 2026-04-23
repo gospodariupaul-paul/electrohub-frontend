@@ -16,9 +16,8 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-// 🔥 ADĂUGAT — NotificationProvider
 import { NotificationProvider } from "@/app/context/NotificationContext";
-import axiosInstance from "@/lib/axios"; // 🔥 NECESAR pentru badge
+import axiosInstance from "@/lib/axios";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -26,32 +25,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, loading } = useUser();
   const [collapsed, setCollapsed] = useState(false);
 
-  // 🔥 ADĂUGAT — număr mesaje fără răspuns
   const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     if (loading) return;
 
-    const token = localStorage.getItem("token");
-
-    if (!token) {
+    // 🔥 1. Dacă nu există user → redirect la login
+    if (!user) {
       router.push("/login");
       return;
     }
 
-    if (!user) return;
-
+    // 🔥 2. Dacă userul NU este admin → redirect la profil
     if (user.role !== "admin") {
       router.push("/my-account/profile");
       return;
     }
 
-    // 🔥 FETCH NUMĂR MESAJE NECITITE
+    // 🔥 3. Fetch pentru badge (folosește cookie-ul automat)
     axiosInstance
-      .get("/support/admin/pending/count", { withCredentials: true })
+      .get("/support/admin/pending/count")
       .then((res) => setPendingCount(res.data))
       .catch(() => {});
-
   }, [loading, user]);
 
   if (loading || !user) {
@@ -109,7 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SidebarLink href="/dashboard/categories" icon={<FaTags />} label="Categories" collapsed={collapsed} />
             <SidebarLink href="/dashboard/users" icon={<FaUser />} label="Users" collapsed={collapsed} />
 
-            {/* 🔥 SUPPORT MESSAGES CU BADGE */}
+            {/* SUPPORT MESSAGES CU BADGE */}
             <SidebarLink
               href="/dashboard/support"
               icon={<FaEnvelope />}
@@ -147,7 +142,6 @@ function SidebarLink({ href, icon, label, collapsed, danger = false, badge = 0 }
 
       {!collapsed && <span className="tracking-wide">{label}</span>}
 
-      {/* 🔥 BADGE NOTIFICĂRI */}
       {badge > 0 && (
         <span
           className="absolute right-3 top-2 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full"

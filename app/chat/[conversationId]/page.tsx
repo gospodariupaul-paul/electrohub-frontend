@@ -26,12 +26,14 @@ export default function ChatPage() {
   const [showCall, setShowCall] = useState(false);
   const [callType, setCallType] = useState<"audio" | "video" | null>(null);
   const [incomingCallData, setIncomingCallData] = useState<any>(null);
+  const [isIncoming, setIsIncoming] = useState(false);
 
   const socketRef = useRef<any>(null);
 
   const startCall = (type: "audio" | "video") => {
     setIncomingCallData(null);
     setCallType(type);
+    setIsIncoming(false); // eu sunt caller
     setShowCall(true);
   };
 
@@ -43,7 +45,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (user === null) return;
     if (!user?.id) router.push("/login");
-  }, [user]);
+  }, [user, router]);
 
   useEffect(() => {
     if (!conversationId || !user?.id) return;
@@ -143,17 +145,20 @@ export default function ChatPage() {
     });
 
     socketRef.current.on("call-offer", (data: any) => {
-      if (data.from === user.id) return;
+      if (data.from === user.id) return; // ignor propriul offer
 
       setIncomingCallData(data);
       setCallType(data.type);
+      setIsIncoming(true); // eu sunt receiver
 
       setTimeout(() => {
         setShowCall(true);
       }, 50);
     });
 
-    return () => {};
+    return () => {
+      socketRef.current?.disconnect();
+    };
   }, [conversationId, user]);
 
   return (
@@ -288,8 +293,8 @@ export default function ChatPage() {
           user={user}
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
+          isIncoming={isIncoming}
           incomingData={incomingCallData}
-          isIncoming={incomingCallData?.from !== user?.id}  // 🔥 AICI E FIXUL
         />
       )}
     </div>

@@ -17,7 +17,6 @@ export default function CallOverlay({
 
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
-
   const [remoteOffer, setRemoteOffer] = useState<any>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -33,17 +32,17 @@ export default function CallOverlay({
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
   useEffect(() => {
-    if (incomingData?.offer) {
+    if (incoming && incomingData?.offer) {
       setRemoteOffer(incomingData.offer);
     }
-  }, [incomingData]);
+  }, [incoming, incomingData]);
 
   useEffect(() => {
     if (incoming && ringtone) {
       ringtone.loop = true;
       ringtone.play().catch(() => {});
     }
-  }, [incoming]);
+  }, [incoming, ringtone]);
 
   const stopRingtone = () => ringtone?.pause();
 
@@ -142,10 +141,12 @@ export default function CallOverlay({
     socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
-      stopRingtone();
       setAccepted(true);
+      stopRingtone();
 
-      if (!pcRef.current) await setupConnection();
+      if (!pcRef.current) {
+        await setupConnection();
+      }
 
       await pcRef.current!.setRemoteDescription(data.answer);
     });
@@ -160,15 +161,17 @@ export default function CallOverlay({
 
     socket.on("call-end", endCall);
 
-    return () => socket.disconnect();
-  }, []);
+    return () => {
+      socket.disconnect();
+    };
+  }, [conversationId, user.id]);
 
-  // 🔥 CALLER pornește startCall
+  // caller pornește apelul
   useEffect(() => {
     if (!incoming) {
-      setTimeout(() => startCall(), 200);
+      startCall();
     }
-  }, []);
+  }, [incoming]);
 
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">
@@ -197,7 +200,7 @@ export default function CallOverlay({
       </p>
 
       <div className="flex gap-6 mt-6">
-        {incoming && !accepted && user.id !== incomingData?.from && (
+        {incoming && !accepted && (
           <button
             onClick={acceptCall}
             className="px-6 py-3 bg-green-600 rounded-full text-lg"

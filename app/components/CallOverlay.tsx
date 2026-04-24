@@ -9,35 +9,32 @@ export default function CallOverlay({
   user,
   otherUser,
   onClose,
-  isIncoming = false, // 🔥 ADĂUGAT
+  isIncoming = false,
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
 
-  const [incoming, setIncoming] = useState(isIncoming); // 🔥 PORNEȘTE DIN PROP
-  const [ringing, setRinging] = useState(true);
+  const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
-  // 🔥 WebSocket către backend
   const socket = useRef(
     io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
       transports: ["websocket"],
     })
   ).current;
 
-  // 🔥 Sunet apel
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
   useEffect(() => {
-    if (ringtone) {
+    if (incoming && ringtone) {
       ringtone.loop = true;
       ringtone.play().catch(() => {});
     }
-  }, []);
+  }, [incoming]);
 
   const stopRingtone = () => {
     if (ringtone) ringtone.pause();
@@ -45,6 +42,8 @@ export default function CallOverlay({
 
   // 🔥 Setup WebRTC
   const setupConnection = async () => {
+    if (pcRef.current) return;
+
     pcRef.current = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
@@ -81,7 +80,7 @@ export default function CallOverlay({
     });
   };
 
-  // 🔥 Inițiere apel (CALLER)
+  // 🔥 Caller inițiază apelul
   const startCall = async () => {
     await setupConnection();
 
@@ -92,11 +91,11 @@ export default function CallOverlay({
       offer,
       conversationId,
       from: user.id,
-      type, // 🔥 TRIMITEM TIPUL APELULUI
+      type,
     });
   };
 
-  // 🔥 Acceptare apel (RECEIVER)
+  // 🔥 Receiver acceptă apelul
   const acceptCall = async () => {
     stopRingtone();
     setAccepted(true);
@@ -120,6 +119,8 @@ export default function CallOverlay({
     socket.emit("call-end", { conversationId });
 
     pcRef.current?.close();
+    pcRef.current = null;
+
     localStreamRef.current?.getTracks().forEach((t) => t.stop());
     onClose();
   };
@@ -128,25 +129,28 @@ export default function CallOverlay({
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
+    // RECEIVER primește OFFER
     socket.on("call-offer", async (data: any) => {
       if (data.from === user.id) return;
 
-      stopRingtone();
       setIncoming(true);
 
       await setupConnection();
       await pcRef.current!.setRemoteDescription(data.offer);
     });
 
+    // CALLER primește ANSWER
     socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
       stopRingtone();
       setAccepted(true);
 
+      await setupConnection(); // 🔥 FIX CRITIC
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
+    // ICE CANDIDATES
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
 
@@ -164,7 +168,7 @@ export default function CallOverlay({
     };
   }, []);
 
-  // 🔥 Dacă EU am inițiat apelul → pornesc automat
+  // 🔥 Caller pornește automat
   useEffect(() => {
     if (!incoming) startCall();
   }, [incoming]);

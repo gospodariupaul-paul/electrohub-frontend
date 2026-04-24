@@ -138,7 +138,7 @@ export default function ChatPage() {
       transports: ["websocket"],
     });
 
-    // ❗ NU intrăm în room aici
+    // ❗ NU intrăm în room
     // ❗ NU facem WebRTC aici
 
     socketRef.current.on("call-offer", (data: any) => {

@@ -27,51 +27,38 @@ export default function CallOverlay({
     })
   ).current;
 
-  // SONERIE
-  const ringtone = useRef(
-    typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null
-  ).current;
-
-  const playRingtone = () => {
-    if (!ringtone) return;
-    ringtone.loop = true;
-    ringtone.volume = 1.0;
-    ringtone.play().catch(() => {});
-  };
-
-  const stopRingtone = () => {
-    if (!ringtone) return;
-    ringtone.pause();
-    ringtone.currentTime = 0;
-  };
-
   // CAMERA MICĂ DRAGGABLE
   const [localPos, setLocalPos] = useState({ x: 20, y: 20 });
   const draggingRef = useRef(false);
 
-  const startDrag = () => (draggingRef.current = true);
-  const stopDrag = () => (draggingRef.current = false);
-
-  const onDrag = (e: any) => {
-    if (!draggingRef.current) return;
-    setLocalPos({ x: e.clientX - 80, y: e.clientY - 80 });
+  const startDrag = () => {
+    draggingRef.current = true;
   };
 
-  // RECEIVER → sonerie
-  useEffect(() => {
-    if (isIncoming && !accepted) {
-      playRingtone();
-    }
-  }, [isIncoming]);
+  const stopDrag = () => {
+    draggingRef.current = false;
+  };
 
-  // CALLER → sonerie
-  useEffect(() => {
-    if (!isIncoming && !accepted) {
-      playRingtone();
-    }
-  }, []);
+  const onDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    setLocalPos({
+      x: e.clientX - 80,
+      y: e.clientY - 80,
+    });
+  };
 
-  // SETUP PEER CONNECTION
+  const stopAllRingtones = () => {
+    const w = window as any;
+    if (w.__callerRingtone) {
+      w.__callerRingtone.pause();
+      w.__callerRingtone = null;
+    }
+    if (w.__receiverRingtone) {
+      w.__receiverRingtone.pause();
+      w.__receiverRingtone = null;
+    }
+  };
+
   const setupConnection = async () => {
     if (pcRef.current) return;
 
@@ -108,7 +95,6 @@ export default function CallOverlay({
     });
   };
 
-  // CALLER → OFFER
   const startCall = async () => {
     await setupConnection();
 
@@ -123,9 +109,10 @@ export default function CallOverlay({
     });
   };
 
-  // RECEIVER → ACCEPT
   const acceptCall = async () => {
-    stopRingtone();
+    stopAllRingtones();
+
+    if (!remoteOffer) return;
 
     await setupConnection();
 
@@ -144,7 +131,7 @@ export default function CallOverlay({
   };
 
   const endCall = () => {
-    stopRingtone();
+    stopAllRingtones();
     socket.emit("call-end", { conversationId });
 
     pcRef.current?.close();
@@ -154,14 +141,13 @@ export default function CallOverlay({
     onClose();
   };
 
-  // SOCKET LISTENERS
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
     socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
-      stopRingtone();
+      stopAllRingtones();
 
       if (!pcRef.current) await setupConnection();
 
@@ -171,6 +157,7 @@ export default function CallOverlay({
 
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
+
       try {
         await pcRef.current?.addIceCandidate(data.candidate);
       } catch {}
@@ -181,9 +168,10 @@ export default function CallOverlay({
     return () => socket.disconnect();
   }, []);
 
-  // CALLER → PORNEȘTE APELUL
   useEffect(() => {
-    if (!isIncoming) startCall();
+    if (!isIncoming) {
+      startCall();
+    }
   }, []);
 
   return (
@@ -194,8 +182,6 @@ export default function CallOverlay({
       onMouseLeave={stopDrag}
     >
       <div className="relative w-full max-w-xl h-[60vh] bg-black rounded-lg overflow-hidden">
-
-        {/* REMOTE VIDEO */}
         <video
           ref={remoteVideo}
           autoPlay
@@ -205,7 +191,6 @@ export default function CallOverlay({
           className="w-full h-full object-cover"
         />
 
-        {/* LOCAL VIDEO DRAGGABLE */}
         <video
           ref={localVideo}
           autoPlay

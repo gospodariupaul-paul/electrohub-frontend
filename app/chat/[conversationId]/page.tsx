@@ -30,7 +30,14 @@ export default function ChatPage() {
   const socketRef = useRef<any>(null);
 
   const startCall = (type: "audio" | "video") => {
-    setIncomingCallData(null); // caller NU are incomingData
+    // SONERIE CALLER
+    const ring = new Audio("/ringtone.mp3");
+    ring.loop = true;
+    ring.volume = 1.0;
+    ring.play().catch(() => {});
+    (window as any).__callerRingtone = ring;
+
+    setIncomingCallData(null);
     setCallType(type);
     setShowCall(true);
   };
@@ -144,6 +151,13 @@ export default function ChatPage() {
 
     socketRef.current.on("call-offer", (data: any) => {
       if (data.from === user.id) return; // caller ignoră propriul offer
+
+      // SONERIE RECEIVER
+      const ring = new Audio("/ringtone.mp3");
+      ring.loop = true;
+      ring.volume = 1.0;
+      ring.play().catch(() => {});
+      (window as any).__receiverRingtone = ring;
 
       setIncomingCallData(data);
       setCallType(data.type);
@@ -291,7 +305,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           incomingData={incomingCallData}
-          isIncoming={!!incomingCallData} // RECEIVER = true, CALLER = false
+          isIncoming={!!incomingCallData}
         />
       )}
     </div>

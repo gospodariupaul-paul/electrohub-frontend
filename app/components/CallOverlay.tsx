@@ -10,7 +10,7 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
-  incomingData = null,   // 🔥 PRIMIT DIN CHATPAGE
+  incomingData = null,
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
@@ -18,10 +18,7 @@ export default function CallOverlay({
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
 
-  // 🔥 Receiver pornește cu oferta deja primită
-  const [remoteOffer, setRemoteOffer] = useState<any>(
-    incomingData?.offer || null
-  );
+  const [remoteOffer, setRemoteOffer] = useState<any>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -34,6 +31,12 @@ export default function CallOverlay({
 
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
+
+  useEffect(() => {
+    if (incomingData?.offer) {
+      setRemoteOffer(incomingData.offer);
+    }
+  }, [incomingData]);
 
   useEffect(() => {
     if (incoming && ringtone) {
@@ -101,6 +104,7 @@ export default function CallOverlay({
     setAccepted(true);
     setIncoming(false);
 
+    // 🔥 RECEIVER PORNEȘTE CAMERA AICI
     await setupConnection();
 
     await pcRef.current!.setRemoteDescription(remoteOffer);
@@ -160,10 +164,12 @@ export default function CallOverlay({
     return () => socket.disconnect();
   }, []);
 
-  // 🔥 Caller pornește startCall
+  // 🔥 CALLER PORNEȘTE STARTCALL DUPĂ CE OVERLAY-UL E MONTAT
   useEffect(() => {
-    if (!incoming) startCall();
-  }, []);
+    if (!incoming) {
+      setTimeout(() => startCall(), 100);
+    }
+  }, [incoming]);
 
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">

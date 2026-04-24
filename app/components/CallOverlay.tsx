@@ -16,7 +16,7 @@ export default function CallOverlay({
 
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
-  const [remoteOffer, setRemoteOffer] = useState<RTCSessionDescriptionInit | null>(null);
+  const [remoteOffer, setRemoteOffer] = useState<any>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -124,8 +124,7 @@ export default function CallOverlay({
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
-    // receiver primește offer-ul REAL aici
-    socket.on("call-offer", async (data: any) => {
+    socket.on("call-offer", (data: any) => {
       if (data.from === user.id) return;
 
       setRemoteOffer(data.offer);
@@ -153,16 +152,11 @@ export default function CallOverlay({
 
     socket.on("call-end", endCall);
 
-    return () => {
-      socket.disconnect();
-    };
+    return () => socket.disconnect();
   }, []);
 
-  // caller pornește automat apelul
   useEffect(() => {
-    if (!incoming) {
-      startCall();
-    }
+    if (!incoming) startCall();
   }, [incoming]);
 
   return (

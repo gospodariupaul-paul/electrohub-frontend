@@ -147,7 +147,10 @@ export default function ChatPage() {
 
       setIncomingCallData(data);
       setCallType(data.type);
-      setShowCall(true);
+
+      setTimeout(() => {
+        setShowCall(true);
+      }, 50);
     });
 
     return () => {};
@@ -285,8 +288,8 @@ export default function ChatPage() {
           user={user}
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
-          isIncoming={!!incomingCallData}
-          incomingData={incomingCallData}   // 🔥 AICI E FIXUL
+          incomingData={incomingCallData}
+          isIncoming={incomingCallData?.from !== user?.id}  // 🔥 AICI E FIXUL
         />
       )}
     </div>

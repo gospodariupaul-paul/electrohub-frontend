@@ -104,7 +104,6 @@ export default function CallOverlay({
     setAccepted(true);
     setIncoming(false);
 
-    // 🔥 RECEIVER PORNEȘTE CAMERA AICI
     await setupConnection();
 
     await pcRef.current!.setRemoteDescription(remoteOffer);
@@ -164,12 +163,12 @@ export default function CallOverlay({
     return () => socket.disconnect();
   }, []);
 
-  // 🔥 CALLER PORNEȘTE STARTCALL DUPĂ CE OVERLAY-UL E MONTAT
+  // 🔥 CALLER pornește startCall
   useEffect(() => {
     if (!incoming) {
-      setTimeout(() => startCall(), 100);
+      setTimeout(() => startCall(), 200);
     }
-  }, [incoming]);
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">

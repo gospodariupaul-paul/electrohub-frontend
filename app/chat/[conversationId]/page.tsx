@@ -30,7 +30,7 @@ export default function ChatPage() {
   const socketRef = useRef<any>(null);
 
   const startCall = (type: "audio" | "video") => {
-    setIncomingCallData(null); // caller, nu e incoming
+    setIncomingCallData(null);
     setCallType(type);
     setShowCall(true);
   };
@@ -43,7 +43,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (user === null) return;
     if (!user?.id) router.push("/login");
-  }, [user, router]);
+  }, [user]);
 
   useEffect(() => {
     if (!conversationId || !user?.id) return;
@@ -130,7 +130,7 @@ export default function ChatPage() {
       ? conversation?.seller
       : conversation?.buyer;
 
-  // WebRTC signaling pentru detectat apeluri primite
+  // 🔥 WebRTC signaling DOAR pentru detectat apeluri primite
   useEffect(() => {
     if (!conversationId || !user) return;
 
@@ -143,9 +143,9 @@ export default function ChatPage() {
     });
 
     socketRef.current.on("call-offer", (data: any) => {
-      if (data.from === user.id) return; // ignoră dacă eu sunt caller
+      if (data.from === user.id) return;
 
-      setIncomingCallData(data); // aici avem și offer, și type, și from
+      setIncomingCallData(data);
       setCallType(data.type);
       setShowCall(true);
     });
@@ -157,8 +157,10 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
+
       {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
+
         <button
           onClick={() => router.push("/my-account/messages")}
           className="bg-[#00a884] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-[#029f78] transition"
@@ -286,7 +288,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           isIncoming={!!incomingCallData}
-          offer={incomingCallData?.offer} // 🔥 aici dăm offer-ul la receiver
+          offer={incomingCallData?.offer} // 🔥 AICI ESTE FIXUL CRITIC
         />
       )}
     </div>

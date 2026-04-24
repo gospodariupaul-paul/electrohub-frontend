@@ -30,6 +30,7 @@ export default function CallOverlay({
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
+  // 🔥 Pornește soneria DOAR la receiver
   useEffect(() => {
     if (incoming && ringtone) {
       ringtone.loop = true;
@@ -128,6 +129,7 @@ export default function CallOverlay({
     onClose();
   };
 
+  // 🔥 WebSocket listeners
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 

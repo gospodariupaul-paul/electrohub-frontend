@@ -7,7 +7,6 @@ import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
 import { FiMessageCircle } from "react-icons/fi";
 import CallOverlay from "@/app/components/CallOverlay";
-import { io } from "socket.io-client";
 
 export default function ChatPage() {
   const { conversationId } = useParams();
@@ -25,12 +24,12 @@ export default function ChatPage() {
 
   const [showCall, setShowCall] = useState(false);
   const [callType, setCallType] = useState<"audio" | "video" | null>(null);
+
+  // 🔥 IMPORTANT: NU MAI EXISTĂ socketRef aici
   const [incomingCallData, setIncomingCallData] = useState<any>(null);
 
-  const socketRef = useRef<any>(null);
-
   const startCall = (type: "audio" | "video") => {
-    setIncomingCallData(null);
+    setIncomingCallData(null); // caller
     setCallType(type);
     setShowCall(true);
   };
@@ -129,31 +128,6 @@ export default function ChatPage() {
     conversation?.buyerId === user?.id
       ? conversation?.seller
       : conversation?.buyer;
-
-  // 🔥 WebRTC signaling DOAR pentru detectat apeluri primite
-  useEffect(() => {
-    if (!conversationId || !user) return;
-
-    socketRef.current = io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
-      transports: ["websocket"],
-    });
-
-    socketRef.current.emit("join-call-room", {
-      conversationId: Number(conversationId),
-    });
-
-    socketRef.current.on("call-offer", (data: any) => {
-      if (data.from === user.id) return;
-
-      setIncomingCallData(data);
-      setCallType(data.type);
-      setShowCall(true);
-    });
-
-    return () => {
-      socketRef.current.disconnect();
-    };
-  }, [conversationId, user]);
 
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
@@ -282,13 +256,12 @@ export default function ChatPage() {
       {/* CALL OVERLAY */}
       {showCall && (
         <CallOverlay
-          type={callType || incomingCallData?.type}
+          type={callType}
           conversationId={conversationId}
           user={user}
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
-          isIncoming={!!incomingCallData}
-          offer={incomingCallData?.offer} // 🔥 AICI ESTE FIXUL CRITIC
+          isIncoming={false}  // 🔥 incoming îl facem după ce merge fluxul
         />
       )}
     </div>

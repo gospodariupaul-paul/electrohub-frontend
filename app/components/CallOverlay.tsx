@@ -10,13 +10,13 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
-  offer, // 🔥 OFERĂ PRIMITĂ DIN CHATPAGE (SINGURA SURSA)
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
 
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
+  const [remoteOffer, setRemoteOffer] = useState<RTCSessionDescriptionInit | null>(null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -90,14 +90,15 @@ export default function CallOverlay({
   };
 
   const acceptCall = async () => {
+    if (!remoteOffer) return;
+
     stopRingtone();
     setAccepted(true);
     setIncoming(false);
 
     await setupConnection();
 
-    // 🔥 APLICĂ OFFER-UL PRIMIT DIN CHATPAGE
-    await pcRef.current!.setRemoteDescription(offer);
+    await pcRef.current!.setRemoteDescription(remoteOffer);
 
     const answer = await pcRef.current!.createAnswer();
     await pcRef.current!.setLocalDescription(answer);
@@ -123,6 +124,14 @@ export default function CallOverlay({
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
+    // receiver primește offer-ul REAL aici
+    socket.on("call-offer", async (data: any) => {
+      if (data.from === user.id) return;
+
+      setRemoteOffer(data.offer);
+      setIncoming(true);
+    });
+
     socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
@@ -144,11 +153,16 @@ export default function CallOverlay({
 
     socket.on("call-end", endCall);
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
+  // caller pornește automat apelul
   useEffect(() => {
-    if (!incoming) startCall();
+    if (!incoming) {
+      startCall();
+    }
   }, [incoming]);
 
   return (

@@ -10,7 +10,7 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
-  offer, // 🔥 OFERĂ PRIMITĂ DIN CHATPAGE
+  offer, // 🔥 OFERĂ PRIMITĂ DIN CHATPAGE (SINGURA SURSA)
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
@@ -30,7 +30,6 @@ export default function CallOverlay({
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
-  // 🔥 Pornește soneria DOAR la receiver
   useEffect(() => {
     if (incoming && ringtone) {
       ringtone.loop = true;
@@ -38,11 +37,8 @@ export default function CallOverlay({
     }
   }, [incoming]);
 
-  const stopRingtone = () => {
-    if (ringtone) ringtone.pause();
-  };
+  const stopRingtone = () => ringtone?.pause();
 
-  // 🔥 Setup WebRTC
   const setupConnection = async () => {
     if (pcRef.current) return;
 
@@ -72,17 +68,13 @@ export default function CallOverlay({
     });
 
     localStreamRef.current = stream;
-
-    if (localVideo.current) {
-      localVideo.current.srcObject = stream;
-    }
+    if (localVideo.current) localVideo.current.srcObject = stream;
 
     stream.getTracks().forEach((track) => {
       pcRef.current?.addTrack(track, stream);
     });
   };
 
-  // 🔥 CALLER inițiază apelul
   const startCall = async () => {
     await setupConnection();
 
@@ -97,7 +89,6 @@ export default function CallOverlay({
     });
   };
 
-  // 🔥 RECEIVER acceptă apelul
   const acceptCall = async () => {
     stopRingtone();
     setAccepted(true);
@@ -105,7 +96,7 @@ export default function CallOverlay({
 
     await setupConnection();
 
-    // 🔥 APLICĂ OFFER‑UL PRIMIT DIN CHATPAGE
+    // 🔥 APLICĂ OFFER-UL PRIMIT DIN CHATPAGE
     await pcRef.current!.setRemoteDescription(offer);
 
     const answer = await pcRef.current!.createAnswer();
@@ -129,32 +120,20 @@ export default function CallOverlay({
     onClose();
   };
 
-  // 🔥 WebSocket listeners
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
-    // RECEIVER primește OFFER
-    socket.on("call-offer", async (data: any) => {
-      if (data.from === user.id) return;
-      // 🔥 NU aplicăm aici offer-ul, îl aplicăm DOAR la Accept
-      setIncoming(true);
-    });
-
-    // CALLER primește ANSWER
     socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
       stopRingtone();
       setAccepted(true);
 
-      if (!pcRef.current) {
-        await setupConnection();
-      }
+      if (!pcRef.current) await setupConnection();
 
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
-    // ICE
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
 
@@ -163,16 +142,11 @@ export default function CallOverlay({
       } catch {}
     });
 
-    socket.on("call-end", () => {
-      endCall();
-    });
+    socket.on("call-end", endCall);
 
-    return () => {
-      socket.disconnect();
-    };
+    return () => socket.disconnect();
   }, []);
 
-  // CALLER pornește automat
   useEffect(() => {
     if (!incoming) startCall();
   }, [incoming]);

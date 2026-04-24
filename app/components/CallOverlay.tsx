@@ -19,6 +19,7 @@ export default function CallOverlay({
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const remoteOfferRef = useRef<RTCSessionDescriptionInit | null>(null);
 
   const socket = useRef(
     io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
@@ -40,7 +41,6 @@ export default function CallOverlay({
     if (ringtone) ringtone.pause();
   };
 
-  // 🔥 Setup WebRTC
   const setupConnection = async () => {
     if (pcRef.current) return;
 
@@ -80,7 +80,7 @@ export default function CallOverlay({
     });
   };
 
-  // 🔥 Caller inițiază apelul
+  // CALLER inițiază apelul
   const startCall = async () => {
     await setupConnection();
 
@@ -95,13 +95,17 @@ export default function CallOverlay({
     });
   };
 
-  // 🔥 Receiver acceptă apelul
+  // RECEIVER acceptă apelul
   const acceptCall = async () => {
+    if (!remoteOfferRef.current) return;
+
     stopRingtone();
     setAccepted(true);
     setIncoming(false);
 
     await setupConnection();
+
+    await pcRef.current!.setRemoteDescription(remoteOfferRef.current);
 
     const answer = await pcRef.current!.createAnswer();
     await pcRef.current!.setLocalDescription(answer);
@@ -113,7 +117,6 @@ export default function CallOverlay({
     });
   };
 
-  // 🔥 Închidere apel
   const endCall = () => {
     stopRingtone();
     socket.emit("call-end", { conversationId });
@@ -125,7 +128,6 @@ export default function CallOverlay({
     onClose();
   };
 
-  // 🔥 WebSocket listeners
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
@@ -133,10 +135,8 @@ export default function CallOverlay({
     socket.on("call-offer", async (data: any) => {
       if (data.from === user.id) return;
 
+      remoteOfferRef.current = data.offer;
       setIncoming(true);
-
-      await setupConnection();
-      await pcRef.current!.setRemoteDescription(data.offer);
     });
 
     // CALLER primește ANSWER
@@ -146,7 +146,10 @@ export default function CallOverlay({
       stopRingtone();
       setAccepted(true);
 
-      await setupConnection(); // 🔥 FIX CRITIC
+      if (!pcRef.current) {
+        await setupConnection();
+      }
+
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
@@ -168,7 +171,7 @@ export default function CallOverlay({
     };
   }, []);
 
-  // 🔥 Caller pornește automat
+  // CALLER pornește automat
   useEffect(() => {
     if (!incoming) startCall();
   }, [incoming]);
@@ -176,9 +179,13 @@ export default function CallOverlay({
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">
 
-      {/* Video local + remote */}
       <div className="relative w-full max-w-xl h-[60vh] bg-black rounded-lg overflow-hidden">
-        <video ref={remoteVideo} autoPlay playsInline className="w-full h-full object-cover" />
+        <video
+          ref={remoteVideo}
+          autoPlay
+          playsInline
+          className="w-full h-full object-cover"
+        />
 
         <video
           ref={localVideo}
@@ -189,14 +196,12 @@ export default function CallOverlay({
         />
       </div>
 
-      {/* Status */}
       <p className="mt-4 text-lg">
         {incoming && !accepted && "Apel primit..."}
         {!incoming && !accepted && "Se apelează..."}
         {accepted && "Conectat"}
       </p>
 
-      {/* Butoane */}
       <div className="flex gap-6 mt-6">
         {!accepted && incoming && (
           <button

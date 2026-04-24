@@ -291,7 +291,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           incomingData={incomingCallData}
-          isIncoming={!!incomingCallData}  // 🔥 RECEIVER = TRUE, CALLER = FALSE
+          isIncoming={!!incomingCallData} // RECEIVER = true, CALLER = false
         />
       )}
     </div>

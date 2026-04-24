@@ -97,9 +97,8 @@ export default function CallOverlay({
     if (!remoteOffer) return;
 
     stopRingtone();
-    setAccepted(true);
 
-    await setupConnection();
+    await setupConnection(); // PORNEȘTE CAMERA LOCALĂ LA RECEIVER
 
     await pcRef.current!.setRemoteDescription(remoteOffer);
 
@@ -111,6 +110,8 @@ export default function CallOverlay({
       conversationId,
       from: user.id,
     });
+
+    setAccepted(true);
   };
 
   const endCall = () => {
@@ -129,12 +130,12 @@ export default function CallOverlay({
     socket.emit("join-call-room", { conversationId });
 
     socket.on("call-answer", async (data: any) => {
-      if (data.from === user.id) return;
+      if (data.from === user.id) return; // doar celălalt
 
       if (!pcRef.current) await setupConnection();
 
       await pcRef.current!.setRemoteDescription(data.answer);
-      setAccepted(true);
+      setAccepted(true); // CALLER trece la „Conectat”
     });
 
     socket.on("ice-candidate", async (data: any) => {
@@ -150,7 +151,7 @@ export default function CallOverlay({
     return () => socket.disconnect();
   }, []);
 
-  // Caller → pornește apelul
+  // CALLER → pornește apelul
   useEffect(() => {
     if (!isIncoming) {
       startCall();

@@ -15,9 +15,8 @@ export default function CallOverlay({
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
 
-  const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
-  const [remoteOffer, setRemoteOffer] = useState<any>(null);
+  const [remoteOffer, setRemoteOffer] = useState<any>(incomingData?.offer || null);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -31,21 +30,17 @@ export default function CallOverlay({
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
+  // Receiver → sonerie
   useEffect(() => {
-    if (incoming && incomingData?.offer) {
-      setRemoteOffer(incomingData.offer);
-    }
-  }, [incoming, incomingData]);
-
-  useEffect(() => {
-    if (incoming && ringtone) {
+    if (isIncoming && ringtone) {
       ringtone.loop = true;
       ringtone.play().catch(() => {});
     }
-  }, [incoming, ringtone]);
+  }, [isIncoming]);
 
   const stopRingtone = () => ringtone?.pause();
 
+  // Creează PeerConnection + camera locală
   const setupConnection = async () => {
     if (pcRef.current) return;
 
@@ -82,6 +77,7 @@ export default function CallOverlay({
     });
   };
 
+  // Caller → trimite offer
   const startCall = async () => {
     await setupConnection();
 
@@ -96,12 +92,12 @@ export default function CallOverlay({
     });
   };
 
+  // Receiver → Accept
   const acceptCall = async () => {
     if (!remoteOffer) return;
 
     stopRingtone();
     setAccepted(true);
-    setIncoming(false);
 
     await setupConnection();
 
@@ -128,27 +124,17 @@ export default function CallOverlay({
     onClose();
   };
 
+  // Socket listeners
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
-
-    socket.on("call-offer", (data: any) => {
-      if (data.from === user.id) return;
-
-      setRemoteOffer(data.offer);
-      setIncoming(true);
-    });
 
     socket.on("call-answer", async (data: any) => {
       if (data.from === user.id) return;
 
-      setAccepted(true);
-      stopRingtone();
-
-      if (!pcRef.current) {
-        await setupConnection();
-      }
+      if (!pcRef.current) await setupConnection();
 
       await pcRef.current!.setRemoteDescription(data.answer);
+      setAccepted(true);
     });
 
     socket.on("ice-candidate", async (data: any) => {
@@ -161,17 +147,15 @@ export default function CallOverlay({
 
     socket.on("call-end", endCall);
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [conversationId, user.id]);
+    return () => socket.disconnect();
+  }, []);
 
-  // caller pornește apelul
+  // Caller → pornește apelul
   useEffect(() => {
-    if (!incoming) {
+    if (!isIncoming) {
       startCall();
     }
-  }, [incoming]);
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">
@@ -194,13 +178,13 @@ export default function CallOverlay({
       </div>
 
       <p className="mt-4 text-lg">
-        {incoming && !accepted && "Apel primit..."}
-        {!incoming && !accepted && "Se apelează..."}
+        {isIncoming && !accepted && "Apel primit..."}
+        {!isIncoming && !accepted && "Se apelează..."}
         {accepted && "Conectat"}
       </p>
 
       <div className="flex gap-6 mt-6">
-        {incoming && !accepted && (
+        {isIncoming && !accepted && (
           <button
             onClick={acceptCall}
             className="px-6 py-3 bg-green-600 rounded-full text-lg"

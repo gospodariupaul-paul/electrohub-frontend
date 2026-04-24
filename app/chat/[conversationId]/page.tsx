@@ -26,14 +26,12 @@ export default function ChatPage() {
   const [showCall, setShowCall] = useState(false);
   const [callType, setCallType] = useState<"audio" | "video" | null>(null);
   const [incomingCallData, setIncomingCallData] = useState<any>(null);
-  const [isIncoming, setIsIncoming] = useState(false);
 
   const socketRef = useRef<any>(null);
 
   const startCall = (type: "audio" | "video") => {
-    setIncomingCallData(null);
+    setIncomingCallData(null); // caller NU are incomingData
     setCallType(type);
-    setIsIncoming(false); // eu sunt caller
     setShowCall(true);
   };
 
@@ -145,11 +143,10 @@ export default function ChatPage() {
     });
 
     socketRef.current.on("call-offer", (data: any) => {
-      if (data.from === user.id) return; // ignor propriul offer
+      if (data.from === user.id) return; // caller ignoră propriul offer
 
       setIncomingCallData(data);
       setCallType(data.type);
-      setIsIncoming(true); // eu sunt receiver
 
       setTimeout(() => {
         setShowCall(true);
@@ -293,8 +290,8 @@ export default function ChatPage() {
           user={user}
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
-          isIncoming={isIncoming}
           incomingData={incomingCallData}
+          isIncoming={!!incomingCallData}  // 🔥 RECEIVER = TRUE, CALLER = FALSE
         />
       )}
     </div>

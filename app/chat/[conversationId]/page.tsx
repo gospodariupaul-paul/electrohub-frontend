@@ -30,7 +30,7 @@ export default function ChatPage() {
   const socketRef = useRef<any>(null);
 
   const startCall = (type: "audio" | "video") => {
-    setIncomingCallData(null);
+    setIncomingCallData(null); // caller, nu e incoming
     setCallType(type);
     setShowCall(true);
   };
@@ -43,7 +43,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (user === null) return;
     if (!user?.id) router.push("/login");
-  }, [user]);
+  }, [user, router]);
 
   useEffect(() => {
     if (!conversationId || !user?.id) return;
@@ -130,7 +130,7 @@ export default function ChatPage() {
       ? conversation?.seller
       : conversation?.buyer;
 
-  // WebRTC signaling socket
+  // WebRTC signaling pentru detectat apeluri primite
   useEffect(() => {
     if (!conversationId || !user) return;
 
@@ -143,9 +143,9 @@ export default function ChatPage() {
     });
 
     socketRef.current.on("call-offer", (data: any) => {
-      if (data.from === user.id) return;
+      if (data.from === user.id) return; // ignoră dacă eu sunt caller
 
-      setIncomingCallData(data);
+      setIncomingCallData(data); // aici avem și offer, și type, și from
       setCallType(data.type);
       setShowCall(true);
     });
@@ -157,9 +157,8 @@ export default function ChatPage() {
 
   return (
     <div className="min-h-screen bg-[#0b141a] flex flex-col relative">
-
+      {/* HEADER */}
       <div className="h-16 bg-[#202c33] text-white flex items-center px-4 gap-3 border-b border-black/20 shadow-md relative">
-
         <button
           onClick={() => router.push("/my-account/messages")}
           className="bg-[#00a884] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-[#029f78] transition"
@@ -216,6 +215,7 @@ export default function ChatPage() {
         )}
       </div>
 
+      {/* MESAJE */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21] relative">
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
@@ -244,6 +244,7 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
+      {/* INPUT */}
       <div className="relative bg-[#202c33] px-3 py-2 flex items-center gap-2 z-30">
         <button
           onClick={() => setShowEmoji((v) => !v)}
@@ -276,6 +277,7 @@ export default function ChatPage() {
         )}
       </div>
 
+      {/* CALL OVERLAY */}
       {showCall && (
         <CallOverlay
           type={callType || incomingCallData?.type}
@@ -284,6 +286,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           isIncoming={!!incomingCallData}
+          offer={incomingCallData?.offer} // 🔥 aici dăm offer-ul la receiver
         />
       )}
     </div>

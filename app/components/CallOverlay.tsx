@@ -10,6 +10,7 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
+  offer, // 🔥 OFERĂ PRIMITĂ DIN CHATPAGE
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
@@ -19,7 +20,6 @@ export default function CallOverlay({
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  const remoteOfferRef = useRef<RTCSessionDescriptionInit | null>(null);
 
   const socket = useRef(
     io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
@@ -41,6 +41,7 @@ export default function CallOverlay({
     if (ringtone) ringtone.pause();
   };
 
+  // 🔥 Setup WebRTC
   const setupConnection = async () => {
     if (pcRef.current) return;
 
@@ -80,7 +81,7 @@ export default function CallOverlay({
     });
   };
 
-  // CALLER inițiază apelul
+  // 🔥 CALLER inițiază apelul
   const startCall = async () => {
     await setupConnection();
 
@@ -95,17 +96,16 @@ export default function CallOverlay({
     });
   };
 
-  // RECEIVER acceptă apelul
+  // 🔥 RECEIVER acceptă apelul
   const acceptCall = async () => {
-    if (!remoteOfferRef.current) return;
-
     stopRingtone();
     setAccepted(true);
     setIncoming(false);
 
     await setupConnection();
 
-    await pcRef.current!.setRemoteDescription(remoteOfferRef.current);
+    // 🔥 APLICĂ OFFER‑UL PRIMIT DIN CHATPAGE
+    await pcRef.current!.setRemoteDescription(offer);
 
     const answer = await pcRef.current!.createAnswer();
     await pcRef.current!.setLocalDescription(answer);
@@ -134,8 +134,7 @@ export default function CallOverlay({
     // RECEIVER primește OFFER
     socket.on("call-offer", async (data: any) => {
       if (data.from === user.id) return;
-
-      remoteOfferRef.current = data.offer;
+      // 🔥 NU aplicăm aici offer-ul, îl aplicăm DOAR la Accept
       setIncoming(true);
     });
 
@@ -153,7 +152,7 @@ export default function CallOverlay({
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
-    // ICE CANDIDATES
+    // ICE
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
 

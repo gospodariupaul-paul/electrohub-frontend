@@ -27,43 +27,51 @@ export default function CallOverlay({
     })
   ).current;
 
-  const ringtone =
-    typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
+  // SONERIE
+  const ringtone = useRef(
+    typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null
+  ).current;
 
-  // poziția camerei locale (mica) – mutabilă cu cursorul
-  const [localPos, setLocalPos] = useState<{ x: number; y: number }>({
-    x: 20,
-    y: 20,
-  });
+  const playRingtone = () => {
+    if (!ringtone) return;
+    ringtone.loop = true;
+    ringtone.volume = 1.0;
+    ringtone.play().catch(() => {});
+  };
+
+  const stopRingtone = () => {
+    if (!ringtone) return;
+    ringtone.pause();
+    ringtone.currentTime = 0;
+  };
+
+  // CAMERA MICĂ DRAGGABLE
+  const [localPos, setLocalPos] = useState({ x: 20, y: 20 });
   const draggingRef = useRef(false);
 
-  const startDrag = () => {
-    draggingRef.current = true;
-  };
+  const startDrag = () => (draggingRef.current = true);
+  const stopDrag = () => (draggingRef.current = false);
 
-  const stopDrag = () => {
-    draggingRef.current = false;
-  };
-
-  const onDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onDrag = (e: any) => {
     if (!draggingRef.current) return;
-    setLocalPos({
-      x: e.clientX - 80, // ajustăm ca să fie centrat
-      y: e.clientY - 80,
-    });
+    setLocalPos({ x: e.clientX - 80, y: e.clientY - 80 });
   };
 
-  // Receiver → sonerie
+  // RECEIVER → sonerie
   useEffect(() => {
-    if (isIncoming && ringtone) {
-      ringtone.loop = true;
-      ringtone.play().catch(() => {});
+    if (isIncoming && !accepted) {
+      playRingtone();
     }
   }, [isIncoming]);
 
-  const stopRingtone = () => ringtone?.pause();
+  // CALLER → sonerie
+  useEffect(() => {
+    if (!isIncoming && !accepted) {
+      playRingtone();
+    }
+  }, []);
 
-  // Creează PeerConnection + camera locală
+  // SETUP PEER CONNECTION
   const setupConnection = async () => {
     if (pcRef.current) return;
 
@@ -100,7 +108,7 @@ export default function CallOverlay({
     });
   };
 
-  // Caller → trimite offer
+  // CALLER → OFFER
   const startCall = async () => {
     await setupConnection();
 
@@ -115,13 +123,11 @@ export default function CallOverlay({
     });
   };
 
-  // Receiver → Accept
+  // RECEIVER → ACCEPT
   const acceptCall = async () => {
-    if (!remoteOffer) return;
-
     stopRingtone();
 
-    await setupConnection(); // PORNEȘTE CAMERA LOCALĂ LA RECEIVER
+    await setupConnection();
 
     await pcRef.current!.setRemoteDescription(remoteOffer);
 
@@ -148,22 +154,23 @@ export default function CallOverlay({
     onClose();
   };
 
-  // Socket listeners
+  // SOCKET LISTENERS
   useEffect(() => {
     socket.emit("join-call-room", { conversationId });
 
     socket.on("call-answer", async (data: any) => {
-      if (data.from === user.id) return; // doar celălalt
+      if (data.from === user.id) return;
+
+      stopRingtone();
 
       if (!pcRef.current) await setupConnection();
 
       await pcRef.current!.setRemoteDescription(data.answer);
-      setAccepted(true); // CALLER trece la „Conectat”
+      setAccepted(true);
     });
 
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
-
       try {
         await pcRef.current?.addIceCandidate(data.candidate);
       } catch {}
@@ -174,11 +181,9 @@ export default function CallOverlay({
     return () => socket.disconnect();
   }, []);
 
-  // CALLER → pornește apelul
+  // CALLER → PORNEȘTE APELUL
   useEffect(() => {
-    if (!isIncoming) {
-      startCall();
-    }
+    if (!isIncoming) startCall();
   }, []);
 
   return (
@@ -189,7 +194,8 @@ export default function CallOverlay({
       onMouseLeave={stopDrag}
     >
       <div className="relative w-full max-w-xl h-[60vh] bg-black rounded-lg overflow-hidden">
-        {/* video remote – mare */}
+
+        {/* REMOTE VIDEO */}
         <video
           ref={remoteVideo}
           autoPlay
@@ -199,7 +205,7 @@ export default function CallOverlay({
           className="w-full h-full object-cover"
         />
 
-        {/* video local – mic, mutabil cu cursorul */}
+        {/* LOCAL VIDEO DRAGGABLE */}
         <video
           ref={localVideo}
           autoPlay

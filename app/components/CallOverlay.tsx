@@ -30,6 +30,29 @@ export default function CallOverlay({
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
+  // poziția camerei locale (mica) – mutabilă cu cursorul
+  const [localPos, setLocalPos] = useState<{ x: number; y: number }>({
+    x: 20,
+    y: 20,
+  });
+  const draggingRef = useRef(false);
+
+  const startDrag = () => {
+    draggingRef.current = true;
+  };
+
+  const stopDrag = () => {
+    draggingRef.current = false;
+  };
+
+  const onDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    setLocalPos({
+      x: e.clientX - 80, // ajustăm ca să fie centrat
+      y: e.clientY - 80,
+    });
+  };
+
   // Receiver → sonerie
   useEffect(() => {
     if (isIncoming && ringtone) {
@@ -159,22 +182,39 @@ export default function CallOverlay({
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">
-
+    <div
+      className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white"
+      onMouseMove={onDrag}
+      onMouseUp={stopDrag}
+      onMouseLeave={stopDrag}
+    >
       <div className="relative w-full max-w-xl h-[60vh] bg-black rounded-lg overflow-hidden">
+        {/* video remote – mare */}
         <video
           ref={remoteVideo}
           autoPlay
           playsInline
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
           className="w-full h-full object-cover"
         />
 
+        {/* video local – mic, mutabil cu cursorul */}
         <video
           ref={localVideo}
           autoPlay
           muted
           playsInline
-          className="absolute bottom-4 right-4 w-32 h-48 rounded-lg border border-white/20 object-cover"
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
+          onMouseDown={startDrag}
+          className="w-32 h-48 rounded-lg border border-white/20 object-cover cursor-grab"
+          style={{
+            position: "absolute",
+            top: localPos.y,
+            left: localPos.x,
+            zIndex: 999999,
+          }}
         />
       </div>
 

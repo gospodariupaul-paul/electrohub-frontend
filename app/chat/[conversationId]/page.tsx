@@ -286,7 +286,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           isIncoming={!!incomingCallData}
-          initialOffer={incomingCallData?.offer}   // 🔥 AICI E CHEIA
+          incomingData={incomingCallData}   // 🔥 AICI E FIXUL
         />
       )}
     </div>

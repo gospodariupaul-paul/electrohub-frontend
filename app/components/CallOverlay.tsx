@@ -10,7 +10,7 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
-  initialOffer = null,   // 🔥 OFERTA PRIMITĂ DIN CHATPAGE
+  incomingData = null,   // 🔥 PRIMIT DIN CHATPAGE
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
@@ -18,13 +18,14 @@ export default function CallOverlay({
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
 
-  // 🔥 PORNEȘTE CU OFERTA PRIMITĂ
-  const [remoteOffer, setRemoteOffer] = useState<any>(initialOffer);
+  // 🔥 Receiver pornește cu oferta deja primită
+  const [remoteOffer, setRemoteOffer] = useState<any>(
+    incomingData?.offer || null
+  );
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
-  // 🔥 SOCKET PROPRIU (ca la început)
   const socket = useRef(
     io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
       transports: ["websocket"],
@@ -94,13 +95,7 @@ export default function CallOverlay({
   };
 
   const acceptCall = async () => {
-    console.log("👉 ACCEPT CLICKED");
-    console.log("remoteOffer =", remoteOffer);
-
-    if (!remoteOffer) {
-      console.log("❌ remoteOffer is NULL — cannot accept");
-      return;
-    }
+    if (!remoteOffer) return;
 
     stopRingtone();
     setAccepted(true);
@@ -137,7 +132,6 @@ export default function CallOverlay({
     socket.on("call-offer", (data: any) => {
       if (data.from === user.id) return;
 
-      // 🔥 dacă vine și prin socket, îl actualizăm
       setRemoteOffer(data.offer);
       setIncoming(true);
     });
@@ -166,9 +160,10 @@ export default function CallOverlay({
     return () => socket.disconnect();
   }, []);
 
+  // 🔥 Caller pornește startCall
   useEffect(() => {
     if (!incoming) startCall();
-  }, [incoming]);
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">
@@ -197,7 +192,7 @@ export default function CallOverlay({
       </p>
 
       <div className="flex gap-6 mt-6">
-        {!accepted && incoming && (
+        {incoming && !accepted && user.id !== incomingData?.from && (
           <button
             onClick={acceptCall}
             className="px-6 py-3 bg-green-600 rounded-full text-lg"

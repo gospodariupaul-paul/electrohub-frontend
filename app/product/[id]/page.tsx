@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import dynamic from "next/dynamic";
+import { io } from "socket.io-client"; // 🔥 ADĂUGAT
+import CallOverlay from "@/app/components/CallOverlay"; // 🔥 ADĂUGAT
 
 const ProductMap = dynamic(
   () => import("@/app/components/ProductMap"),
@@ -25,6 +27,10 @@ export default function Page() {
   // ⭐ RATINGURI VANZATOR
   const [sellerRatings, setSellerRatings] = useState<any[]>([]);
   const [sellerAverage, setSellerAverage] = useState("–");
+
+  // 🔥 ADĂUGAT — STATE PENTRU APEL VIDEO
+  const [showCall, setShowCall] = useState(false);
+  const [incomingCallData, setIncomingCallData] = useState<any>(null);
 
   useEffect(() => {
     const u = localStorage.getItem("user");
@@ -65,6 +71,28 @@ export default function Page() {
         setSellerAverage("–");
       });
   }, [product]);
+
+  // 🔥 ADĂUGAT — ASCULTĂM APELUL VIDEO
+  useEffect(() => {
+    if (!product || !user) return;
+
+    const socket = io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
+      transports: ["websocket"],
+    });
+
+    // intrăm în camera conversației produsului
+    socket.emit("join-call-room", { conversationId: product.id });
+
+    // când vine un apel
+    socket.on("call-offer", (data: any) => {
+      if (data.from === user.id) return; // să nu se trigeze la caller
+
+      setIncomingCallData(data);
+      setShowCall(true); // 👉 deschide CallOverlay la vânzător
+    });
+
+    return () => socket.disconnect();
+  }, [product, user]);
 
   const startConversation = async () => {
     if (!user) {
@@ -310,6 +338,18 @@ export default function Page() {
       >
         Adaugă în coș
       </button>
+
+      {/* 🔥 ADĂUGAT — CALL OVERLAY */}
+      {showCall && (
+        <CallOverlay
+          type="video"
+          conversationId={incomingCallData?.conversationId || product.id}
+          user={user}
+          otherUser={product.user}
+          onClose={() => setShowCall(false)}
+          isIncoming={true}
+        />
+      )}
 
     </div>
   );

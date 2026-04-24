@@ -9,11 +9,12 @@ export default function CallOverlay({
   user,
   otherUser,
   onClose,
+  isIncoming = false, // 🔥 ADĂUGAT
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
 
-  const [incoming, setIncoming] = useState(false);
+  const [incoming, setIncoming] = useState(isIncoming); // 🔥 PORNEȘTE DIN PROP
   const [ringing, setRinging] = useState(true);
   const [accepted, setAccepted] = useState(false);
 
@@ -80,7 +81,7 @@ export default function CallOverlay({
     });
   };
 
-  // 🔥 Inițiere apel
+  // 🔥 Inițiere apel (CALLER)
   const startCall = async () => {
     await setupConnection();
 
@@ -91,10 +92,11 @@ export default function CallOverlay({
       offer,
       conversationId,
       from: user.id,
+      type, // 🔥 TRIMITEM TIPUL APELULUI
     });
   };
 
-  // 🔥 Acceptare apel
+  // 🔥 Acceptare apel (RECEIVER)
   const acceptCall = async () => {
     stopRingtone();
     setAccepted(true);
@@ -162,10 +164,10 @@ export default function CallOverlay({
     };
   }, []);
 
-  // 🔥 Dacă eu am inițiat apelul
+  // 🔥 Dacă EU am inițiat apelul → pornesc automat
   useEffect(() => {
     if (!incoming) startCall();
-  }, []);
+  }, [incoming]);
 
   return (
     <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[99999] text-white">

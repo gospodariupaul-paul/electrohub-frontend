@@ -10,18 +10,21 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
-  initialOffer = null,   // 🔥 PRIMIT DIN CHATPAGE
+  initialOffer = null,   // 🔥 OFERTA PRIMITĂ DIN CHATPAGE
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
 
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
-  const [remoteOffer, setRemoteOffer] = useState<any>(initialOffer); // 🔥 PORNEȘTE CU OFFER
+
+  // 🔥 PORNEȘTE CU OFERTA PRIMITĂ
+  const [remoteOffer, setRemoteOffer] = useState<any>(initialOffer);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
+  // 🔥 SOCKET PROPRIU (ca la început)
   const socket = useRef(
     io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
       transports: ["websocket"],
@@ -134,7 +137,7 @@ export default function CallOverlay({
     socket.on("call-offer", (data: any) => {
       if (data.from === user.id) return;
 
-      // dacă vine și pe socket, îl actualizăm
+      // 🔥 dacă vine și prin socket, îl actualizăm
       setRemoteOffer(data.offer);
       setIncoming(true);
     });

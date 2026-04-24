@@ -286,7 +286,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           isIncoming={!!incomingCallData}
-          socket={socketRef.current}   // 🔥 SOCKETUL UNIC
+          initialOffer={incomingCallData?.offer}   // 🔥 AICI E CHEIA
         />
       )}
     </div>

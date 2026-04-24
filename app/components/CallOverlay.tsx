@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 export default function CallOverlay({
   type,
@@ -9,17 +10,23 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
-  socket, // 🔥 SOCKET PRIMIT DIN CHATPAGE
+  initialOffer = null,   // 🔥 PRIMIT DIN CHATPAGE
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
 
   const [incoming, setIncoming] = useState(isIncoming);
   const [accepted, setAccepted] = useState(false);
-  const [remoteOffer, setRemoteOffer] = useState<any>(null);
+  const [remoteOffer, setRemoteOffer] = useState<any>(initialOffer); // 🔥 PORNEȘTE CU OFFER
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+
+  const socket = useRef(
+    io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
+      transports: ["websocket"],
+    })
+  ).current;
 
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
@@ -84,7 +91,13 @@ export default function CallOverlay({
   };
 
   const acceptCall = async () => {
-    if (!remoteOffer) return;
+    console.log("👉 ACCEPT CLICKED");
+    console.log("remoteOffer =", remoteOffer);
+
+    if (!remoteOffer) {
+      console.log("❌ remoteOffer is NULL — cannot accept");
+      return;
+    }
 
     stopRingtone();
     setAccepted(true);
@@ -121,6 +134,7 @@ export default function CallOverlay({
     socket.on("call-offer", (data: any) => {
       if (data.from === user.id) return;
 
+      // dacă vine și pe socket, îl actualizăm
       setRemoteOffer(data.offer);
       setIncoming(true);
     });
@@ -145,6 +159,8 @@ export default function CallOverlay({
     });
 
     socket.on("call-end", endCall);
+
+    return () => socket.disconnect();
   }, []);
 
   useEffect(() => {

@@ -6,8 +6,6 @@ import axiosInstance from "@/lib/axios";
 import Pusher from "pusher-js";
 import EmojiPicker from "emoji-picker-react";
 import { FiMessageCircle } from "react-icons/fi";
-
-// ⭐ ADĂUGAT
 import CallOverlay from "@/app/components/CallOverlay";
 import { io } from "socket.io-client";
 
@@ -27,17 +25,15 @@ export default function ChatPage() {
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // ⭐ ADĂUGAT — controlăm overlay-ul de apel
   const [showCall, setShowCall] = useState(false);
   const [callType, setCallType] = useState<"audio" | "video" | null>(null);
 
-  // ⭐ ADĂUGAT — datele apelului primit
   const [incomingCallData, setIncomingCallData] = useState<any>(null);
 
-  // ⭐ ADĂUGAT — socket global
   const socketRef = useRef<any>(null);
 
   const startCall = (type: "audio" | "video") => {
+    setIncomingCallData(null); // 🔥 Caller NU este receiver
     setCallType(type);
     setShowCall(true);
   };
@@ -68,7 +64,6 @@ export default function ChatPage() {
       .catch((err) => console.error("Error loading chat:", err));
   }, [conversationId, user]);
 
-  // ⭐ PUSHER — mesaje noi
   useEffect(() => {
     if (!conversationId) return;
 
@@ -115,41 +110,6 @@ export default function ChatPage() {
     }
   };
 
-  const handleRightClick = (e: any, msg: any) => {
-    e.preventDefault();
-    setContextMenu({
-      x: e.pageX,
-      y: e.pageY,
-      msg,
-    });
-  };
-
-  const deleteForMe = async (id: number) => {
-    try {
-      await axiosInstance.post(`/messages/delete-for-me/${id}`);
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-      setContextMenu(null);
-    } catch (err) {
-      console.error("Eroare la ștergere pentru tine:", err);
-    }
-  };
-
-  const deleteForAll = async (id: number) => {
-    try {
-      await axiosInstance.post(`/messages/delete-for-all/${id}`);
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === id
-            ? { ...m, text: "Acest mesaj a fost șters", deletedForAll: true }
-            : m
-        )
-      );
-      setContextMenu(null);
-    } catch (err) {
-      console.error("Eroare la ștergere pentru toți:", err);
-    }
-  };
-
   const deleteConversation = async () => {
     try {
       await axiosInstance.delete(`/conversations/${conversationId}`);
@@ -159,7 +119,6 @@ export default function ChatPage() {
     }
   };
 
-  // 🔥 UNREAD COUNT
   useEffect(() => {
     const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -180,7 +139,7 @@ export default function ChatPage() {
       ? conversation?.seller
       : conversation?.buyer;
 
-  // 🔥🔥🔥 ADĂUGAT — WebSocket pentru apeluri
+  // 🔥 WebRTC WebSocket
   useEffect(() => {
     if (!conversationId || !user) return;
 
@@ -192,7 +151,6 @@ export default function ChatPage() {
       conversationId: Number(conversationId),
     });
 
-    // când vine un apel
     socketRef.current.on("call-offer", (data: any) => {
       if (data.from === user.id) return;
 
@@ -232,7 +190,6 @@ export default function ChatPage() {
           </p>
         </div>
 
-        {/* ⭐ ADĂUGAT — butoane apel */}
         <button onClick={() => startCall("audio")} className="text-xl mr-2">
           📞
         </button>
@@ -271,38 +228,12 @@ export default function ChatPage() {
 
       {/* MESAJE */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-[#111b21] relative">
-
-        {contextMenu && (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="absolute bg-[#202c33] text-white rounded-md shadow-lg border border-gray-700 z-[9999] w-40"
-            style={{ top: contextMenu.y, left: contextMenu.x }}
-          >
-            <button
-              onClick={() => deleteForMe(contextMenu.msg.id)}
-              className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left"
-            >
-              🗑️ Șterge pentru tine
-            </button>
-
-            {contextMenu.msg.senderId === user?.id && (
-              <button
-                onClick={() => deleteForAll(contextMenu.msg.id)}
-                className="block px-4 py-2 hover:bg-[#2a3942] w-full text-left text-red-400"
-              >
-                🗑️ Șterge pentru toți
-              </button>
-            )}
-          </div>
-        )}
-
         {messages.map((msg, i) => {
           const isMe = user && msg.senderId === user.id;
 
           return (
             <div
               key={i}
-              onContextMenu={(e) => handleRightClick(e, msg)}
               className={`flex w-full ${
                 isMe ? "justify-end" : "justify-start"
               }`}
@@ -357,7 +288,7 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* ⭐ ADĂUGAT — CallOverlay */}
+      {/* CALL OVERLAY */}
       {showCall && (
         <CallOverlay
           type={callType || incomingCallData?.type}
@@ -365,7 +296,7 @@ export default function ChatPage() {
           user={user}
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
-          isIncoming={!!incomingCallData}
+          isIncoming={!!incomingCallData} // 🔥 RECEIVER = true, CALLER = false
         />
       )}
     </div>

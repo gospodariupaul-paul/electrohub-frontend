@@ -147,8 +147,8 @@ export default function CallOverlay({
   };
 
   useEffect(() => {
-    console.log("🔌 JOIN CALL ROOM:", conversationId);
-    socket.emit("join-call-room", { conversationId });
+    console.log("🔌 JOIN CALL ROOM:", Number(conversationId));
+    socket.emit("join-call-room", { conversationId: Number(conversationId) });
 
     socket.on("call-offer", (data: any) => {
       console.log("📩 RECEIVED OFFER:", data);

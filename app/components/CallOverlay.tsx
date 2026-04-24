@@ -32,15 +32,21 @@ export default function CallOverlay({
 
   useEffect(() => {
     if (incoming && ringtone) {
+      console.log("🔔 RINGTONE START");
       ringtone.loop = true;
-      ringtone.play().catch(() => {});
+      ringtone.play().catch((err) => console.log("Ringtone blocked:", err));
     }
   }, [incoming]);
 
-  const stopRingtone = () => ringtone?.pause();
+  const stopRingtone = () => {
+    console.log("🔕 RINGTONE STOP");
+    ringtone?.pause();
+  };
 
   const setupConnection = async () => {
     if (pcRef.current) return;
+
+    console.log("⚙️ SETUP CONNECTION");
 
     pcRef.current = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -48,6 +54,7 @@ export default function CallOverlay({
 
     pcRef.current.onicecandidate = (e) => {
       if (e.candidate) {
+        console.log("📤 SEND ICE CANDIDATE");
         socket.emit("ice-candidate", {
           candidate: e.candidate,
           conversationId,
@@ -57,6 +64,7 @@ export default function CallOverlay({
     };
 
     pcRef.current.ontrack = (e) => {
+      console.log("🎥 REMOTE TRACK RECEIVED");
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = e.streams[0];
       }
@@ -67,6 +75,8 @@ export default function CallOverlay({
       audio: true,
     });
 
+    console.log("📷 LOCAL STREAM READY");
+
     localStreamRef.current = stream;
     if (localVideo.current) localVideo.current.srcObject = stream;
 
@@ -76,10 +86,14 @@ export default function CallOverlay({
   };
 
   const startCall = async () => {
+    console.log("📞 START CALL (caller)");
+
     await setupConnection();
 
     const offer = await pcRef.current!.createOffer();
     await pcRef.current!.setLocalDescription(offer);
+
+    console.log("📤 SEND OFFER:", offer);
 
     socket.emit("call-offer", {
       offer,
@@ -90,7 +104,13 @@ export default function CallOverlay({
   };
 
   const acceptCall = async () => {
-    if (!remoteOffer) return;
+    console.log("👉 ACCEPT CLICKED");
+    console.log("remoteOffer =", remoteOffer);
+
+    if (!remoteOffer) {
+      console.log("❌ remoteOffer is NULL — cannot accept");
+      return;
+    }
 
     stopRingtone();
     setAccepted(true);
@@ -98,10 +118,13 @@ export default function CallOverlay({
 
     await setupConnection();
 
+    console.log("📥 APPLY REMOTE OFFER");
     await pcRef.current!.setRemoteDescription(remoteOffer);
 
     const answer = await pcRef.current!.createAnswer();
     await pcRef.current!.setLocalDescription(answer);
+
+    console.log("📤 SEND ANSWER:", answer);
 
     socket.emit("call-answer", {
       answer,
@@ -111,6 +134,8 @@ export default function CallOverlay({
   };
 
   const endCall = () => {
+    console.log("🔚 END CALL");
+
     stopRingtone();
     socket.emit("call-end", { conversationId });
 
@@ -122,9 +147,12 @@ export default function CallOverlay({
   };
 
   useEffect(() => {
+    console.log("🔌 JOIN CALL ROOM:", conversationId);
     socket.emit("join-call-room", { conversationId });
 
     socket.on("call-offer", (data: any) => {
+      console.log("📩 RECEIVED OFFER:", data);
+
       if (data.from === user.id) return;
 
       setRemoteOffer(data.offer);
@@ -132,6 +160,8 @@ export default function CallOverlay({
     });
 
     socket.on("call-answer", async (data: any) => {
+      console.log("📩 RECEIVED ANSWER:", data);
+
       if (data.from === user.id) return;
 
       stopRingtone();
@@ -139,15 +169,20 @@ export default function CallOverlay({
 
       if (!pcRef.current) await setupConnection();
 
+      console.log("📥 APPLY REMOTE ANSWER");
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
 
+      console.log("📩 RECEIVED ICE CANDIDATE");
+
       try {
         await pcRef.current?.addIceCandidate(data.candidate);
-      } catch {}
+      } catch (err) {
+        console.log("❌ ICE ERROR:", err);
+      }
     });
 
     socket.on("call-end", endCall);
@@ -156,7 +191,10 @@ export default function CallOverlay({
   }, []);
 
   useEffect(() => {
-    if (!incoming) startCall();
+    if (!incoming) {
+      console.log("📞 CALLER MODE → startCall()");
+      startCall();
+    }
   }, [incoming]);
 
   return (

@@ -138,7 +138,6 @@ export default function ChatPage() {
       transports: ["websocket"],
     });
 
-    // 🔥 intrăm în room-ul corect (STRING)
     socketRef.current.emit("join-call-room", {
       conversationId: conversationId.toString(),
     });
@@ -151,9 +150,7 @@ export default function ChatPage() {
       setShowCall(true);
     });
 
-    return () => {
-      socketRef.current.disconnect();
-    };
+    return () => {};
   }, [conversationId, user]);
 
   return (
@@ -289,6 +286,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           isIncoming={!!incomingCallData}
+          socket={socketRef.current}   // 🔥 SOCKETUL UNIC
         />
       )}
     </div>

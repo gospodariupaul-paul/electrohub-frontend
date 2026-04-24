@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
 
 export default function CallOverlay({
   type,
@@ -10,6 +9,7 @@ export default function CallOverlay({
   otherUser,
   onClose,
   isIncoming = false,
+  socket, // 🔥 SOCKET PRIMIT DIN CHATPAGE
 }: any) {
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
@@ -21,32 +21,20 @@ export default function CallOverlay({
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
-  const socket = useRef(
-    io(process.env.NEXT_PUBLIC_BACKEND_WS_URL!, {
-      transports: ["websocket"],
-    })
-  ).current;
-
   const ringtone =
     typeof Audio !== "undefined" ? new Audio("/ringtone.mp3") : null;
 
   useEffect(() => {
     if (incoming && ringtone) {
-      console.log("🔔 RINGTONE START");
       ringtone.loop = true;
-      ringtone.play().catch((err) => console.log("Ringtone blocked:", err));
+      ringtone.play().catch(() => {});
     }
   }, [incoming]);
 
-  const stopRingtone = () => {
-    console.log("🔕 RINGTONE STOP");
-    ringtone?.pause();
-  };
+  const stopRingtone = () => ringtone?.pause();
 
   const setupConnection = async () => {
     if (pcRef.current) return;
-
-    console.log("⚙️ SETUP CONNECTION");
 
     pcRef.current = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -54,17 +42,15 @@ export default function CallOverlay({
 
     pcRef.current.onicecandidate = (e) => {
       if (e.candidate) {
-        console.log("📤 SEND ICE CANDIDATE");
         socket.emit("ice-candidate", {
           candidate: e.candidate,
-          conversationId: conversationId,
+          conversationId,
           from: user.id,
         });
       }
     };
 
     pcRef.current.ontrack = (e) => {
-      console.log("🎥 REMOTE TRACK RECEIVED");
       if (remoteVideo.current) {
         remoteVideo.current.srcObject = e.streams[0];
       }
@@ -75,8 +61,6 @@ export default function CallOverlay({
       audio: true,
     });
 
-    console.log("📷 LOCAL STREAM READY");
-
     localStreamRef.current = stream;
     if (localVideo.current) localVideo.current.srcObject = stream;
 
@@ -86,31 +70,21 @@ export default function CallOverlay({
   };
 
   const startCall = async () => {
-    console.log("📞 START CALL (caller)");
-
     await setupConnection();
 
     const offer = await pcRef.current!.createOffer();
     await pcRef.current!.setLocalDescription(offer);
 
-    console.log("📤 SEND OFFER:", offer);
-
     socket.emit("call-offer", {
       offer,
-      conversationId: conversationId,
+      conversationId,
       from: user.id,
       type,
     });
   };
 
   const acceptCall = async () => {
-    console.log("👉 ACCEPT CLICKED");
-    console.log("remoteOffer =", remoteOffer);
-
-    if (!remoteOffer) {
-      console.log("❌ remoteOffer is NULL — cannot accept");
-      return;
-    }
+    if (!remoteOffer) return;
 
     stopRingtone();
     setAccepted(true);
@@ -118,26 +92,21 @@ export default function CallOverlay({
 
     await setupConnection();
 
-    console.log("📥 APPLY REMOTE OFFER");
     await pcRef.current!.setRemoteDescription(remoteOffer);
 
     const answer = await pcRef.current!.createAnswer();
     await pcRef.current!.setLocalDescription(answer);
 
-    console.log("📤 SEND ANSWER:", answer);
-
     socket.emit("call-answer", {
       answer,
-      conversationId: conversationId,
+      conversationId,
       from: user.id,
     });
   };
 
   const endCall = () => {
-    console.log("🔚 END CALL");
-
     stopRingtone();
-    socket.emit("call-end", { conversationId: conversationId });
+    socket.emit("call-end", { conversationId });
 
     pcRef.current?.close();
     pcRef.current = null;
@@ -147,14 +116,9 @@ export default function CallOverlay({
   };
 
   useEffect(() => {
-    console.log("🔌 JOIN CALL ROOM:", conversationId);
-    socket.emit("join-call-room", {
-      conversationId: conversationId,
-    });
+    socket.emit("join-call-room", { conversationId });
 
     socket.on("call-offer", (data: any) => {
-      console.log("📩 RECEIVED OFFER:", data);
-
       if (data.from === user.id) return;
 
       setRemoteOffer(data.offer);
@@ -162,8 +126,6 @@ export default function CallOverlay({
     });
 
     socket.on("call-answer", async (data: any) => {
-      console.log("📩 RECEIVED ANSWER:", data);
-
       if (data.from === user.id) return;
 
       stopRingtone();
@@ -171,32 +133,22 @@ export default function CallOverlay({
 
       if (!pcRef.current) await setupConnection();
 
-      console.log("📥 APPLY REMOTE ANSWER");
       await pcRef.current!.setRemoteDescription(data.answer);
     });
 
     socket.on("ice-candidate", async (data: any) => {
       if (data.from === user.id) return;
 
-      console.log("📩 RECEIVED ICE CANDIDATE");
-
       try {
         await pcRef.current?.addIceCandidate(data.candidate);
-      } catch (err) {
-        console.log("❌ ICE ERROR:", err);
-      }
+      } catch {}
     });
 
     socket.on("call-end", endCall);
-
-    return () => socket.disconnect();
   }, []);
 
   useEffect(() => {
-    if (!incoming) {
-      console.log("📞 CALLER MODE → startCall()");
-      startCall();
-    }
+    if (!incoming) startCall();
   }, [incoming]);
 
   return (

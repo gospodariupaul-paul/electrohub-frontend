@@ -57,7 +57,7 @@ export default function CallOverlay({
         console.log("📤 SEND ICE CANDIDATE");
         socket.emit("ice-candidate", {
           candidate: e.candidate,
-          conversationId: conversationId.toString(),
+          conversationId: conversationId,
           from: user.id,
         });
       }
@@ -97,7 +97,7 @@ export default function CallOverlay({
 
     socket.emit("call-offer", {
       offer,
-      conversationId: conversationId.toString(),
+      conversationId: conversationId,
       from: user.id,
       type,
     });
@@ -128,7 +128,7 @@ export default function CallOverlay({
 
     socket.emit("call-answer", {
       answer,
-      conversationId: conversationId.toString(),
+      conversationId: conversationId,
       from: user.id,
     });
   };
@@ -137,7 +137,7 @@ export default function CallOverlay({
     console.log("🔚 END CALL");
 
     stopRingtone();
-    socket.emit("call-end", { conversationId: conversationId.toString() });
+    socket.emit("call-end", { conversationId: conversationId });
 
     pcRef.current?.close();
     pcRef.current = null;
@@ -147,9 +147,9 @@ export default function CallOverlay({
   };
 
   useEffect(() => {
-    console.log("🔌 JOIN CALL ROOM:", conversationId.toString());
+    console.log("🔌 JOIN CALL ROOM:", conversationId);
     socket.emit("join-call-room", {
-      conversationId: conversationId.toString(),
+      conversationId: conversationId,
     });
 
     socket.on("call-offer", (data: any) => {

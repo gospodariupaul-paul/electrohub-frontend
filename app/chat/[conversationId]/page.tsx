@@ -138,7 +138,7 @@ export default function ChatPage() {
       transports: ["websocket"],
     });
 
-    // 🔥 intrăm în același room ca în backend (string)
+    // 🔥 intrăm în room-ul corect (STRING)
     socketRef.current.emit("join-call-room", {
       conversationId: conversationId.toString(),
     });
@@ -284,7 +284,7 @@ export default function ChatPage() {
       {showCall && (
         <CallOverlay
           type={callType || incomingCallData?.type}
-          conversationId={conversationId}
+          conversationId={conversationId.toString()}
           user={user}
           otherUser={otherUser}
           onClose={() => setShowCall(false)}

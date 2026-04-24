@@ -15,30 +15,15 @@ import { useNotifications } from "./context/NotificationContext";
 import CookieConsent from "../components/CookieConsent";
 import { useRouter } from "next/navigation";
 
-export const metadata = {
-  title: "GOSPO Electro Hub",
-  description: "Marketplace",
-  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
-};
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ro">
-      <head>
-        {/* 🔥 META VIEWPORT — OBLIGATORIU PENTRU TELEFON */}
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-        />
-      </head>
-
-      {/* 🔥 BODY FIX — FUNCȚIONEAZĂ PERFECT PE MOBIL ȘI DESKTOP */}
-      <body className="bg-[#0b141a] text-white min-h-screen w-full overflow-x-hidden">
+      <body className="bg-[#0b141a] text-white">
         <UserProvider>
           <WaitForUser>
             <NotificationProvider>
               <Header />
-              <main className="pt-4 w-full">{children}</main>
+              <main className="pt-4">{children}</main>
               <CookieConsent />
             </NotificationProvider>
           </WaitForUser>
@@ -78,7 +63,6 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 shadow-lg bg-[#0d1117]/90 backdrop-blur-md">
       <div className="relative pointer-events-auto max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-
         {/* 🔥 HAMBURGER */}
         <div className="flex items-center gap-4">
           <div className="relative z-[9999]">
@@ -98,7 +82,7 @@ function Header() {
           </Link>
         </div>
 
-        {/* 🔍 SEARCH DESKTOP */}
+        {/* 🔍 SEARCH GLOBAL FUNCȚIONAL */}
         <div className="hidden md:flex flex-1 mx-6">
           <form
             onSubmit={(e) => {

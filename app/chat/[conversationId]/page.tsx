@@ -130,7 +130,7 @@ export default function ChatPage() {
       ? conversation?.seller
       : conversation?.buyer;
 
-  // 🔥 ChatPage primește notificarea de apel
+  // SOCKET PENTRU APEL
   useEffect(() => {
     if (!conversationId || !user) return;
 
@@ -138,9 +138,9 @@ export default function ChatPage() {
       transports: ["websocket"],
     });
 
-    // 🔥 Vânzătorul intră în room → primește call-offer
+    // 🔥 intrăm în același room ca în backend (string)
     socketRef.current.emit("join-call-room", {
-      conversationId: Number(conversationId),
+      conversationId: conversationId.toString(),
     });
 
     socketRef.current.on("call-offer", (data: any) => {
@@ -289,7 +289,6 @@ export default function ChatPage() {
           otherUser={otherUser}
           onClose={() => setShowCall(false)}
           isIncoming={!!incomingCallData}
-          offer={incomingCallData?.offer}
         />
       )}
     </div>
